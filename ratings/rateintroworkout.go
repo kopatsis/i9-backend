@@ -4,13 +4,14 @@ import (
 	"context"
 	"fmt"
 	"fulli9/ratings/dbinput"
-	"fulli9/workoutgen2/datatypes"
+
+	// "fulli9/workoutgen2/datatypes"
 	"fulli9/workoutgen2/dbhandler"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func RateIntroWorkout(username string, workout datatypes.Workout, roundEnd float32) error {
+func RateIntroWorkout(username string, roundEnd float32) error {
 
 	client, database, err := dbhandler.ConnectDB()
 	if err != nil {

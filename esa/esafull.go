@@ -1,4 +1,4 @@
-package main
+package esa
 
 import (
 	"bufio"
@@ -10,7 +10,7 @@ import (
 	"fulli9/esa/mongo"
 )
 
-func main() {
+func RunESA() {
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Exercise (E), Stretch (S), or Both (B): ")

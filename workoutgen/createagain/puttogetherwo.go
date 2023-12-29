@@ -20,9 +20,9 @@ func ConstructWO(exercises [9]map[string]string, times map[string]float32, stret
 
 	finalWO.LevelAtStart = level
 	finalWO.Exercises = []map[string]any{}
-	for _, exer := range exercises {
-		finalWO.Exercises = append(finalWO.Exercises, exer)
-	}
+	// for _, exer := range exercises {
+	// 	// finalWO.Exercises = append(finalWO.Exercises, exer)
+	// }
 
 	return finalWO
 }
