@@ -31,11 +31,7 @@ func WorkoutGen(minutes float32, difficulty int, username string) (datatypes.Any
 		return stretchWorkout, nil
 	}
 
-	user := dbinput.GetUserDB(database, username)
-	stretches := dbinput.GetStetchesDB(database)
-	exercises := dbinput.GetExersDB(database)
-	pastWOs := dbinput.GetPastWOsDB(database, username)
-	typeMatrix := dbinput.GetMatrix(database)
+	user, stretches, exercises, pastWOs, typeMatrix := dbinput.AllInputsAsync(database, username)
 
 	adjlevel := adjustments.CalcNewLevel(difficulty, user.Level, pastWOs)
 

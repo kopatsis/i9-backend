@@ -19,15 +19,17 @@ func RateWorkout(username string) error {
 	}
 	defer dbhandler.DisConnectDB(client)
 
-	user := dbinput.GetUserDB(database, username)
-	workout := dbinput.GetPastWOsDB(database, username)
-	countWO := dbinput.GetUserWorkoutCount(database, username)
-	countUser := dbinput.GetUserCount(database)
-	exercises := dbinput.GetExersDB(database)
+	// user := dbinput.GetUserDB(database, username)
+	// workout := dbinput.GetPastWOsDB(database, username)
+	// countWO := dbinput.GetUserWorkoutCount(database, username)
+	// countUser := dbinput.GetUserCount(database)
+	// exercises := dbinput.GetExersDB(database)
+
+	user, workout, countWO, countUser, exercises := dbinput.AllInputsAsync(database, username)
 
 	if countWO == 0 {
 		fmt.Println("No workouts for user")
-		return errors.New("No WOs")
+		return errors.New("no workouts")
 	}
 
 	ratings := userinput.GetUserRatings(workout, exercises)

@@ -21,11 +21,14 @@ func GenerateIntroWorkout(username string) (datatypes.Workout, error) {
 	}
 	defer dbhandler.DisConnectDB(client)
 
-	user := dbinput.GetUserDB(database, username)
-	stretches := dbinput.GetStetchesDB(database)
-	exercises := dbinput.GetExersDB(database)
+	// user := dbinput.GetUserDB(database, username)
+	// stretches := dbinput.GetStetchesDB(database)
+	// exercises := dbinput.GetExersDB(database)
+	// pastWOs := []datatypes.Workout{}
+	// typeMatrix := dbinput.GetMatrix(database)
+
+	user, stretches, exercises, _, typeMatrix := dbinput.AllInputsAsync(database, username)
 	pastWOs := []datatypes.Workout{}
-	typeMatrix := dbinput.GetMatrix(database)
 
 	minutes := float32(45)
 
