@@ -12,7 +12,7 @@ import (
 )
 
 func GetStretchWO(user datatypes.User, minutes float32, database *mongo.Database) datatypes.StretchWorkout {
-	stretches := dbinput.GetStetchesDB(database)
+	stretches := dbinput.GetStretchesDB(database)
 	stretches = FilterStretches(user.Level*1.1, stretches, nil)
 
 	stretchSecs := (60 * minutes) / 2

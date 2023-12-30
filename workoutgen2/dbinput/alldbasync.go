@@ -25,7 +25,7 @@ func AllInputsAsync(database *mongo.Database, username string) (datatypes.User, 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		stretches = GetStetchesDB(database)
+		stretches = GetStretchesDB(database)
 	}()
 
 	wg.Add(1)

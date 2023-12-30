@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetStetchesDB(database *mongo.Database) map[string][]datatypes.Stretch {
+func GetStretchesDB(database *mongo.Database) map[string][]datatypes.Stretch {
 	collection := database.Collection("stretch")
 
 	filter := bson.D{}

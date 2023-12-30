@@ -6,9 +6,8 @@ import (
 	"fulli9/esa"
 	"fulli9/intro"
 	"fulli9/ratings"
-	"fulli9/ratings/dbinput"
+	"fulli9/views"
 	"fulli9/workoutgen2"
-	"fulli9/workoutgen2/dbhandler"
 	"fulli9/workoutgen2/userinput"
 	"os"
 	"strconv"
@@ -17,9 +16,9 @@ import (
 
 func main() {
 	displayMenu()
-	userInput := validateInput(getUserInput())
+	userInput := getUserInput()
 	for userInput != -1 {
-		userInput = validateInput(getUserInput())
+		userInput = getUserInput()
 	}
 
 	switch userInput {
@@ -28,14 +27,14 @@ func main() {
 		if WO, err := workoutgen2.WorkoutGen(minutes, diff, username); err != nil {
 			fmt.Println(err)
 		} else {
-			fmt.Println(WO)
+			views.PrettyPrint(WO)
 		}
 	case 2:
 		username := getUserName()
 		if WO, err := intro.GenerateIntroWorkout(username); err != nil {
 			fmt.Println(err)
 		} else {
-			fmt.Println(WO)
+			views.PrettyPrint(WO)
 		}
 	case 3:
 		username := getUserName()
@@ -57,14 +56,7 @@ func main() {
 
 	case 6:
 		username := getUserName()
-		client, database, err := dbhandler.ConnectDB()
-		if err != nil {
-			fmt.Printf("Error connecting to database %s, restart.\n", err.Error())
-			return
-		}
-		defer dbhandler.DisConnectDB(client)
-		WO := dbinput.GetPastWOsDB(database, username)
-		fmt.Println(WO)
+		views.ViewLastWorkout(username)
 	default:
 		fmt.Println("Error in logic for menu options. Restart")
 	}
@@ -80,15 +72,11 @@ func displayMenu() {
 	fmt.Println("6. View last WO for user (reqs username)")
 }
 
-func getUserInput() string {
+func getUserInput() int {
 	fmt.Print("Enter your choice (1-6): ")
 	var userInput string
 	fmt.Scanln(&userInput)
-	return userInput
-}
-
-func validateInput(input string) int {
-	if num, err := strconv.Atoi(input); err == nil {
+	if num, err := strconv.Atoi(userInput); err == nil {
 		if num >= 1 && num <= 5 {
 			return num
 		}
