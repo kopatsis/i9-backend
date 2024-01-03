@@ -17,7 +17,7 @@ import (
 func main() {
 	displayMenu()
 	userInput := getUserInput()
-	for userInput != -1 {
+	for userInput == -1 {
 		userInput = getUserInput()
 	}
 
@@ -53,7 +53,6 @@ func main() {
 		}
 	case 5:
 		esa.RunESA()
-
 	case 6:
 		username := getUserName()
 		views.ViewLastWorkout(username)

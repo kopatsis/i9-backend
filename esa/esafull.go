@@ -7,13 +7,13 @@ import (
 	"os"
 
 	"fulli9/esa/fromxl"
-	"fulli9/esa/mongo"
+	"fulli9/esa/mongodb"
 )
 
 func RunESA() {
 
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Exercise (E), Stretch (S), or Both (B): ")
+	fmt.Print("Exercise (E), Stretch (S), Both (B), or Matrix(M): ")
 	entry, err := reader.ReadString('\n')
 
 	if err != nil {
@@ -21,20 +21,24 @@ func RunESA() {
 		return
 	}
 
-	client, database := mongo.ConnectDB()
-
 	entry = entry[:len(entry)-2]
-	if entry != "S" && entry != "E" && entry != "B" {
+	if entry != "S" && entry != "E" && entry != "B" && entry != "M" {
 		fmt.Println("Invalid Entry. Out.")
 		return
 	}
+
+	if entry == "M" {
+		AddMatrixToDBFull()
+	}
+
+	client, database := mongodb.ConnectDB()
 
 	if entry == "S" || entry == "B" {
 		allSts := fromxl.EnterSt()
 
 		collection := database.Collection("stretch")
 
-		insertStretchResults := mongo.SaveStretch(collection, allSts)
+		insertStretchResults := mongodb.SaveStretch(collection, allSts)
 
 		fromxl.AddStrToXL(insertStretchResults)
 	}
@@ -44,7 +48,7 @@ func RunESA() {
 
 		collection := database.Collection("exercise")
 
-		insertExerciseResults := mongo.SaveExercise(collection, allExs)
+		insertExerciseResults := mongodb.SaveExercise(collection, allExs)
 
 		fromxl.AddExerToXL(insertExerciseResults)
 	}

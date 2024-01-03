@@ -14,15 +14,9 @@ func GetMatrix(database *mongo.Database) datatypes.TypeMatrix {
 
 	filter := bson.D{}
 
-	cursor, err := collection.Find(context.Background(), filter)
-	if err != nil {
-		fmt.Println(err)
-		return datatypes.TypeMatrix{}
-	}
-	defer cursor.Close(context.Background())
-
 	var matrix datatypes.TypeMatrix
-	if err = cursor.All(context.Background(), &matrix); err != nil {
+	err := collection.FindOne(context.Background(), filter).Decode(&matrix)
+	if err != nil {
 		fmt.Println(err)
 		return datatypes.TypeMatrix{}
 	}

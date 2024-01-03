@@ -11,7 +11,7 @@ import (
 )
 
 func EnterEx() []datatypes.Exercise {
-	f, err := excelize.OpenFile("i9ea.xlsx")
+	f, err := excelize.OpenFile("esa/i9ea.xlsx")
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -208,7 +208,7 @@ func EnterEx() []datatypes.Exercise {
 }
 
 func EnterSt() []datatypes.Stretch {
-	f, err := excelize.OpenFile("i9sa.xlsx")
+	f, err := excelize.OpenFile("esa/i9sa.xlsx")
 	if err != nil {
 		fmt.Println(err)
 		return nil
