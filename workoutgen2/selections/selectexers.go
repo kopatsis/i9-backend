@@ -48,6 +48,27 @@ func getComboIDs(count int, sum float32, exers []string, ratings map[string]floa
 	return ret
 }
 
+func checkPrevRoundsByType(rounds [9][]string, types [9]string, current []string, i int) bool {
+	for j := 0; j < i; j++ {
+		if types[i] == types[j] && areSlicesSame(rounds[j], current) {
+			return false
+		}
+	}
+	return true
+}
+
+func areSlicesSame(slice1, slice2 []string) bool {
+	if len(slice1) != len(slice2) {
+		return false
+	}
+	for i := 0; i < len(slice1); i++ {
+		if slice1[i] != slice2[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func SelectExercises(types [9]string, times [9]datatypes.ExerciseTimes, ratings map[string]float32, allowedNormal, allowedCombo, allowedSplit []string) [9][]string {
 	normalSum := sum(allowedNormal, ratings)
 	comboSum := sum(allowedCombo, ratings)
@@ -57,11 +78,23 @@ func SelectExercises(types [9]string, times [9]datatypes.ExerciseTimes, ratings 
 
 	for i, round := range types {
 		if round == "Combo" {
-			ret[i] = getComboIDs(times[i].ComboExers, comboSum, allowedCombo, ratings)
+			current := getComboIDs(times[i].ComboExers, comboSum, allowedCombo, ratings)
+			for !checkPrevRoundsByType(ret, types, current, i) {
+				current = getComboIDs(times[i].ComboExers, comboSum, allowedCombo, ratings)
+			}
+			ret[i] = current
 		} else if round == "Split" {
-			ret[i] = getSplitIDs(splitSum, allowedSplit, ratings)
+			current := getSplitIDs(splitSum, allowedSplit, ratings)
+			for !checkPrevRoundsByType(ret, types, current, i) {
+				current = getSplitIDs(splitSum, allowedSplit, ratings)
+			}
+			ret[i] = current
 		} else {
-			ret[i] = []string{selectID(normalSum, allowedNormal, ratings)}
+			current := []string{selectID(normalSum, allowedNormal, ratings)}
+			for !checkPrevRoundsByType(ret, types, current, i) {
+				current = []string{selectID(normalSum, allowedNormal, ratings)}
+			}
+			ret[i] = current
 		}
 	}
 

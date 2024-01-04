@@ -58,8 +58,8 @@ func CreateTimes(minutes float32, types [9]string) (datatypes.StretchTimes, [9]d
 			}
 		}
 		exerTimePerSet := exerUsableRoundTime / roundSets
-		currentTimes.ExercisePerSet = exerTimePerSet * (2 / 3)
-		currentTimes.RestPerSet = exerTimePerSet * (1 / 3)
+		currentTimes.ExercisePerSet = (exerTimePerSet * 2) / 3
+		currentTimes.RestPerSet = (exerTimePerSet * 1) / 3
 		currentTimes.RestPerRound = exerRestBetweenRounds
 		currentTimes.FullRound = exerTimePerRound
 		currentTimes.Sets = int(roundSets)
