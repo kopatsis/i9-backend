@@ -13,7 +13,7 @@ func ExerRatings(exers map[string]datatypes.Exercise, pastWOs []datatypes.Workou
 	}
 
 	for _, workout := range pastWOs {
-		adjustment := int(time.Now().Sub(workout.Date.Time()).Hours())
+		adjustment := int(time.Since(workout.Date.Time()).Hours())
 		for _, exercise := range workout.Exercises {
 			for _, id := range exercise.ExerciseIDs {
 				ret[id] = float32(math.Max(0.0, float64(ret[id]-float32(11-adjustment))))
@@ -21,8 +21,8 @@ func ExerRatings(exers map[string]datatypes.Exercise, pastWOs []datatypes.Workou
 		}
 	}
 
-	for _, id := range user.FavoriteExercises {
-		ret[id] = 1.25 * ret[id]
+	for id, adjustment := range user.ExerFavoriteRates {
+		ret[id] = 1.25 * adjustment
 	}
 
 	if user.PlyoTolerance > 3 {
