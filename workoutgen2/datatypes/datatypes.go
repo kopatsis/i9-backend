@@ -56,7 +56,7 @@ type ExerciseTimes struct {
 
 type WorkoutRound struct {
 	ExerciseIDs []string      `bson:"exerids"`
-	Reps        []int         `bson:"reps"`
+	Reps        []float32     `bson:"reps"`
 	Status      string        `bson:"status"`
 	Times       ExerciseTimes `bson:"times"`
 	Rating      float32       `bson:"times"`

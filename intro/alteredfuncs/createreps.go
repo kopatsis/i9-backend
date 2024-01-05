@@ -29,7 +29,7 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times datat
 	return initReps
 }
 
-func GetReps(matrix datatypes.TypeMatrix, minutes float32, levelSteps []float32, times [9]datatypes.ExerciseTimes, user datatypes.User, exerIDs [9][]string, exers map[string]datatypes.Exercise, types [9]string) [9][]int {
+func GetReps(matrix datatypes.TypeMatrix, minutes float32, levelSteps []float32, times [9]datatypes.ExerciseTimes, user datatypes.User, exerIDs [9][]string, exers map[string]datatypes.Exercise, types [9]string) [9][]float32 {
 
 	parentMatIndex := map[string]int{
 		"Pushups":           0,
@@ -44,19 +44,19 @@ func GetReps(matrix datatypes.TypeMatrix, minutes float32, levelSteps []float32,
 		"MISC":              9,
 	}
 
-	ret := [9][]int{}
+	ret := [9][]float32{}
 	for i, round := range exerIDs {
-		currentReps := []int{}
+		currentReps := []float32{}
 		switchRepTotal := float32(0)
 		for _, id := range round {
 			unAdjReps := unadjustedReps(i+1, id, levelSteps[i], minutes, times[i], user, exers)
 			if types[i] == "Combo" {
-				adjReps := int(math.Round(float64(unAdjReps / float32(times[i].ComboExers))))
+				adjReps := unAdjReps / float32(times[i].ComboExers)
 				currentReps = append(currentReps, adjReps)
 			} else if types[i] == "Split" {
 				switchRepTotal += unAdjReps
 			} else {
-				currentReps = append(currentReps, int(math.Round(float64(unAdjReps))))
+				currentReps = append(currentReps, unAdjReps)
 			}
 		}
 
@@ -66,8 +66,7 @@ func GetReps(matrix datatypes.TypeMatrix, minutes float32, levelSteps []float32,
 
 			repadjust := matrix.Matrix[parentMatIndex[exer1.Parent]][parentMatIndex[exer2.Parent]]
 
-			adjReps := int(math.Round(float64(switchRepTotal*repadjust) / 2))
-
+			adjReps := (switchRepTotal * repadjust) / 2
 			currentReps = append(currentReps, adjReps)
 		}
 		ret[i] = currentReps

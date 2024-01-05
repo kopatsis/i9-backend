@@ -35,8 +35,18 @@ func EnterEx() []datatypes.Exercise {
 			continue
 		}
 
+		blocked, err := f.GetCellValue("Main", "M"+strconv.Itoa(row))
+		if err != nil {
+			fmt.Println(err)
+			row++
+			continue
+		}
+
 		if name == "" {
 			row = 253
+		} else if blocked != "" {
+			row++
+			continue
 		} else {
 			parent, err := f.GetCellValue("Main", "B"+strconv.Itoa(row))
 			if err != nil {

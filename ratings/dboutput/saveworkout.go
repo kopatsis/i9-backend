@@ -19,6 +19,7 @@ func SaveWorkout(ratings [9]float32, workout datatypes.Workout, database *mongo.
 	}
 	newWorkout := workout
 	newWorkout.Exercises = newExercises
+	newWorkout.Status = "Rated"
 
 	collection := database.Collection("workout")
 

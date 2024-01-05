@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func FormatWorkout(statics, dynamics []string, reps [9][]int, exerIDs [9][]string, stretchTimes datatypes.StretchTimes, exerTimes [9]datatypes.ExerciseTimes, types [9]string, user datatypes.User, difficulty int) datatypes.Workout {
+func FormatWorkout(statics, dynamics []string, reps [9][]float32, exerIDs [9][]string, stretchTimes datatypes.StretchTimes, exerTimes [9]datatypes.ExerciseTimes, types [9]string, user datatypes.User, difficulty int) datatypes.Workout {
 	ret := datatypes.Workout{
 		Name:         "",
 		UserID:       user.ID.Hex(),
