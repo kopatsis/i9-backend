@@ -6,22 +6,31 @@ import (
 	"fulli9/workoutgen2/datatypes"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	// "go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetPastWOsDB(database *mongo.Database, username string) datatypes.Workout {
+func GetPastWOsDB(database *mongo.Database, idStr string) datatypes.Workout {
 
 	collection := database.Collection("workouts")
 
-	filterWO := bson.D{
-		{Key: "username", Value: username},
+	// filterWO := bson.D{
+	// 	{Key: "username", Value: username},
+	// }
+
+	var id primitive.ObjectID
+	if oid, err := primitive.ObjectIDFromHex(idStr); err == nil {
+		id = oid
+	} else {
+		// Handle error here, sorry
+		return datatypes.Workout{}
 	}
 
-	optionsWO := options.FindOne().SetSort(bson.D{{Key: "date", Value: -1}})
+	// optionsWO := options.FindOne().SetSort(bson.D{{Key: "date", Value: -1}})
 
 	var workout datatypes.Workout
-	if err := collection.FindOne(context.Background(), filterWO, optionsWO).Decode(&workout); err != nil {
+	if err := collection.FindOne(context.Background(), bson.M{"_id": id}).Decode(&workout); err != nil {
 		fmt.Println(err)
 		if err == mongo.ErrNoDocuments {
 			fmt.Println("No workout for user in database")

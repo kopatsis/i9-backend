@@ -1,4 +1,4 @@
-package datatypes
+package shared
 
 import (
 	"fmt"

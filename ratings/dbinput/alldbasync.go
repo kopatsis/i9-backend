@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func AllInputsAsync(database *mongo.Database, username string) (datatypes.User, datatypes.Workout, int64, int64, map[string]datatypes.Exercise) {
+func AllInputsAsync(database *mongo.Database, username string, id string) (datatypes.User, datatypes.Workout, int64, int64, map[string]datatypes.Exercise) {
 	var user datatypes.User
 	var workout datatypes.Workout
 	var countWO int64
@@ -25,7 +25,7 @@ func AllInputsAsync(database *mongo.Database, username string) (datatypes.User, 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		workout = GetPastWOsDB(database, username)
+		workout = GetPastWOsDB(database, id)
 	}()
 
 	wg.Add(1)

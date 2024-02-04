@@ -1,25 +1,28 @@
 package intro
 
 import (
-	"fmt"
+	// "fmt"
 	"fulli9/intro/alteredfuncs"
 	"fulli9/workoutgen2/adjustments"
 	"fulli9/workoutgen2/creation"
 	"fulli9/workoutgen2/datatypes"
-	"fulli9/workoutgen2/dbhandler"
+
+	// "fulli9/workoutgen2/dbhandler"
 	"fulli9/workoutgen2/dbinput"
 	"fulli9/workoutgen2/dboutput"
 	"fulli9/workoutgen2/selections"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GenerateIntroWorkout(username string) (datatypes.Workout, error) {
+func GenerateIntroWorkout(username string, database *mongo.Database) (datatypes.Workout, error) {
 
-	client, database, err := dbhandler.ConnectDB()
-	if err != nil {
-		fmt.Printf("Error connecting to database %s, restart.\n", err.Error())
-		return datatypes.Workout{}, err
-	}
-	defer dbhandler.DisConnectDB(client)
+	// client, database, err := dbhandler.ConnectDB()
+	// if err != nil {
+	// 	fmt.Printf("Error connecting to database %s, restart.\n", err.Error())
+	// 	return datatypes.Workout{}, err
+	// }
+	// defer dbhandler.DisConnectDB(client)
 
 	// user := dbinput.GetUserDB(database, username)
 	// stretches := dbinput.GetStetchesDB(database)
@@ -52,7 +55,7 @@ func GenerateIntroWorkout(username string) (datatypes.Workout, error) {
 
 	statics, dynamics := selections.SelectStretches(stretchTimes, stretches, levelSteps[0], exerIDs, exercises)
 
-	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, -1)
+	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, -1, minutes)
 
 	dboutput.SaveNewWorkout(database, workout)
 

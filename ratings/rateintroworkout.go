@@ -6,19 +6,20 @@ import (
 	"fulli9/ratings/dbinput"
 
 	// "fulli9/workoutgen2/datatypes"
-	"fulli9/workoutgen2/dbhandler"
+	// "fulli9/workoutgen2/dbhandler"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func RateIntroWorkout(username string, roundEnd float32) error {
+func RateIntroWorkout(username string, roundEnd float32, database *mongo.Database) error {
 
-	client, database, err := dbhandler.ConnectDB()
-	if err != nil {
-		fmt.Printf("Error connecting to database %s, restart.\n", err.Error())
-		return err
-	}
-	defer dbhandler.DisConnectDB(client)
+	// client, database, err := dbhandler.ConnectDB()
+	// if err != nil {
+	// 	fmt.Printf("Error connecting to database %s, restart.\n", err.Error())
+	// 	return err
+	// }
+	// defer dbhandler.DisConnectDB(client)
 
 	user := dbinput.GetUserDB(database, username)
 	levelSteps := []float32{50, 125, 225, 375, 575, 825, 1125, 1475, 1975}
@@ -37,7 +38,7 @@ func RateIntroWorkout(username string, roundEnd float32) error {
 
 	update := bson.M{"$set": bson.M{"level": userlevel}}
 
-	_, err = collection.UpdateOne(context.Background(), filter, update)
+	_, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		fmt.Println(err)
 		return err
