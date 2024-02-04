@@ -1,11 +1,11 @@
 package operations
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"math"
 )
 
-func NewLevel(user datatypes.User, ratings [9]float32, difficulty int, count int64) float32 {
+func NewLevel(user shared.User, ratings [9]float32, difficulty int, count int64) float32 {
 	sum := float32(0)
 	for _, rating := range ratings {
 		sum += rating

@@ -3,15 +3,16 @@ package adapts
 import (
 	"fulli9/adapts/alteredfuncs"
 
-	// "fulli9/shared"
+	"fulli9/shared"
 	"fulli9/workoutgen2/adjustments"
 	"fulli9/workoutgen2/creation"
-	"fulli9/workoutgen2/datatypes"
+
+	// "fulli9/workoutgen2/datatypes"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func Adapt(difficulty int, username string, database *mongo.Database, workoutID string) (datatypes.Workout, error) {
+func Adapt(difficulty int, username string, database *mongo.Database, workoutID string) (shared.Workout, error) {
 
 	user, exercises, pastWOs, typeMatrix, workout := alteredfuncs.AllInputsAsync(database, username, workoutID)
 
@@ -20,7 +21,7 @@ func Adapt(difficulty int, username string, database *mongo.Database, workoutID 
 	adjlevel := adjustments.CalcNewLevel(difficulty, user.Level, pastWOs)
 
 	var types [9]string
-	var exerTimes [9]datatypes.ExerciseTimes
+	var exerTimes [9]shared.ExerciseTimes
 	var exerIDs [9][]string
 
 	for i := 0; i < 9; i++ {

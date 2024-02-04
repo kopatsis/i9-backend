@@ -3,13 +3,13 @@ package dbinput
 import (
 	"context"
 	"fmt"
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetStretchesDB(database *mongo.Database) map[string][]datatypes.Stretch {
+func GetStretchesDB(database *mongo.Database) map[string][]shared.Stretch {
 	collection := database.Collection("stretch")
 
 	filter := bson.D{}
@@ -21,11 +21,11 @@ func GetStretchesDB(database *mongo.Database) map[string][]datatypes.Stretch {
 	}
 	defer cursor.Close(context.Background())
 
-	var allstretches map[string][]datatypes.Stretch
-	dynamics := []datatypes.Stretch{}
-	statics := []datatypes.Stretch{}
+	var allstretches map[string][]shared.Stretch
+	dynamics := []shared.Stretch{}
+	statics := []shared.Stretch{}
 	for cursor.Next(context.TODO()) {
-		var str datatypes.Stretch
+		var str shared.Stretch
 		if err := cursor.Decode(&str); err != nil {
 			fmt.Println(err)
 			return nil

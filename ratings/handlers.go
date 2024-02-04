@@ -19,7 +19,7 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		ratings := [9]float32{-1, -1, -1, -1, -1, -1, -1, -1, -1}
+		ratings := [9]float32{10, 10, 10, 10, 10, 10, 10, 10, 10}
 		for i, score := range rateHandler.Ratings {
 			if i > 9 {
 				break

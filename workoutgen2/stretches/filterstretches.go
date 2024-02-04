@@ -1,10 +1,10 @@
 package stretches
 
-import "fulli9/workoutgen2/datatypes"
+import "fulli9/shared"
 
-func FilterStretches(level float32, stretches map[string][]datatypes.Stretch, bodyparts map[int]bool) map[string][]datatypes.Stretch {
-	newstatics := []datatypes.Stretch{}
-	newdynamics := []datatypes.Stretch{}
+func FilterStretches(level float32, stretches map[string][]shared.Stretch, bodyparts map[int]bool) map[string][]shared.Stretch {
+	newstatics := []shared.Stretch{}
+	newdynamics := []shared.Stretch{}
 
 	for _, str := range stretches["Static"] {
 		if str.MinLevel <= level {

@@ -19,7 +19,7 @@ func PostIntroWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := GenerateIntroWorkout(woHandler.UserID, database)
+		workout, err := GenerateIntroWorkout(woHandler.Time, woHandler.UserID, database)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with workout generator",

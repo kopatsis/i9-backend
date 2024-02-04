@@ -3,7 +3,7 @@ package dbinput
 import (
 	"context"
 	"fmt"
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetPastWOsDB(database *mongo.Database, username string) []datatypes.Workout {
+func GetPastWOsDB(database *mongo.Database, username string) []shared.Workout {
 
 	collection := database.Collection("workouts")
 
@@ -32,7 +32,7 @@ func GetPastWOsDB(database *mongo.Database, username string) []datatypes.Workout
 	}
 	defer cursor.Close(context.Background())
 
-	var pastWorkouts []datatypes.Workout
+	var pastWorkouts []shared.Workout
 	err = cursor.All(context.Background(), &pastWorkouts)
 	if err != nil {
 		fmt.Println(err)

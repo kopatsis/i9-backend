@@ -1,11 +1,11 @@
 package adjustments
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"time"
 )
 
-func CalcNewLevel(difficulty int, startLevel float32, pastWOs []datatypes.Workout) float32 {
+func CalcNewLevel(difficulty int, startLevel float32, pastWOs []shared.Workout) float32 {
 	retLevel := startLevel
 	switch difficulty {
 	case 1:

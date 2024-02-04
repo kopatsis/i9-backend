@@ -3,13 +3,13 @@ package dboutput
 import (
 	"context"
 	"fmt"
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func SaveUser(user datatypes.User, newlevel float32, userExMod, userTypeMod map[string]float32, database *mongo.Database) error {
+func SaveUser(user shared.User, newlevel float32, userExMod, userTypeMod map[string]float32, database *mongo.Database) error {
 	collection := database.Collection("user")
 
 	filter := bson.M{"_id": user.ID}

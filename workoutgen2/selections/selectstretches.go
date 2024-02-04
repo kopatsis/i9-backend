@@ -1,12 +1,12 @@
 package selections
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"fulli9/workoutgen2/stretches"
 	"math/rand"
 )
 
-func SelectStretches(stretchtimes datatypes.StretchTimes, stretchMap map[string][]datatypes.Stretch, adjlevel float32, exerIDs [9][]string, exercises map[string]datatypes.Exercise) ([]string, []string) {
+func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]shared.Stretch, adjlevel float32, exerIDs [9][]string, exercises map[string]shared.Exercise) ([]string, []string) {
 
 	bodyparts := map[int]bool{}
 

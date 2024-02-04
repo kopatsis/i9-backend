@@ -1,18 +1,18 @@
 package creation
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"math"
 	"math/rand"
 )
 
-func CreateTimes(minutes float32, types [9]string) (datatypes.StretchTimes, [9]datatypes.ExerciseTimes) {
+func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shared.ExerciseTimes) {
 	possibleComboTimes := [3]float32{30.0, 45.0, 60.0}
 
 	seconds := 60 * minutes
 
-	var retStr datatypes.StretchTimes
-	retExer := [9]datatypes.ExerciseTimes{}
+	var retStr shared.StretchTimes
+	retExer := [9]shared.ExerciseTimes{}
 
 	if minutes < 20 {
 		retStr.FullRound = float32(math.Max(1.5, float64(seconds/8)))
@@ -40,7 +40,7 @@ func CreateTimes(minutes float32, types [9]string) (datatypes.StretchTimes, [9]d
 	exerUsableRoundTime := exerTimePerRound - exerRestBetweenRounds
 
 	for i, round := range types {
-		var currentTimes datatypes.ExerciseTimes
+		var currentTimes shared.ExerciseTimes
 
 		var roundSets float32
 

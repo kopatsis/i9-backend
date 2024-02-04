@@ -3,15 +3,15 @@ package dboutput
 import (
 	"context"
 	"fmt"
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func SaveWorkout(ratings [9]float32, workout datatypes.Workout, database *mongo.Database) error {
+func SaveWorkout(ratings [9]float32, workout shared.Workout, database *mongo.Database) error {
 
-	newExercises := [9]datatypes.WorkoutRound{}
+	newExercises := [9]shared.WorkoutRound{}
 	for i, round := range workout.Exercises {
 		newRound := round
 		newRound.Rating = ratings[i]

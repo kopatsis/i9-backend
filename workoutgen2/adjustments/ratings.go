@@ -1,12 +1,12 @@
 package adjustments
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"math"
 	"time"
 )
 
-func ExerRatings(exers map[string]datatypes.Exercise, pastWOs []datatypes.Workout, user datatypes.User) map[string]float32 {
+func ExerRatings(exers map[string]shared.Exercise, pastWOs []shared.Workout, user shared.User) map[string]float32 {
 	ret := map[string]float32{}
 	for _, exercise := range exers {
 		ret[exercise.ID.Hex()] = exercise.StartQuality

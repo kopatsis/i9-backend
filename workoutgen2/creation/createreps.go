@@ -1,11 +1,11 @@
 package creation
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"math"
 )
 
-func unadjustedReps(round int, id string, adjlevel, minutes float32, times datatypes.ExerciseTimes, user datatypes.User, exers map[string]datatypes.Exercise) float32 {
+func unadjustedReps(round int, id string, adjlevel, minutes float32, times shared.ExerciseTimes, user shared.User, exers map[string]shared.Exercise) float32 {
 
 	exercise := exers[id]
 
@@ -29,7 +29,7 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times datat
 	return initReps
 }
 
-func GetReps(matrix datatypes.TypeMatrix, minutes, adjlevel float32, times [9]datatypes.ExerciseTimes, user datatypes.User, exerIDs [9][]string, exers map[string]datatypes.Exercise, types [9]string) [9][]float32 {
+func GetReps(matrix shared.TypeMatrix, minutes, adjlevel float32, times [9]shared.ExerciseTimes, user shared.User, exerIDs [9][]string, exers map[string]shared.Exercise, types [9]string) [9][]float32 {
 
 	parentMatIndex := map[string]int{
 		"Pushups":           0,

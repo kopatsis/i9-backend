@@ -6,8 +6,8 @@ type UserIDRoute struct {
 
 type WorkoutRoute struct {
 	UserID     string  `json:"userid"`
-	Time       float32 `json:"time" binding:"required"`
-	Difficulty int     `json:"diff" binding:"required"`
+	Time       float32 `json:"time" binding:"required,min=10,max=240"`
+	Difficulty int     `json:"diff" binding:"required,min=1,max=6"`
 }
 
 type StrWorkoutRoute struct {
@@ -17,12 +17,12 @@ type StrWorkoutRoute struct {
 
 type IntroWorkoutRoute struct {
 	UserID string  `json:"userid"`
-	Time   float32 `json:"time" binding:"required"`
+	Time   float32 `json:"time" binding:"required,min=25,max=60"`
 }
 
 type AdaptWorkoutRoute struct {
 	UserID     string `json:"userid"`
-	Difficulty int    `json:"difficulty" binding:"required"`
+	Difficulty int    `json:"difficulty" binding:"required,min=1,max=6"`
 }
 
 type RateIntroRoute struct {

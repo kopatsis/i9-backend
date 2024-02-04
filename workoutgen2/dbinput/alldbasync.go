@@ -1,18 +1,18 @@
 package dbinput
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"sync"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func AllInputsAsync(database *mongo.Database, username string) (datatypes.User, map[string][]datatypes.Stretch, map[string]datatypes.Exercise, []datatypes.Workout, datatypes.TypeMatrix) {
-	var user datatypes.User
-	var stretches map[string][]datatypes.Stretch
-	var exercises map[string]datatypes.Exercise
-	var pastWOs []datatypes.Workout
-	var typeMatrix datatypes.TypeMatrix
+func AllInputsAsync(database *mongo.Database, username string) (shared.User, map[string][]shared.Stretch, map[string]shared.Exercise, []shared.Workout, shared.TypeMatrix) {
+	var user shared.User
+	var stretches map[string][]shared.Stretch
+	var exercises map[string]shared.Exercise
+	var pastWOs []shared.Workout
+	var typeMatrix shared.TypeMatrix
 
 	var wg sync.WaitGroup
 

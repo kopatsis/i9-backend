@@ -1,11 +1,11 @@
 package operations
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"math"
 )
 
-func NewUserMods(user datatypes.User, ratings [9]float32, workout datatypes.Workout, exercises map[string]datatypes.Exercise, count int64) (map[string]float32, map[string]float32) {
+func NewUserMods(user shared.User, ratings [9]float32, workout shared.Workout, exercises map[string]shared.Exercise, count int64) (map[string]float32, map[string]float32) {
 
 	exerMods := user.ExerModifications
 	typeMods := user.TypeModifications

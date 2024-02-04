@@ -1,7 +1,7 @@
 package alteredfuncs
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"math/rand"
 	"slices"
 )
@@ -69,7 +69,7 @@ func areSlicesSame(slice1, slice2 []string) bool {
 	return true
 }
 
-func SelectExercises(types [9]string, times [9]datatypes.ExerciseTimes, ratings map[string]float32, allowedNormal, allowedCombo, allowedSplit [9][]string) [9][]string {
+func SelectExercises(types [9]string, times [9]shared.ExerciseTimes, ratings map[string]float32, allowedNormal, allowedCombo, allowedSplit [9][]string) [9][]string {
 
 	ret := [9][]string{}
 

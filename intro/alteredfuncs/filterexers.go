@@ -1,7 +1,7 @@
 package alteredfuncs
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"slices"
 )
 
@@ -16,7 +16,7 @@ func intersects(slice1 []int, slice2 []int) bool {
 	return false
 }
 
-func FilterExers(allExercises map[string]datatypes.Exercise, user datatypes.User, levelSteps []float32) ([9][]string, [9][]string, [9][]string) {
+func FilterExers(allExercises map[string]shared.Exercise, user shared.User, levelSteps []float32) ([9][]string, [9][]string, [9][]string) {
 
 	allowedNormal := [9][]string{}
 	allowedCombo := [9][]string{}

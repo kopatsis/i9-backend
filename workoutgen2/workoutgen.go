@@ -2,9 +2,9 @@ package workoutgen2
 
 import (
 	// "fmt"
+	"fulli9/shared"
 	"fulli9/workoutgen2/adjustments"
 	"fulli9/workoutgen2/creation"
-	"fulli9/workoutgen2/datatypes"
 
 	// "fulli9/workoutgen2/dbhandler"
 	"fulli9/workoutgen2/dbinput"
@@ -16,12 +16,12 @@ import (
 	// "fulli9/workoutgen2/userinput"
 )
 
-func WorkoutGen(minutes float32, difficulty int, username string, database *mongo.Database) (datatypes.AnyWorkout, error) {
+func WorkoutGen(minutes float32, difficulty int, username string, database *mongo.Database) (shared.AnyWorkout, error) {
 
 	// client, database, err := dbhandler.ConnectDB()
 	// if err != nil {
 	// 	fmt.Printf("Error connecting to database %s, restart.\n", err.Error())
-	// 	return datatypes.Workout{}, err
+	// 	return shared.Workout{}, err
 	// }
 	// defer dbhandler.DisConnectDB(client)
 

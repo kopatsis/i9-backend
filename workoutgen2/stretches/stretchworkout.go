@@ -1,7 +1,7 @@
 package stretches
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"fulli9/workoutgen2/dbinput"
 	"math"
 	"math/rand"
@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetStretchWO(user datatypes.User, minutes float32, database *mongo.Database) datatypes.StretchWorkout {
+func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) shared.StretchWorkout {
 	stretches := dbinput.GetStretchesDB(database)
 	stretches = FilterStretches(user.Level*1.1, stretches, nil)
 
@@ -27,12 +27,12 @@ func GetStretchWO(user datatypes.User, minutes float32, database *mongo.Database
 		dynamics = append(dynamics, stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))].ID.Hex())
 	}
 
-	ret := datatypes.StretchWorkout{
+	ret := shared.StretchWorkout{
 		Name:   "",
 		UserID: user.ID.Hex(),
 		Date:   primitive.NewDateTimeFromTime(time.Now()),
 		Status: "Not Started",
-		StretchTimes: datatypes.StretchTimes{
+		StretchTimes: shared.StretchTimes{
 			DynamicPerSet: stretchSecsPerSet,
 			StaticPerSet:  stretchSecsPerSet,
 			DynamicSets:   stretchSets,

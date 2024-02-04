@@ -1,11 +1,11 @@
 package operations
 
 import (
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"math"
 )
 
-func NewExerciseFactorialVars(ratings [9]float32, workout datatypes.Workout, exercises map[string]datatypes.Exercise, count int64) map[string][3]float32 {
+func NewExerciseFactorialVars(ratings [9]float32, workout shared.Workout, exercises map[string]shared.Exercise, count int64) map[string][3]float32 {
 	ret := map[string][3]float32{}
 
 	for i, round := range workout.Exercises {
