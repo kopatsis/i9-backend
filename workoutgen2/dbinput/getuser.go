@@ -2,7 +2,6 @@ package dbinput
 
 import (
 	"context"
-	"fmt"
 	"fulli9/shared"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,14 +10,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetUserDB(database *mongo.Database, userID string) shared.User {
+func GetUserDB(database *mongo.Database, userID string) (shared.User, error) {
 	collection := database.Collection("user")
 
 	var id primitive.ObjectID
 	if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 		id = oid
 	} else {
-		//Erroring
+		return shared.User{}, err
 	}
 
 	filter := bson.D{{Key: "_id", Value: id}}
@@ -30,10 +29,9 @@ func GetUserDB(database *mongo.Database, userID string) shared.User {
 	var result shared.User
 	err := collection.FindOne(context.Background(), filter, optionsUser).Decode(&result)
 	if err != nil {
-		fmt.Println(err)
-		return shared.User{}
+		return shared.User{}, err
 	}
 
-	return result
+	return result, nil
 
 }

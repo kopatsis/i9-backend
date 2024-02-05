@@ -4,10 +4,11 @@ import (
 	"fulli9/shared"
 	"sync"
 
+	"github.com/hashicorp/go-multierror"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func AllInputsAsync(database *mongo.Database, userID string) (shared.User, map[string][]shared.Stretch, map[string]shared.Exercise, []shared.Workout, shared.TypeMatrix) {
+func AllInputsAsync(database *mongo.Database, userID string) (shared.User, map[string][]shared.Stretch, map[string]shared.Exercise, []shared.Workout, shared.TypeMatrix, error) {
 	var user shared.User
 	var stretches map[string][]shared.Stretch
 	var exercises map[string]shared.Exercise
@@ -16,36 +17,65 @@ func AllInputsAsync(database *mongo.Database, userID string) (shared.User, map[s
 
 	var wg sync.WaitGroup
 
+	errChan := make(chan error, 5)
+	var errGroup *multierror.Error
+
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		user = GetUserDB(database, userID)
+		var err error
+		user, err = GetUserDB(database, userID)
+		if err != nil {
+			errChan <- err
+		}
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		stretches = GetStretchesDB(database)
+		var err error
+		stretches, err = GetStretchesDB(database)
+		if err != nil {
+			errChan <- err
+		}
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		exercises = GetExersDB(database)
+		var err error
+		exercises, err = GetExersDB(database)
+		if err != nil {
+			errChan <- err
+		}
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		pastWOs = GetPastWOsDB(database, userID)
+		var err error
+		pastWOs, err = GetPastWOsDB(database, userID)
+		if err != nil {
+			errChan <- err
+		}
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		typeMatrix = GetMatrix(database)
+		var err error
+		typeMatrix, err = GetMatrix(database)
+		if err != nil {
+			errChan <- err
+		}
 	}()
+
 	wg.Wait()
+	close(errChan)
 
-	return user, stretches, exercises, pastWOs, typeMatrix
+	for err := range errChan {
+		errGroup = multierror.Append(errGroup, err)
+	}
+
+	return user, stretches, exercises, pastWOs, typeMatrix, errGroup
 }

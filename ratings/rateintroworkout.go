@@ -21,7 +21,11 @@ func RateIntroWorkout(userID string, roundEnd float32, database *mongo.Database)
 	// }
 	// defer dbhandler.DisConnectDB(client)
 
-	user := dbinput.GetUserDB(database, userID)
+	user, err := dbinput.GetUserDB(database, userID)
+	if err != nil {
+		return err
+	}
+
 	levelSteps := []float32{50, 125, 225, 375, 575, 825, 1125, 1475, 1975}
 
 	var userlevel float32
@@ -38,7 +42,7 @@ func RateIntroWorkout(userID string, roundEnd float32, database *mongo.Database)
 
 	update := bson.M{"$set": bson.M{"level": userlevel}}
 
-	_, err := collection.UpdateOne(context.Background(), filter, update)
+	_, err = collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		fmt.Println(err)
 		return err

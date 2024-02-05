@@ -6,7 +6,7 @@ import (
 	"math/rand"
 )
 
-func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]shared.Stretch, adjlevel float32, exerIDs [9][]string, exercises map[string]shared.Exercise) ([]string, []string) {
+func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]shared.Stretch, adjlevel float32, exerIDs [9][]string, exercises map[string]shared.Exercise) ([]string, []string, error) {
 
 	bodyparts := map[int]bool{}
 
@@ -18,7 +18,10 @@ func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]s
 		}
 	}
 
-	filteredStretches := stretches.FilterStretches(adjlevel, stretchMap, bodyparts)
+	filteredStretches, err := stretches.FilterStretches(adjlevel, stretchMap, bodyparts)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	statics, dynamics := []string{}, []string{}
 	for i := 0; i < stretchtimes.StaticSets; i++ {
@@ -29,5 +32,5 @@ func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]s
 		dynamics = append(dynamics, filteredStretches["Dynamic"][int(rand.Float64()*float64(len(filteredStretches["Dynamic"])))].ID.Hex())
 	}
 
-	return statics, dynamics
+	return statics, dynamics, nil
 }

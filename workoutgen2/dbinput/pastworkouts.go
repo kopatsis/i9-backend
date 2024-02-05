@@ -2,7 +2,6 @@ package dbinput
 
 import (
 	"context"
-	"fmt"
 	"fulli9/shared"
 	"time"
 
@@ -12,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetPastWOsDB(database *mongo.Database, userID string) []shared.Workout {
+func GetPastWOsDB(database *mongo.Database, userID string) ([]shared.Workout, error) {
 
 	collection := database.Collection("workouts")
 
@@ -27,18 +26,16 @@ func GetPastWOsDB(database *mongo.Database, userID string) []shared.Workout {
 
 	cursor, err := collection.Find(context.Background(), filterWO, optionsWO)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
 	defer cursor.Close(context.Background())
 
 	var pastWorkouts []shared.Workout
 	err = cursor.All(context.Background(), &pastWorkouts)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
 
-	return pastWorkouts
+	return pastWorkouts, nil
 
 }

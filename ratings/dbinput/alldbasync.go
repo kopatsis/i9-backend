@@ -4,10 +4,11 @@ import (
 	"fulli9/shared"
 	"sync"
 
+	"github.com/hashicorp/go-multierror"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.User, shared.Workout, int64, int64, map[string]shared.Exercise) {
+func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.User, shared.Workout, int64, int64, map[string]shared.Exercise, error) {
 	var user shared.User
 	var workout shared.Workout
 	var countWO int64
@@ -16,36 +17,65 @@ func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.
 
 	var wg sync.WaitGroup
 
+	errChan := make(chan error, 5)
+	var errGroup *multierror.Error
+
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		user = GetUserDB(database, userID)
+		var err error
+		user, err = GetUserDB(database, userID)
+		if err != nil {
+			errChan <- err
+		}
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		workout = GetPastWOsDB(database, id)
+		var err error
+		workout, err = GetPastWOsDB(database, id)
+		if err != nil {
+			errChan <- err
+		}
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		countWO = GetUserWorkoutCount(database, userID)
+		var err error
+		countWO, err = GetUserWorkoutCount(database, userID)
+		if err != nil {
+			errChan <- err
+		}
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		countUser = GetUserCount(database)
+		var err error
+		countUser, err = GetUserCount(database)
+		if err != nil {
+			errChan <- err
+		}
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		exercises = GetExersDB(database)
+		var err error
+		exercises, err = GetExersDB(database)
+		if err != nil {
+			errChan <- err
+		}
 	}()
+
 	wg.Wait()
+	close(errChan)
 
-	return user, workout, countWO, countUser, exercises
+	for err := range errChan {
+		errGroup = multierror.Append(errGroup, err)
+	}
+
+	return user, workout, countWO, countUser, exercises, errGroup
 }

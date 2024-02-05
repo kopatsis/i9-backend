@@ -14,7 +14,10 @@ import (
 
 func Adapt(difficulty int, userID string, database *mongo.Database, workoutID string) (shared.Workout, error) {
 
-	user, exercises, pastWOs, typeMatrix, workout := alteredfuncs.AllInputsAsync(database, userID, workoutID)
+	user, exercises, pastWOs, typeMatrix, workout, err := alteredfuncs.AllInputsAsync(database, userID, workoutID)
+	if err != nil {
+		return shared.Workout{}, nil
+	}
 
 	minutes := workout.Minutes
 

@@ -2,14 +2,13 @@ package dbinput
 
 import (
 	"context"
-	"fmt"
 	"fulli9/shared"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetMatrix(database *mongo.Database) shared.TypeMatrix {
+func GetMatrix(database *mongo.Database) (shared.TypeMatrix, error) {
 	collection := database.Collection("typematrix")
 
 	filter := bson.D{}
@@ -17,9 +16,8 @@ func GetMatrix(database *mongo.Database) shared.TypeMatrix {
 	var matrix shared.TypeMatrix
 	err := collection.FindOne(context.Background(), filter).Decode(&matrix)
 	if err != nil {
-		fmt.Println(err)
-		return shared.TypeMatrix{}
+		return shared.TypeMatrix{}, err
 	}
 
-	return matrix
+	return matrix, nil
 }

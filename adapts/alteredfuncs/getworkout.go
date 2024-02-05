@@ -2,7 +2,6 @@ package alteredfuncs
 
 import (
 	"context"
-	"fmt"
 	"fulli9/shared"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -10,15 +9,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetWorkoutByID(database *mongo.Database, workoutID string) shared.Workout {
+func GetWorkoutByID(database *mongo.Database, workoutID string) (shared.Workout, error) {
 	collection := database.Collection("workout")
 
 	var id primitive.ObjectID
 	if oid, err := primitive.ObjectIDFromHex(workoutID); err == nil {
 		id = oid
 	} else {
-		// Handle error here, sorry
-		return shared.Workout{}
+		return shared.Workout{}, err
 	}
 
 	filter := bson.D{{Key: "_id", Value: id}}
@@ -27,9 +25,8 @@ func GetWorkoutByID(database *mongo.Database, workoutID string) shared.Workout {
 	var result shared.Workout
 	err := collection.FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
-		fmt.Println(err)
-		return shared.Workout{}
+		return shared.Workout{}, err
 	}
 
-	return result
+	return result, nil
 }

@@ -27,7 +27,10 @@ func RateWorkout(userID string, ratings [9]float32, workoutID string, database *
 	// countUser := dbinput.GetUserCount(database)
 	// exercises := dbinput.GetExersDB(database)
 
-	user, workout, countWO, countUser, exercises := dbinput.AllInputsAsync(database, userID, workoutID)
+	user, workout, countWO, countUser, exercises, err := dbinput.AllInputsAsync(database, userID, workoutID)
+	if err != nil {
+		return err
+	}
 
 	if countWO == 0 {
 		fmt.Println("No workouts for user")

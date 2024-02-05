@@ -28,13 +28,28 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 	// minutes, difficulty, username := userinput.GetUserInputs()
 
 	if minutes < 10 || difficulty == 0 {
-		user := dbinput.GetUserDB(database, userID)
-		stretchWorkout := stretches.GetStretchWO(user, minutes, database)
-		dboutput.SaveStretchWorkout(database, stretchWorkout)
+		user, err := dbinput.GetUserDB(database, userID)
+		if err != nil {
+			return shared.StretchWorkout{}, err
+		}
+
+		stretchWorkout, err := stretches.GetStretchWO(user, minutes, database)
+		if err != nil {
+			return shared.StretchWorkout{}, err
+		}
+
+		err = dboutput.SaveStretchWorkout(database, stretchWorkout)
+		if err != nil {
+			return shared.StretchWorkout{}, err
+		}
+
 		return stretchWorkout, nil
 	}
 
-	user, stretches, exercises, pastWOs, typeMatrix := dbinput.AllInputsAsync(database, userID)
+	user, stretches, exercises, pastWOs, typeMatrix, err := dbinput.AllInputsAsync(database, userID)
+	if err != nil {
+		return shared.Workout{}, err
+	}
 
 	adjlevel := adjustments.CalcNewLevel(difficulty, user.Level, pastWOs)
 
@@ -50,11 +65,17 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 
 	reps := creation.GetReps(typeMatrix, minutes, adjlevel, exerTimes, user, exerIDs, exercises, types)
 
-	statics, dynamics := selections.SelectStretches(stretchTimes, stretches, adjlevel, exerIDs, exercises)
+	statics, dynamics, err := selections.SelectStretches(stretchTimes, stretches, adjlevel, exerIDs, exercises)
+	if err != nil {
+		return shared.Workout{}, err
+	}
 
 	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes)
 
-	dboutput.SaveNewWorkout(database, workout)
+	err = dboutput.SaveNewWorkout(database, workout)
+	if err != nil {
+		return workout, err
+	}
 
 	return workout, nil
 

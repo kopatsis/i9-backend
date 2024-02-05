@@ -11,7 +11,7 @@ import (
 	// "go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetPastWOsDB(database *mongo.Database, idStr string) shared.Workout {
+func GetPastWOsDB(database *mongo.Database, idStr string) (shared.Workout, error) {
 
 	collection := database.Collection("workouts")
 
@@ -23,8 +23,7 @@ func GetPastWOsDB(database *mongo.Database, idStr string) shared.Workout {
 	if oid, err := primitive.ObjectIDFromHex(idStr); err == nil {
 		id = oid
 	} else {
-		// Handle error here, sorry
-		return shared.Workout{}
+		return shared.Workout{}, err
 	}
 
 	// optionsWO := options.FindOne().SetSort(bson.D{{Key: "date", Value: -1}})
@@ -34,10 +33,11 @@ func GetPastWOsDB(database *mongo.Database, idStr string) shared.Workout {
 		fmt.Println(err)
 		if err == mongo.ErrNoDocuments {
 			fmt.Println("No workout for user in database")
+		} else {
+			return shared.Workout{}, nil
 		}
-		return shared.Workout{}
 	}
 
-	return workout
+	return workout, nil
 
 }

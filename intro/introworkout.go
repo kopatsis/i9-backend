@@ -30,7 +30,10 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 	// pastWOs := []shared.Workout{}
 	// typeMatrix := dbinput.GetMatrix(database)
 
-	user, stretches, exercises, _, typeMatrix := dbinput.AllInputsAsync(database, userID)
+	user, stretches, exercises, _, typeMatrix, err := dbinput.AllInputsAsync(database, userID)
+	if err != nil {
+		return shared.Workout{}, err
+	}
 	pastWOs := []shared.Workout{}
 
 	// minutes := float32(45)
@@ -53,7 +56,10 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 	// Uses new system
 	reps := alteredfuncs.GetReps(typeMatrix, minutes, levelSteps, exerTimes, user, exerIDs, exercises, types)
 
-	statics, dynamics := selections.SelectStretches(stretchTimes, stretches, levelSteps[0], exerIDs, exercises)
+	statics, dynamics, err := selections.SelectStretches(stretchTimes, stretches, levelSteps[0], exerIDs, exercises)
+	if err != nil {
+		return shared.Workout{}, err
+	}
 
 	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, -1, minutes)
 

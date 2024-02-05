@@ -1,10 +1,20 @@
 package stretches
 
-import "fulli9/shared"
+import (
+	"errors"
+	"fulli9/shared"
+)
 
-func FilterStretches(level float32, stretches map[string][]shared.Stretch, bodyparts map[int]bool) map[string][]shared.Stretch {
+func FilterStretches(level float32, stretches map[string][]shared.Stretch, bodyparts map[int]bool) (map[string][]shared.Stretch, error) {
 	newstatics := []shared.Stretch{}
 	newdynamics := []shared.Stretch{}
+
+	if _, ok := stretches["Static"]; !ok {
+		return nil, errors.New("No static stretches in FilterStretches")
+	}
+	if _, ok := stretches["Dynamic"]; !ok {
+		return nil, errors.New("No dynamic stretches in FilterStretches")
+	}
 
 	for _, str := range stretches["Static"] {
 		if str.MinLevel <= level {
@@ -50,5 +60,5 @@ func FilterStretches(level float32, stretches map[string][]shared.Stretch, bodyp
 	stretches["Dynamic"] = newdynamics
 	stretches["Static"] = newstatics
 
-	return stretches
+	return stretches, nil
 }

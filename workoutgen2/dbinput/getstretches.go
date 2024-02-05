@@ -2,22 +2,20 @@ package dbinput
 
 import (
 	"context"
-	"fmt"
 	"fulli9/shared"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetStretchesDB(database *mongo.Database) map[string][]shared.Stretch {
+func GetStretchesDB(database *mongo.Database) (map[string][]shared.Stretch, error) {
 	collection := database.Collection("stretch")
 
 	filter := bson.D{}
 
 	cursor, err := collection.Find(context.Background(), filter)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
 	defer cursor.Close(context.Background())
 
@@ -27,8 +25,7 @@ func GetStretchesDB(database *mongo.Database) map[string][]shared.Stretch {
 	for cursor.Next(context.TODO()) {
 		var str shared.Stretch
 		if err := cursor.Decode(&str); err != nil {
-			fmt.Println(err)
-			return nil
+			return nil, err
 		}
 		if str.Status == "Dynamic" {
 			dynamics = append(dynamics, str)
@@ -40,5 +37,5 @@ func GetStretchesDB(database *mongo.Database) map[string][]shared.Stretch {
 	allstretches["Dynamic"] = dynamics
 	allstretches["Static"] = statics
 
-	return allstretches
+	return allstretches, nil
 }

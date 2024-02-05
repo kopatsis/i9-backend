@@ -14,6 +14,9 @@ func GetLastWOToView(username string) shared.Workout {
 		return shared.Workout{}
 	}
 	defer dbhandler.DisConnectDB(client)
-	WO := dbinput.GetPastWOsDB(database, username)
+	WO, err := dbinput.GetPastWOsDB(database, username)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return WO
 }

@@ -11,9 +11,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) shared.StretchWorkout {
-	stretches := dbinput.GetStretchesDB(database)
-	stretches = FilterStretches(user.Level*1.1, stretches, nil)
+func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (shared.StretchWorkout, error) {
+	stretches, err := dbinput.GetStretchesDB(database)
+	if err != nil {
+		return shared.StretchWorkout{}, err
+	}
+
+	stretches, err = FilterStretches(user.Level*1.1, stretches, nil)
+	if err != nil {
+		return shared.StretchWorkout{}, err
+	}
 
 	stretchSecs := (60 * minutes) / 2
 
@@ -45,6 +52,6 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) s
 		Statics:      statics,
 	}
 
-	return ret
+	return ret, nil
 
 }
