@@ -42,22 +42,38 @@ func RateWorkout(username string, ratings [9]float32, workoutID string, database
 
 	exerFacts := operations.NewExerciseFactorialVars(ratings, workout, exercises, countUser)
 
-	err := dboutput.SaveUser(user, newlevel, userExMod, userTypeMod, database)
-	if err != nil {
-		fmt.Printf("Error saving user modifications, try again %s\n", err.Error())
-		return err
-	}
+	// err := dboutput.SaveUser(user, newlevel, userExMod, userTypeMod, database)
+	// if err != nil {
+	// 	fmt.Printf("Error saving user modifications, try again %s\n", err.Error())
+	// 	return err
+	// }
 
-	err = dboutput.SaveModifiedExercises(exerFacts, database)
-	if err != nil {
-		fmt.Printf("Error saving exercise modifications, try again %s\n", err.Error())
-		return err
-	}
+	// err = dboutput.SaveModifiedExercises(exerFacts, database)
+	// if err != nil {
+	// 	fmt.Printf("Error saving exercise modifications, try again %s\n", err.Error())
+	// 	return err
+	// }
 
-	err = dboutput.SaveWorkout(ratings, workout, database)
-	if err != nil {
-		fmt.Printf("Error saving workout modifications, try again %s\n", err.Error())
-		return err
+	// err = dboutput.SaveWorkout(ratings, workout, database)
+	// if err != nil {
+	// 	fmt.Printf("Error saving workout modifications, try again %s\n", err.Error())
+	// 	return err
+	// }
+
+	userErr, exerErr, workoutErr := dboutput.SaveDBAllAsync(user, newlevel, userExMod, userTypeMod, ratings, workout, exerFacts, database)
+
+	errortext := ""
+	if userErr != nil {
+		errortext += "Error with saving user: " + userErr.Error() + "\n"
+	}
+	if exerErr != nil {
+		errortext += "Error with saving exers: " + exerErr.Error() + "\n"
+	}
+	if workoutErr != nil {
+		errortext += "Error with saving workout: " + workoutErr.Error() + "\n"
+	}
+	if errortext != "" {
+		return errors.New(errortext)
 	}
 
 	return nil
