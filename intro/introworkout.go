@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GenerateIntroWorkout(minutes float32, username string, database *mongo.Database) (shared.Workout, error) {
+func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Database) (shared.Workout, error) {
 
 	// client, database, err := dbhandler.ConnectDB()
 	// if err != nil {
@@ -30,7 +30,7 @@ func GenerateIntroWorkout(minutes float32, username string, database *mongo.Data
 	// pastWOs := []shared.Workout{}
 	// typeMatrix := dbinput.GetMatrix(database)
 
-	user, stretches, exercises, _, typeMatrix := dbinput.AllInputsAsync(database, username)
+	user, stretches, exercises, _, typeMatrix := dbinput.AllInputsAsync(database, userID)
 	pastWOs := []shared.Workout{}
 
 	// minutes := float32(45)

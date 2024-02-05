@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetPastWOsDB(database *mongo.Database, username string) []shared.Workout {
+func GetPastWOsDB(database *mongo.Database, userID string) []shared.Workout {
 
 	collection := database.Collection("workouts")
 
@@ -20,7 +20,7 @@ func GetPastWOsDB(database *mongo.Database, username string) []shared.Workout {
 
 	filterWO := bson.D{
 		{Key: "date", Value: bson.D{{Key: "$gt", Value: tenDaysAgo}}},
-		{Key: "username", Value: username},
+		{Key: "userid", Value: userID},
 	}
 
 	optionsWO := options.Find().SetSort(bson.D{{Key: "date", Value: -1}}).SetLimit(7)

@@ -6,13 +6,22 @@ import (
 	"fulli9/shared"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetUserDB(database *mongo.Database, username string) shared.User {
+func GetUserDB(database *mongo.Database, userID string) shared.User {
 	collection := database.Collection("user")
-	filter := bson.D{{Key: "username", Value: username}}
+
+	var id primitive.ObjectID
+	if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
+		id = oid
+	} else {
+		//Erroring
+	}
+
+	filter := bson.D{{Key: "_id", Value: id}}
 
 	// Define options for the query.
 	optionsUser := options.FindOne()

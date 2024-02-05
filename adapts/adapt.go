@@ -12,9 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func Adapt(difficulty int, username string, database *mongo.Database, workoutID string) (shared.Workout, error) {
+func Adapt(difficulty int, userID string, database *mongo.Database, workoutID string) (shared.Workout, error) {
 
-	user, exercises, pastWOs, typeMatrix, workout := alteredfuncs.AllInputsAsync(database, username, workoutID)
+	user, exercises, pastWOs, typeMatrix, workout := alteredfuncs.AllInputsAsync(database, userID, workoutID)
 
 	minutes := workout.Minutes
 

@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func RateIntroWorkout(username string, roundEnd float32, database *mongo.Database) error {
+func RateIntroWorkout(userID string, roundEnd float32, database *mongo.Database) error {
 
 	// client, database, err := dbhandler.ConnectDB()
 	// if err != nil {
@@ -21,7 +21,7 @@ func RateIntroWorkout(username string, roundEnd float32, database *mongo.Databas
 	// }
 	// defer dbhandler.DisConnectDB(client)
 
-	user := dbinput.GetUserDB(database, username)
+	user := dbinput.GetUserDB(database, userID)
 	levelSteps := []float32{50, 125, 225, 375, 575, 825, 1125, 1475, 1975}
 
 	var userlevel float32

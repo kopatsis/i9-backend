@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func RateWorkout(username string, ratings [9]float32, workoutID string, database *mongo.Database) error {
+func RateWorkout(userID string, ratings [9]float32, workoutID string, database *mongo.Database) error {
 
 	// client, database, err := dbhandler.ConnectDB()
 	// if err != nil {
@@ -27,7 +27,7 @@ func RateWorkout(username string, ratings [9]float32, workoutID string, database
 	// countUser := dbinput.GetUserCount(database)
 	// exercises := dbinput.GetExersDB(database)
 
-	user, workout, countWO, countUser, exercises := dbinput.AllInputsAsync(database, username, workoutID)
+	user, workout, countWO, countUser, exercises := dbinput.AllInputsAsync(database, userID, workoutID)
 
 	if countWO == 0 {
 		fmt.Println("No workouts for user")

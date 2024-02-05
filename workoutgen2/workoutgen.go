@@ -16,7 +16,7 @@ import (
 	// "fulli9/workoutgen2/userinput"
 )
 
-func WorkoutGen(minutes float32, difficulty int, username string, database *mongo.Database) (shared.AnyWorkout, error) {
+func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.Database) (shared.AnyWorkout, error) {
 
 	// client, database, err := dbhandler.ConnectDB()
 	// if err != nil {
@@ -28,13 +28,13 @@ func WorkoutGen(minutes float32, difficulty int, username string, database *mong
 	// minutes, difficulty, username := userinput.GetUserInputs()
 
 	if minutes < 10 || difficulty == 0 {
-		user := dbinput.GetUserDB(database, username)
+		user := dbinput.GetUserDB(database, userID)
 		stretchWorkout := stretches.GetStretchWO(user, minutes, database)
 		dboutput.SaveStretchWorkout(database, stretchWorkout)
 		return stretchWorkout, nil
 	}
 
-	user, stretches, exercises, pastWOs, typeMatrix := dbinput.AllInputsAsync(database, username)
+	user, stretches, exercises, pastWOs, typeMatrix := dbinput.AllInputsAsync(database, userID)
 
 	adjlevel := adjustments.CalcNewLevel(difficulty, user.Level, pastWOs)
 
