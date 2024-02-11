@@ -65,7 +65,7 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 
 	reps := creation.GetReps(typeMatrix, minutes, adjlevel, exerTimes, user, exerIDs, exercises, types)
 
-	statics, dynamics, err := selections.SelectStretches(stretchTimes, stretches, adjlevel, exerIDs, exercises)
+	statics, dynamics, err := selections.SelectStretches(stretchTimes, stretches, adjlevel, exerIDs, exercises, user.BannedStretches)
 	if err != nil {
 		return shared.Workout{}, err
 	}

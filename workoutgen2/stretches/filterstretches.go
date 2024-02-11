@@ -3,9 +3,10 @@ package stretches
 import (
 	"errors"
 	"fulli9/shared"
+	"slices"
 )
 
-func FilterStretches(level float32, stretches map[string][]shared.Stretch, bodyparts map[int]bool) (map[string][]shared.Stretch, error) {
+func FilterStretches(level float32, stretches map[string][]shared.Stretch, bodyparts map[int]bool, bannedStretches []string) (map[string][]shared.Stretch, error) {
 	newstatics := []shared.Stretch{}
 	newdynamics := []shared.Stretch{}
 
@@ -30,6 +31,10 @@ func FilterStretches(level float32, stretches map[string][]shared.Stretch, bodyp
 				}
 			}
 
+			if slices.Contains(bannedStretches, str.ID.Hex()) {
+				allowed = false
+			}
+
 			if allowed {
 				newstatics = append(newstatics, str)
 			}
@@ -49,6 +54,10 @@ func FilterStretches(level float32, stretches map[string][]shared.Stretch, bodyp
 				if _, ok := bodyparts[part]; ok {
 					allowed = true
 				}
+			}
+
+			if slices.Contains(bannedStretches, str.ID.Hex()) {
+				allowed = false
 			}
 
 			if allowed {
