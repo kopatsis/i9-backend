@@ -35,11 +35,11 @@ func Adapt(difficulty int, userID string, database *mongo.Database, workoutID st
 
 	stretchTimes := workout.StretchTimes
 
-	reps := creation.GetReps(typeMatrix, minutes, adjlevel, exerTimes, user, exerIDs, exercises, types)
+	reps, pairs := creation.GetReps(typeMatrix, minutes, adjlevel, exerTimes, user, exerIDs, exercises, types)
 
 	statics, dynamics := workout.Statics, workout.Dynamics
 
-	newworkout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes)
+	newworkout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes, pairs)
 
 	return newworkout, nil
 }

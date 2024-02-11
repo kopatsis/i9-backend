@@ -54,14 +54,14 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 	exerIDs := alteredfuncs.SelectExercises(types, exerTimes, ratings, allowedNormal, allowedCombo, allowedSplit)
 
 	// Uses new system
-	reps := alteredfuncs.GetReps(typeMatrix, minutes, levelSteps, exerTimes, user, exerIDs, exercises, types)
+	reps, pairs := alteredfuncs.GetReps(typeMatrix, minutes, levelSteps, exerTimes, user, exerIDs, exercises, types)
 
 	statics, dynamics, err := selections.SelectStretches(stretchTimes, stretches, levelSteps[0], exerIDs, exercises, user.BannedStretches)
 	if err != nil {
 		return shared.Workout{}, err
 	}
 
-	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, -1, minutes)
+	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, -1, minutes, pairs)
 
 	dboutput.SaveNewWorkout(database, workout)
 

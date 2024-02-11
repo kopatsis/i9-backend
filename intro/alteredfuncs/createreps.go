@@ -29,7 +29,7 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times share
 	return initReps
 }
 
-func GetReps(matrix shared.TypeMatrix, minutes float32, levelSteps []float32, times [9]shared.ExerciseTimes, user shared.User, exerIDs [9][]string, exers map[string]shared.Exercise, types [9]string) [9][]float32 {
+func GetReps(matrix shared.TypeMatrix, minutes float32, levelSteps []float32, times [9]shared.ExerciseTimes, user shared.User, exerIDs [9][]string, exers map[string]shared.Exercise, types [9]string) ([9][]float32, [9][]bool) {
 
 	parentMatIndex := map[string]int{
 		"Pushups":           0,
@@ -44,7 +44,16 @@ func GetReps(matrix shared.TypeMatrix, minutes float32, levelSteps []float32, ti
 		"MISC":              9,
 	}
 
-	ret := [9][]float32{}
+	retReps := [9][]float32{}
+	retPairs := [9][]bool{}
+	for i, ids := range exerIDs {
+		add := []bool{}
+		for range ids {
+			add = append(add, false)
+		}
+		retPairs[i] = add
+	}
+
 	for i, round := range exerIDs {
 		currentReps := []float32{}
 		switchRepTotal := float32(0)
@@ -64,12 +73,24 @@ func GetReps(matrix shared.TypeMatrix, minutes float32, levelSteps []float32, ti
 			exer1 := exers[round[0]]
 			exer2 := exers[round[1]]
 
+			if exer1.InPairs && exer2.InPairs {
+				switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.5))
+				retPairs[i][0] = true
+				retPairs[i][1] = true
+			} else if exer1.InPairs {
+				switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.75))
+				retPairs[i][0] = true
+			} else if exer2.InPairs {
+				switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.75))
+				retPairs[i][1] = true
+			}
+
 			repadjust := matrix.Matrix[parentMatIndex[exer1.Parent]][parentMatIndex[exer2.Parent]]
 
 			adjReps := (switchRepTotal * repadjust) / 2
 			currentReps = append(currentReps, adjReps)
 		}
-		ret[i] = currentReps
+		retReps[i] = currentReps
 	}
-	return ret
+	return retReps, retPairs
 }
