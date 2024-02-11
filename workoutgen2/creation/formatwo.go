@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func FormatWorkout(statics, dynamics []string, reps [9][]float32, exerIDs [9][]string, stretchTimes shared.StretchTimes, exerTimes [9]shared.ExerciseTimes, types [9]string, user shared.User, difficulty int, minutes float32) shared.Workout {
+func FormatWorkout(statics, dynamics []string, reps [9][]float32, exerIDs [9][]string, stretchTimes shared.StretchTimes, exerTimes [9]shared.ExerciseTimes, types [9]string, user shared.User, difficulty int, minutes float32, pairs [9][]bool) shared.Workout {
 	ret := shared.Workout{
 		Name:         "",
 		UserID:       user.ID.Hex(),
@@ -27,6 +27,7 @@ func FormatWorkout(statics, dynamics []string, reps [9][]float32, exerIDs [9][]s
 		round := shared.WorkoutRound{
 			ExerciseIDs: idlist,
 			Reps:        reps[i],
+			Pairs:       pairs[i],
 			Status:      types[i],
 			Times:       exerTimes[i],
 			Rating:      float32(-1),

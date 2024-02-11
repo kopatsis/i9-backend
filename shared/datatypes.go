@@ -59,6 +59,7 @@ type ExerciseTimes struct {
 type WorkoutRound struct {
 	ExerciseIDs []string      `bson:"exerids"`
 	Reps        []float32     `bson:"reps"`
+	Pairs       []bool        `bson:"reps"`
 	Status      string        `bson:"status"`
 	Times       ExerciseTimes `bson:"times"`
 	Rating      float32       `bson:"times"`
@@ -88,6 +89,7 @@ type Exercise struct {
 	BodyParts    []int              `bson:"bodyparts"`
 	RepVars      [3]float32         `bson:"repvars"`
 	InSplits     bool               `bson:"insplits"`
+	InPairs      bool               `bson:"inpairs"`
 }
 
 type Stretch struct {

@@ -22,7 +22,9 @@ func ExerRatings(exers map[string]shared.Exercise, pastWOs []shared.Workout, use
 	}
 
 	for id, adjustment := range user.ExerFavoriteRates {
-		ret[id] = 1.25 * adjustment
+		if _, ok := ret[id]; ok {
+			ret[id] = ret[id] * adjustment
+		}
 	}
 
 	if user.PlyoTolerance > 3 {

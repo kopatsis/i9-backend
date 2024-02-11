@@ -63,14 +63,14 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 
 	exerIDs := selections.SelectExercises(types, exerTimes, ratings, allowedNormal, allowedCombo, allowedSplit)
 
-	reps := creation.GetReps(typeMatrix, minutes, adjlevel, exerTimes, user, exerIDs, exercises, types)
+	reps, pairs := creation.GetReps(typeMatrix, minutes, adjlevel, exerTimes, user, exerIDs, exercises, types)
 
 	statics, dynamics, err := selections.SelectStretches(stretchTimes, stretches, adjlevel, exerIDs, exercises, user.BannedStretches)
 	if err != nil {
 		return shared.Workout{}, err
 	}
 
-	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes)
+	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes, pairs)
 
 	err = dboutput.SaveNewWorkout(database, workout)
 	if err != nil {
