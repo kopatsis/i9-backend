@@ -30,8 +30,18 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 
 	statics, dynamics := []string{}, []string{}
 	for i := 0; i < stretchSets; i++ {
-		statics = append(statics, stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))].ID.Hex())
-		dynamics = append(dynamics, stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))].ID.Hex())
+		current := stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))].ID.Hex()
+		for len(statics) > 0 && statics[len(statics)-1] == current && len(stretches["Static"]) > 1 {
+			current = stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))].ID.Hex()
+		}
+		statics = append(statics, current)
+
+		current = stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))].ID.Hex()
+		for len(dynamics) > 0 && dynamics[len(dynamics)-1] == current && len(stretches["Dynamic"]) > 1 {
+			current = stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))].ID.Hex()
+		}
+		dynamics = append(dynamics, current)
+
 	}
 
 	ret := shared.StretchWorkout{
