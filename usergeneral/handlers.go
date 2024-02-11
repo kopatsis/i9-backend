@@ -23,8 +23,17 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		user := shared.User{
-			Username: userBody.UserName,
-			Name:     userBody.Name,
+			Username:          userBody.UserName,
+			Name:              userBody.Name,
+			PlyoTolerance:     3,
+			BannedExercises:   []string{},
+			BannedStretches:   []string{},
+			BannedParts:       []int{},
+			ExerFavoriteRates: map[string]float32{},
+			ExerModifications: map[string]float32{},
+			TypeModifications: map[string]float32{},
+			RoundEndurance:    map[int]float32{},
+			TimeEndurance:     map[int]float32{},
 		}
 
 		collection := database.Collection("user")
@@ -43,10 +52,10 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PutUser(database *mongo.Database) gin.HandlerFunc {
+func PatchUser(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var userBody shared.PutUserRoute
+		var userBody shared.PatchUserRoute
 		if err := c.ShouldBindJSON(&userBody); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with body binding",
@@ -61,7 +70,7 @@ func PutUser(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		var update primitive.M
-		if userBody.Name != "" {
+		if userBody.Name == "" {
 			update = bson.M{
 				"$set": bson.M{"username": userBody.UserName},
 			}
@@ -86,7 +95,7 @@ func PutUser(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		filter := bson.M{"id": id}
+		filter := bson.M{"_id": id}
 
 		collection := database.Collection("user")
 		_, err := collection.UpdateOne(context.TODO(), filter, update)

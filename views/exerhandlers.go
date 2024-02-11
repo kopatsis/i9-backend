@@ -57,12 +57,10 @@ func GetExercises(database *mongo.Database) gin.HandlerFunc {
 
 		exertype := c.DefaultQuery("type", "")
 
-		var filterEx primitive.D
+		var filterEx bson.M
 
 		if exertype != "" {
-			filterEx = bson.D{
-				{Key: "parent", Value: exertype},
-			}
+			filterEx = bson.M{"parent": exertype}
 		}
 
 		collection := database.Collection("exercise")

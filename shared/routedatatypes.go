@@ -40,7 +40,7 @@ type PostUserRoute struct {
 	UserName string `json:"username" binding:"required"`
 }
 
-type PutUserRoute struct {
+type PatchUserRoute struct {
 	UserID   string `json:"userid"`
 	Name     string `json:"name"`
 	UserName string `json:"username"`
@@ -48,7 +48,7 @@ type PutUserRoute struct {
 
 type PlyoRoute struct {
 	UserID string `json:"userid"`
-	Plyo   int    `json:"plyo" binding:"required"`
+	Plyo   int    `json:"plyo" binding:"required,min=0,max=5"`
 }
 
 type ExerListRoute struct {

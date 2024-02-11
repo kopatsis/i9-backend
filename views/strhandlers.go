@@ -57,12 +57,10 @@ func GetStrecthes(database *mongo.Database) gin.HandlerFunc {
 
 		strtype := c.DefaultQuery("type", "")
 
-		var filterStr primitive.D
+		var filterStr bson.M
 
 		if strtype != "" {
-			filterStr = bson.D{
-				{Key: "status", Value: strtype},
-			}
+			filterStr = bson.M{"status": strtype}
 		}
 
 		collection := database.Collection("stretch")

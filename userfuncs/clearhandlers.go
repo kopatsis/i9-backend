@@ -157,7 +157,7 @@ func ClearBannedBody(database *mongo.Database) gin.HandlerFunc {
 func ClearExerFav(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var userBody shared.ExerListRoute
+		var userBody shared.UserIDRoute
 		if err := c.ShouldBindJSON(&userBody); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with body binding",

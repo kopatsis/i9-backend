@@ -4,26 +4,18 @@ import (
 	"fulli9/adapts"
 	"fulli9/intro"
 	"fulli9/ratings"
-	"fulli9/shared"
 	"fulli9/userfuncs"
 	"fulli9/usergeneral"
 	"fulli9/views"
 	"fulli9/workoutgen2"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func New() *gin.Engine {
+func New(database *mongo.Database) *gin.Engine {
 	router := gin.Default()
-
-	client, database, err := shared.ConnectDB()
-	if err != nil {
-		log.Fatalf("Error while connecting to mongoDB: %s.\nExiting.", err)
-	}
-	defer shared.DisConnectDB(client)
 
 	// Won't be used
 	router.GET("/", temp(database))
@@ -39,7 +31,7 @@ func New() *gin.Engine {
 
 	// General User
 	router.POST("/users", usergeneral.PostUser(database))
-	router.PUT("/users", usergeneral.PutUser(database))
+	router.PATCH("/users", usergeneral.PatchUser(database))
 	router.GET("/users", usergeneral.GetUser(database))
 	router.DELETE("/users", usergeneral.DeleteUser(database))
 

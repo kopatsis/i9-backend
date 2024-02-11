@@ -3,12 +3,33 @@ package userfuncs
 import (
 	"context"
 	"fulli9/shared"
+	"slices"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
+func uniqueStrList(list1, list2 []string) []string {
+	new := list1
+	for _, val := range list2 {
+		if !slices.Contains(new, val) {
+			new = append(new, val)
+		}
+	}
+	return new
+}
+
+func uniqueIntList(list1, list2 []int) []int {
+	new := list1
+	for _, val := range list2 {
+		if !slices.Contains(new, val) {
+			new = append(new, val)
+		}
+	}
+	return new
+}
 
 func PostPlyo(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -37,7 +58,7 @@ func PostPlyo(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		filter := bson.M{"id": id}
+		filter := bson.M{"_id": id}
 
 		collection := database.Collection("user")
 		_, err := collection.UpdateOne(context.TODO(), filter, update)
@@ -92,7 +113,7 @@ func PostBannedExer(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		newBannedExers := append(user.BannedExercises, userBody.ExerList...)
+		newBannedExers := uniqueStrList(user.BannedExercises, userBody.ExerList)
 
 		update := bson.M{
 			"$set": bson.M{"bannedExer": newBannedExers},
@@ -151,7 +172,7 @@ func PostBannedStr(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		newBannedStrs := append(user.BannedStretches, userBody.StrList...)
+		newBannedStrs := uniqueStrList(user.BannedStretches, userBody.StrList)
 
 		update := bson.M{
 			"$set": bson.M{"bannedStr": newBannedStrs},
@@ -168,7 +189,7 @@ func PostBannedStr(database *mongo.Database) gin.HandlerFunc {
 
 		c.JSON(200, gin.H{
 			"ID":                  userBody.UserID,
-			"Banned Strecth List": newBannedStrs,
+			"Banned Stretch List": newBannedStrs,
 		})
 	}
 }
@@ -210,7 +231,7 @@ func PostBannedBody(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		newBannedBodyParts := append(user.BannedParts, userBody.BodyList...)
+		newBannedBodyParts := uniqueIntList(user.BannedParts, userBody.BodyList)
 
 		update := bson.M{
 			"$set": bson.M{"bannedParts": newBannedBodyParts},
@@ -269,7 +290,12 @@ func PostExerFav(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		newExerFavorites := user.ExerFavoriteRates
+		newExerFavorites := map[string]float32{}
+
+		if user.ExerFavoriteRates != nil {
+			newExerFavorites = user.ExerFavoriteRates
+		}
+
 		for key, val := range userBody.ExerMap {
 			newExerFavorites[key] = val
 		}
