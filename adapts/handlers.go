@@ -11,6 +11,8 @@ func PostAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var woHandler shared.AdaptWorkoutRoute
+		woHandler.AsNew = true
+
 		if err := c.ShouldBindJSON(&woHandler); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with body binding",
@@ -28,7 +30,7 @@ func PostAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := Adapt(woHandler.Difficulty, woHandler.UserID, database, id)
+		workout, err := Adapt(woHandler.Difficulty, woHandler.UserID, database, id, woHandler.AsNew)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with adapted workout generator",
@@ -62,7 +64,7 @@ func PostExternalAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := Adapt(woHandler.Difficulty, woHandler.UserID, database, id)
+		workout, err := Adapt(woHandler.Difficulty, woHandler.UserID, database, id, true)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with adapted workout generator",

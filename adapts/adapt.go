@@ -6,13 +6,14 @@ import (
 	"fulli9/shared"
 	"fulli9/workoutgen2/adjustments"
 	"fulli9/workoutgen2/creation"
+	"fulli9/workoutgen2/dboutput"
 
 	// "fulli9/workoutgen2/datatypes"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func Adapt(difficulty int, userID string, database *mongo.Database, workoutID string) (shared.Workout, error) {
+func Adapt(difficulty int, userID string, database *mongo.Database, workoutID string, asNew bool) (shared.Workout, error) {
 
 	user, exercises, pastWOs, typeMatrix, workout, err := alteredfuncs.AllInputsAsync(database, userID, workoutID)
 	if err != nil {
@@ -40,6 +41,22 @@ func Adapt(difficulty int, userID string, database *mongo.Database, workoutID st
 	statics, dynamics := workout.Statics, workout.Dynamics
 
 	newworkout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes, pairs)
+
+	if asNew {
+		newworkout.Name = shared.NameAnimals(false)
+		id, err := dboutput.SaveNewWorkout(database, newworkout)
+		if err != nil {
+			return shared.Workout{}, err
+		}
+		newworkout.ID = id
+	} else {
+		newworkout.ID = workout.ID
+		newworkout.Name = workout.Name
+		err := alteredfuncs.SaveUpdatedWorkout(database, newworkout)
+		if err != nil {
+			return shared.Workout{}, err
+		}
+	}
 
 	return newworkout, nil
 }

@@ -23,6 +23,7 @@ type IntroWorkoutRoute struct {
 type AdaptWorkoutRoute struct {
 	UserID     string `json:"userid"`
 	Difficulty int    `json:"difficulty" binding:"required,min=1,max=6"`
+	AsNew      bool   `json:"asnew"`
 }
 
 type RateIntroRoute struct {
