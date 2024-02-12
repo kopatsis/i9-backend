@@ -22,7 +22,7 @@ func selectID(sum float32, exers []string, ratings map[string]float32) string {
 			return id
 		}
 	}
-	return ""
+	return exers[int(rand.Float32()*float32(len(exers)))]
 }
 
 func getSplitIDs(sum float32, exers []string, ratings map[string]float32) []string {

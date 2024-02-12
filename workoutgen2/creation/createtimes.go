@@ -16,10 +16,10 @@ func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shar
 	retExer := [9]shared.ExerciseTimes{}
 
 	if minutes < 20 {
-		retStr.FullRound = float32(math.Max(1.5, float64(seconds/8)))
+		retStr.FullRound = float32(math.Max(1.5*60, float64(seconds/8)))
 		retStr.DynamicRest = 10.0
 	} else {
-		retStr.FullRound = float32(math.Min(5.0, math.Max(2.5, float64(seconds/12))))
+		retStr.FullRound = float32(math.Min(5.0*60, math.Max(2.5*60, float64(seconds/12))))
 		retStr.DynamicRest = 15.0
 	}
 

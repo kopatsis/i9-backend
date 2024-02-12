@@ -1,6 +1,7 @@
 package dbinput
 
 import (
+	"fmt"
 	"fulli9/shared"
 	"sync"
 
@@ -10,9 +11,9 @@ import (
 
 func AllInputsAsync(database *mongo.Database, userID string) (shared.User, map[string][]shared.Stretch, map[string]shared.Exercise, []shared.Workout, shared.TypeMatrix, error) {
 	var user shared.User
-	var stretches map[string][]shared.Stretch
-	var exercises map[string]shared.Exercise
-	var pastWOs []shared.Workout
+	stretches := map[string][]shared.Stretch{}
+	exercises := map[string]shared.Exercise{}
+	pastWOs := []shared.Workout{}
 	var typeMatrix shared.TypeMatrix
 
 	var wg sync.WaitGroup
@@ -26,6 +27,7 @@ func AllInputsAsync(database *mongo.Database, userID string) (shared.User, map[s
 		var err error
 		user, err = GetUserDB(database, userID)
 		if err != nil {
+			fmt.Println(err)
 			errChan <- err
 		}
 	}()
@@ -36,6 +38,7 @@ func AllInputsAsync(database *mongo.Database, userID string) (shared.User, map[s
 		var err error
 		stretches, err = GetStretchesDB(database)
 		if err != nil {
+			fmt.Println(err)
 			errChan <- err
 		}
 	}()
@@ -46,6 +49,7 @@ func AllInputsAsync(database *mongo.Database, userID string) (shared.User, map[s
 		var err error
 		exercises, err = GetExersDB(database)
 		if err != nil {
+			fmt.Println(err)
 			errChan <- err
 		}
 	}()
@@ -56,6 +60,7 @@ func AllInputsAsync(database *mongo.Database, userID string) (shared.User, map[s
 		var err error
 		pastWOs, err = GetPastWOsDB(database, userID)
 		if err != nil {
+			fmt.Println(err)
 			errChan <- err
 		}
 	}()
@@ -66,6 +71,7 @@ func AllInputsAsync(database *mongo.Database, userID string) (shared.User, map[s
 		var err error
 		typeMatrix, err = GetMatrix(database)
 		if err != nil {
+			fmt.Println(err)
 			errChan <- err
 		}
 	}()
@@ -73,9 +79,17 @@ func AllInputsAsync(database *mongo.Database, userID string) (shared.User, map[s
 	wg.Wait()
 	close(errChan)
 
+	hasErr := false
 	for err := range errChan {
-		errGroup = multierror.Append(errGroup, err)
+		if err != nil {
+			errGroup = multierror.Append(errGroup, err)
+			hasErr = true
+		}
 	}
 
-	return user, stretches, exercises, pastWOs, typeMatrix, errGroup
+	if hasErr {
+		return user, stretches, exercises, pastWOs, typeMatrix, errGroup
+	}
+
+	return user, stretches, exercises, pastWOs, typeMatrix, nil
 }

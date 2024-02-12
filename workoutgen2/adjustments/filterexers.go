@@ -37,7 +37,7 @@ func FilterExers(allExercises map[string]shared.Exercise, user shared.User, adjl
 			continue
 		}
 		allowedCombo = append(allowedCombo, exercise.ID.Hex())
-		if exercise.MaxLevel <= adjlevel {
+		if exercise.MaxLevel >= adjlevel {
 			allowedNormal = append(allowedNormal, exercise.ID.Hex())
 		}
 		if exercise.InSplits {

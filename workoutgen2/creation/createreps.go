@@ -11,11 +11,20 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times share
 
 	speclevel := adjlevel
 
-	speclevel *= user.TimeEndurance[int(math.Round(float64(minutes)/5.0))*5]
-	speclevel *= user.RoundEndurance[round]
-	speclevel *= user.ExerModifications[id]
-	speclevel *= user.TypeModifications[exercise.Parent]
-	speclevel *= 1 + (float32(6-times.Sets) / 12)
+	if val, ok := user.TimeEndurance[int(math.Round(float64(minutes)/5.0))*5]; ok {
+		speclevel *= val
+	}
+	if val, ok := user.RoundEndurance[round]; ok {
+		speclevel *= val
+	}
+	if val, ok := user.ExerModifications[id]; ok {
+		speclevel *= val
+	}
+	if val, ok := user.TypeModifications[exercise.Parent]; ok {
+		speclevel *= val
+	}
+
+	speclevel *= 1 + (float32(40-minutes) / 70)
 
 	varA := exercise.RepVars[0]
 	varB := exercise.RepVars[1]
@@ -25,7 +34,7 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times share
 
 	initReps := float32(exercise.MinReps) + varA*float32(math.Pow(float64((speclevel-exercise.MinLevel)/varB), float64(varC)))
 
-	initReps *= (times.ExercisePerSet / 30)
+	initReps *= (times.ExercisePerSet / 20)
 	return initReps
 }
 

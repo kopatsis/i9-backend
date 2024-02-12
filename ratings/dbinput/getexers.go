@@ -19,7 +19,7 @@ func GetExersDB(database *mongo.Database) (map[string]shared.Exercise, error) {
 	}
 	defer cursor.Close(context.Background())
 
-	var allexer map[string]shared.Exercise
+	allexer := map[string]shared.Exercise{}
 
 	for cursor.Next(context.TODO()) {
 		var exer shared.Exercise

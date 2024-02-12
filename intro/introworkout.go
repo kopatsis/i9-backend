@@ -2,6 +2,7 @@ package intro
 
 import (
 	// "fmt"
+
 	"fulli9/intro/alteredfuncs"
 	"fulli9/shared"
 	"fulli9/workoutgen2/adjustments"
@@ -63,7 +64,10 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 
 	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, -1, minutes, pairs)
 
-	dboutput.SaveNewWorkout(database, workout)
+	err = dboutput.SaveNewWorkout(database, workout)
+	if err != nil {
+		return workout, err
+	}
 
 	return workout, nil
 

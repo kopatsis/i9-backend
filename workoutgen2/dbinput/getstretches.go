@@ -19,7 +19,7 @@ func GetStretchesDB(database *mongo.Database) (map[string][]shared.Stretch, erro
 	}
 	defer cursor.Close(context.Background())
 
-	var allstretches map[string][]shared.Stretch
+	allstretches := map[string][]shared.Stretch{}
 	dynamics := []shared.Stretch{}
 	statics := []shared.Stretch{}
 	for cursor.Next(context.TODO()) {

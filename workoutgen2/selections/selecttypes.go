@@ -10,8 +10,8 @@ func SelectTypes(level, minutes float32) [9]string {
 	comboPos *= 1 + ((minutes - 20) / 75)
 	splitPos *= 1 + ((minutes - 20) / 100)
 
-	comboPos *= 1 + ((level - 200) / 1000)
-	splitPos *= 1 + ((level - 200) / 750)
+	comboPos *= 1 + ((level - 200) / 2000)
+	splitPos *= 1 + ((level - 200) / 1500)
 
 	total := regularPos + comboPos + splitPos
 
