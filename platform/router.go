@@ -39,6 +39,10 @@ func New(database *mongo.Database) *gin.Engine {
 	router.GET("/workouts/:id", views.GetWorkout(database))
 	router.GET("/workouts/external/:id", views.GetWorkout(database))
 	router.GET("/workouts", views.GetWorkouts(database))
+	router.GET("/workouts/stretch/:id", views.GetStretchWorkout(database))
+	router.GET("/workouts/stretch", views.GetStretchWorkouts(database))
+
+	// Gets/views 2
 	router.GET("/stretches/:id", views.GetStrByID(database))
 	router.GET("/exercises/:id", views.GetExerByID(database))
 	router.GET("/stretches", views.GetStrecthes(database))
