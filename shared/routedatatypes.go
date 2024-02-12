@@ -27,7 +27,7 @@ type AdaptWorkoutRoute struct {
 
 type RateIntroRoute struct {
 	UserID string  `json:"userid"`
-	Rounds float32 `json:"rounds" binding:"required"`
+	Rounds float32 `json:"rounds"`
 }
 
 type RateRoute struct {
