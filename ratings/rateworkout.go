@@ -39,9 +39,9 @@ func RateWorkout(userID string, ratings [9]float32, workoutID string, database *
 
 	// ratings := userinput.GetUserRatings(workout, exercises)
 
-	newlevel := operations.NewLevel(user, ratings, workout.Difficulty, countWO)
+	newlevel, average := operations.NewLevel(user, ratings, workout.Difficulty, countWO)
 
-	userExMod, userTypeMod := operations.NewUserMods(user, ratings, workout, exercises, countWO)
+	userExMod, userTypeMod, roundEndur, timeEndur := operations.NewUserMods(user, ratings, workout, exercises, countWO, average)
 
 	exerFacts := operations.NewExerciseFactorialVars(ratings, workout, exercises, countUser)
 
@@ -63,7 +63,7 @@ func RateWorkout(userID string, ratings [9]float32, workoutID string, database *
 	// 	return err
 	// }
 
-	userErr, exerErr, workoutErr := dboutput.SaveDBAllAsync(user, newlevel, userExMod, userTypeMod, ratings, workout, exerFacts, database)
+	userErr, exerErr, workoutErr := dboutput.SaveDBAllAsync(user, newlevel, userExMod, userTypeMod, roundEndur, timeEndur, ratings, workout, exerFacts, database)
 
 	errortext := ""
 	if userErr != nil {

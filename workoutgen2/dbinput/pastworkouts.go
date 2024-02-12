@@ -13,7 +13,7 @@ import (
 
 func GetPastWOsDB(database *mongo.Database, userID string) ([]shared.Workout, error) {
 
-	collection := database.Collection("workouts")
+	collection := database.Collection("workout")
 
 	tenDaysAgo := primitive.NewDateTimeFromTime(time.Now().AddDate(0, 0, -10))
 

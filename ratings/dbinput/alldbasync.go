@@ -73,9 +73,16 @@ func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.
 	wg.Wait()
 	close(errChan)
 
+	hasErr := false
 	for err := range errChan {
-		errGroup = multierror.Append(errGroup, err)
+		if err != nil {
+			hasErr = true
+			errGroup = multierror.Append(errGroup, err)
+		}
 	}
 
+	if !hasErr {
+		return user, workout, countWO, countUser, exercises, nil
+	}
 	return user, workout, countWO, countUser, exercises, errGroup
 }

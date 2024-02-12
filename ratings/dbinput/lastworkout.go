@@ -13,7 +13,7 @@ import (
 
 func GetPastWOsDB(database *mongo.Database, idStr string) (shared.Workout, error) {
 
-	collection := database.Collection("workouts")
+	collection := database.Collection("workout")
 
 	// filterWO := bson.D{
 	// 	{Key: "username", Value: username},
@@ -33,6 +33,7 @@ func GetPastWOsDB(database *mongo.Database, idStr string) (shared.Workout, error
 		fmt.Println(err)
 		if err == mongo.ErrNoDocuments {
 			fmt.Println("No workout for user in database")
+			return shared.Workout{}, err
 		} else {
 			return shared.Workout{}, nil
 		}
