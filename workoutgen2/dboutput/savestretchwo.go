@@ -4,14 +4,15 @@ import (
 	"context"
 	"fulli9/shared"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func SaveStretchWorkout(database *mongo.Database, workout shared.StretchWorkout) error {
+func SaveStretchWorkout(database *mongo.Database, workout shared.StretchWorkout) (primitive.ObjectID, error) {
 	collection := database.Collection("stretchworkout")
-	_, err := collection.InsertOne(context.Background(), workout)
+	result, err := collection.InsertOne(context.Background(), workout)
 	if err != nil {
-		return err
+		return primitive.NilObjectID, err
 	}
-	return nil
+	return result.InsertedID.(primitive.ObjectID), nil
 }

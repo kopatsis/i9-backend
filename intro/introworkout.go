@@ -64,10 +64,11 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 
 	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, -1, minutes, pairs)
 
-	err = dboutput.SaveNewWorkout(database, workout)
+	id, err := dboutput.SaveNewWorkout(database, workout)
 	if err != nil {
-		return workout, err
+		return shared.Workout{}, err
 	}
+	workout.ID = id
 
 	return workout, nil
 

@@ -13,6 +13,9 @@ func ExerRatings(exers map[string]shared.Exercise, pastWOs []shared.Workout, use
 	}
 
 	for _, workout := range pastWOs {
+		if workout.Status == "Unstarted" {
+			continue
+		}
 		adjustment := int(time.Since(workout.Date.Time()).Hours())
 		for _, exercise := range workout.Exercises {
 			for _, id := range exercise.ExerciseIDs {

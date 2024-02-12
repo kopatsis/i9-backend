@@ -38,10 +38,12 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 			return shared.StretchWorkout{}, err
 		}
 
-		err = dboutput.SaveStretchWorkout(database, stretchWorkout)
+		id, err := dboutput.SaveStretchWorkout(database, stretchWorkout)
 		if err != nil {
 			return shared.StretchWorkout{}, err
 		}
+
+		stretchWorkout.ID = id
 
 		return stretchWorkout, nil
 	}
@@ -72,10 +74,11 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 
 	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes, pairs)
 
-	err = dboutput.SaveNewWorkout(database, workout)
+	id, err := dboutput.SaveNewWorkout(database, workout)
 	if err != nil {
-		return workout, err
+		return shared.Workout{}, err
 	}
+	workout.ID = id
 
 	return workout, nil
 

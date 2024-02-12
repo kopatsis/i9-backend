@@ -25,6 +25,9 @@ func CalcNewLevel(difficulty int, startLevel float32, pastWOs []shared.Workout) 
 	lastWOTime := time.Now().AddDate(0, 0, -1)
 
 	for _, workout := range pastWOs {
+		if workout.Status == "Unstarted" {
+			continue
+		}
 		if workout.Date.Time().After(lastWOTime) {
 			lastWOTime = workout.Date.Time()
 		}

@@ -1,7 +1,6 @@
 package alteredfuncs
 
 import (
-	"fmt"
 	"fulli9/shared"
 	"math"
 )
@@ -32,8 +31,6 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times share
 	varC := exercise.RepVars[2]
 
 	speclevel = float32(math.Max(float64(speclevel), float64(exercise.MinLevel)))
-
-	fmt.Println(speclevel)
 
 	initReps := float32(exercise.MinReps) + varA*float32(math.Pow(float64((speclevel-exercise.MinLevel)/varB), 1/float64(varC)))
 
