@@ -10,12 +10,12 @@ import (
 func GetSubFromJWT(c *gin.Context) (string, error) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
-		return "", nil
+		return "", jwt.ErrInvalidType
 	}
 
 	parts := strings.Split(authHeader, " ")
 	if len(parts) != 2 || parts[0] != "Bearer" {
-		return "", nil
+		return "", jwt.ErrInvalidType
 	}
 
 	tokenString := parts[1]

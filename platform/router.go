@@ -3,6 +3,7 @@ package platform
 import (
 	"fulli9/adapts"
 	"fulli9/intro"
+	"fulli9/platform/middleware"
 	"fulli9/ratings"
 	"fulli9/userfuncs"
 	"fulli9/usergeneral"
@@ -17,7 +18,8 @@ import (
 func New(database *mongo.Database) *gin.Engine {
 	router := gin.Default()
 
-	router.Use(CORSMiddleware())
+	router.Use(middleware.CORSMiddleware())
+	router.Use(middleware.JWTAuthMiddleware())
 
 	// Won't be used
 	router.GET("/", temp(database))
