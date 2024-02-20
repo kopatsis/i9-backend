@@ -19,7 +19,16 @@ func PostWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := WorkoutGen(woHandler.Time, woHandler.Difficulty, woHandler.UserID, database)
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with workout generator",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		workout, err := WorkoutGen(woHandler.Time, woHandler.Difficulty, userID, database)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with workout generator",
@@ -45,7 +54,16 @@ func PostStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := WorkoutGen(woHandler.Time, 0, woHandler.UserID, database)
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with stretch workout generator",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		workout, err := WorkoutGen(woHandler.Time, 0, userID, database)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with stretch workout generator",

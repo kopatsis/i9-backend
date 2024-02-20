@@ -55,8 +55,17 @@ func DeleteBannedExer(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -69,7 +78,7 @@ func DeleteBannedExer(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("user")
 		filter := bson.D{{Key: "_id", Value: id}}
 
-		err := collection.FindOne(context.Background(), filter).Decode(&user)
+		err = collection.FindOne(context.Background(), filter).Decode(&user)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with finding user",
@@ -94,7 +103,7 @@ func DeleteBannedExer(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                   userBody.UserID,
+			"ID":                   userID,
 			"Banned Exercise List": newBannedExers,
 		})
 	}
@@ -114,8 +123,17 @@ func DeleteBannedStr(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -128,7 +146,7 @@ func DeleteBannedStr(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("user")
 		filter := bson.D{{Key: "_id", Value: id}}
 
-		err := collection.FindOne(context.Background(), filter).Decode(&user)
+		err = collection.FindOne(context.Background(), filter).Decode(&user)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with finding user",
@@ -153,7 +171,7 @@ func DeleteBannedStr(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                  userBody.UserID,
+			"ID":                  userID,
 			"Banned Strecth List": newBannedStrs,
 		})
 	}
@@ -173,8 +191,17 @@ func DeleteBannedBody(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -187,7 +214,7 @@ func DeleteBannedBody(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("user")
 		filter := bson.D{{Key: "_id", Value: id}}
 
-		err := collection.FindOne(context.Background(), filter).Decode(&user)
+		err = collection.FindOne(context.Background(), filter).Decode(&user)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with finding user",
@@ -212,7 +239,7 @@ func DeleteBannedBody(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                     userBody.UserID,
+			"ID":                     userID,
 			"Banned Body Parts List": newBannedBodyParts,
 		})
 	}
@@ -232,8 +259,17 @@ func DeleteExerFav(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -246,7 +282,7 @@ func DeleteExerFav(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("user")
 		filter := bson.D{{Key: "_id", Value: id}}
 
-		err := collection.FindOne(context.Background(), filter).Decode(&user)
+		err = collection.FindOne(context.Background(), filter).Decode(&user)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with finding user",
@@ -271,7 +307,7 @@ func DeleteExerFav(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                             userBody.UserID,
+			"ID":                             userID,
 			"Banned Exercise Favorite Rates": newExerFavorites,
 		})
 	}

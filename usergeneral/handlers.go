@@ -84,8 +84,17 @@ func PatchUser(database *mongo.Database) gin.HandlerFunc {
 			}
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -98,7 +107,7 @@ func PatchUser(database *mongo.Database) gin.HandlerFunc {
 		filter := bson.M{"_id": id}
 
 		collection := database.Collection("user")
-		_, err := collection.UpdateOne(context.TODO(), filter, update)
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with updating user",
@@ -108,7 +117,7 @@ func PatchUser(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID": userBody.UserID,
+			"ID": userID,
 		})
 	}
 }
@@ -118,17 +127,17 @@ func GetUser(database *mongo.Database) gin.HandlerFunc {
 
 		var user shared.User
 
-		var userBody shared.UserIDRoute
-		if err := c.ShouldBindJSON(&userBody); err != nil {
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with body binding",
+				"Error": "Issue with userID",
 				"Exact": err.Error(),
 			})
 			return
 		}
 
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -141,7 +150,7 @@ func GetUser(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("user")
 		filter := bson.D{{Key: "_id", Value: id}}
 
-		err := collection.FindOne(context.Background(), filter).Decode(&user)
+		err = collection.FindOne(context.Background(), filter).Decode(&user)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with viewing user",
@@ -158,17 +167,17 @@ func GetUser(database *mongo.Database) gin.HandlerFunc {
 func DeleteUser(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var userBody shared.UserIDRoute
-		if err := c.ShouldBindJSON(&userBody); err != nil {
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with body binding",
+				"Error": "Issue with userID",
 				"Exact": err.Error(),
 			})
 			return
 		}
 
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{

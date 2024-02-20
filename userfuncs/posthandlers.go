@@ -43,12 +43,21 @@ func PostPlyo(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		update := bson.M{
 			"$set": bson.M{"plyoToler": userBody.Plyo},
 		}
 
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -61,7 +70,7 @@ func PostPlyo(database *mongo.Database) gin.HandlerFunc {
 		filter := bson.M{"_id": id}
 
 		collection := database.Collection("user")
-		_, err := collection.UpdateOne(context.TODO(), filter, update)
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with updating user",
@@ -71,7 +80,7 @@ func PostPlyo(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID": userBody.UserID,
+			"ID": userID,
 		})
 	}
 }
@@ -90,8 +99,17 @@ func PostBannedExer(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -104,7 +122,7 @@ func PostBannedExer(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("user")
 		filter := bson.D{{Key: "_id", Value: id}}
 
-		err := collection.FindOne(context.Background(), filter).Decode(&user)
+		err = collection.FindOne(context.Background(), filter).Decode(&user)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with finding user",
@@ -129,7 +147,7 @@ func PostBannedExer(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                   userBody.UserID,
+			"ID":                   userID,
 			"Banned Exercise List": newBannedExers,
 		})
 	}
@@ -149,8 +167,17 @@ func PostBannedStr(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -163,7 +190,7 @@ func PostBannedStr(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("user")
 		filter := bson.D{{Key: "_id", Value: id}}
 
-		err := collection.FindOne(context.Background(), filter).Decode(&user)
+		err = collection.FindOne(context.Background(), filter).Decode(&user)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with finding user",
@@ -188,7 +215,7 @@ func PostBannedStr(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                  userBody.UserID,
+			"ID":                  userID,
 			"Banned Stretch List": newBannedStrs,
 		})
 	}
@@ -208,8 +235,17 @@ func PostBannedBody(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -222,7 +258,7 @@ func PostBannedBody(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("user")
 		filter := bson.D{{Key: "_id", Value: id}}
 
-		err := collection.FindOne(context.Background(), filter).Decode(&user)
+		err = collection.FindOne(context.Background(), filter).Decode(&user)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with finding user",
@@ -247,7 +283,7 @@ func PostBannedBody(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                     userBody.UserID,
+			"ID":                     userID,
 			"Banned Body Parts List": newBannedBodyParts,
 		})
 	}
@@ -267,8 +303,17 @@ func PostExerFav(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -281,7 +326,7 @@ func PostExerFav(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("user")
 		filter := bson.D{{Key: "_id", Value: id}}
 
-		err := collection.FindOne(context.Background(), filter).Decode(&user)
+		err = collection.FindOne(context.Background(), filter).Decode(&user)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with finding user",
@@ -314,7 +359,7 @@ func PostExerFav(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                             userBody.UserID,
+			"ID":                             userID,
 			"Banned Exercise Favorite Rates": newExerFavorites,
 		})
 	}

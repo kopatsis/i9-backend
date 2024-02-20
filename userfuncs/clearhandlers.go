@@ -22,8 +22,17 @@ func ClearBannedExer(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -42,7 +51,7 @@ func ClearBannedExer(database *mongo.Database) gin.HandlerFunc {
 			"$set": bson.M{"bannedExer": newBannedExers},
 		}
 
-		_, err := collection.UpdateOne(context.TODO(), filter, update)
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with updating user",
@@ -52,7 +61,7 @@ func ClearBannedExer(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                   userBody.UserID,
+			"ID":                   userID,
 			"Banned Exercise List": newBannedExers,
 		})
 	}
@@ -70,8 +79,17 @@ func ClearBannedStr(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -90,7 +108,7 @@ func ClearBannedStr(database *mongo.Database) gin.HandlerFunc {
 			"$set": bson.M{"bannedStr": newBannedStrs},
 		}
 
-		_, err := collection.UpdateOne(context.TODO(), filter, update)
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with updating user",
@@ -100,7 +118,7 @@ func ClearBannedStr(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                  userBody.UserID,
+			"ID":                  userID,
 			"Banned Strecth List": newBannedStrs,
 		})
 	}
@@ -118,8 +136,17 @@ func ClearBannedBody(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -138,7 +165,7 @@ func ClearBannedBody(database *mongo.Database) gin.HandlerFunc {
 			"$set": bson.M{"bannedParts": newBannedBodyParts},
 		}
 
-		_, err := collection.UpdateOne(context.TODO(), filter, update)
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with updating user",
@@ -148,7 +175,7 @@ func ClearBannedBody(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                     userBody.UserID,
+			"ID":                     userID,
 			"Banned Body Parts List": newBannedBodyParts,
 		})
 	}
@@ -157,17 +184,17 @@ func ClearBannedBody(database *mongo.Database) gin.HandlerFunc {
 func ClearExerFav(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var userBody shared.UserIDRoute
-		if err := c.ShouldBindJSON(&userBody); err != nil {
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with body binding",
+				"Error": "Issue with userID",
 				"Exact": err.Error(),
 			})
 			return
 		}
 
 		var id primitive.ObjectID
-		if oid, err := primitive.ObjectIDFromHex(userBody.UserID); err == nil {
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 			id = oid
 		} else {
 			c.JSON(400, gin.H{
@@ -186,7 +213,7 @@ func ClearExerFav(database *mongo.Database) gin.HandlerFunc {
 			"$set": bson.M{"exerfavs": newExerFavorites},
 		}
 
-		_, err := collection.UpdateOne(context.TODO(), filter, update)
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with updating user",
@@ -196,7 +223,7 @@ func ClearExerFav(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                             userBody.UserID,
+			"ID":                             userID,
 			"Banned Exercise Favorite Rates": newExerFavorites,
 		})
 	}

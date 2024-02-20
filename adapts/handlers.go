@@ -21,6 +21,15 @@ func PostAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		id, exists := c.Params.Get("id")
 		if !exists {
 			c.JSON(400, gin.H{
@@ -30,7 +39,7 @@ func PostAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := Adapt(woHandler.Difficulty, woHandler.UserID, database, id, woHandler.AsNew)
+		workout, err := Adapt(woHandler.Difficulty, userID, database, id, woHandler.AsNew)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with adapted workout generator",
@@ -55,6 +64,15 @@ func PostExternalAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		id, exists := c.Params.Get("id")
 		if !exists {
 			c.JSON(400, gin.H{
@@ -64,7 +82,7 @@ func PostExternalAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := Adapt(woHandler.Difficulty, woHandler.UserID, database, id, true)
+		workout, err := Adapt(woHandler.Difficulty, userID, database, id, true)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with adapted workout generator",

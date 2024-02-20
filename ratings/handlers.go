@@ -19,6 +19,15 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		ratings := [9]float32{10, 10, 10, 10, 10, 10, 10, 10, 10}
 		for i, score := range rateHandler.Ratings {
 			if i > 9 {
@@ -36,7 +45,7 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if err := RateWorkout(rateHandler.UserID, ratings, id, database); err != nil {
+		if err := RateWorkout(userID, ratings, id, database); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with rating route",
 				"Exact": err.Error(),
@@ -60,7 +69,16 @@ func PostIntroRating(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if err := RateIntroWorkout(rateHandler.UserID, rateHandler.Rounds, database); err != nil {
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if err := RateIntroWorkout(userID, rateHandler.Rounds, database); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with intro rating route",
 				"Exact": err.Error(),

@@ -59,10 +59,10 @@ func GetWorkout(database *mongo.Database) gin.HandlerFunc {
 func GetWorkouts(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var userHandler shared.UserIDRoute
-		if err := c.ShouldBindJSON(&userHandler); err != nil {
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with body binding",
+				"Error": "Issue with userID",
 				"Exact": err.Error(),
 			})
 			return
@@ -105,7 +105,7 @@ func GetWorkouts(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("workout")
 
 		filterWO := bson.D{
-			{Key: "userid", Value: userHandler.UserID},
+			{Key: "userid", Value: userID},
 		}
 
 		cursor, err := collection.Find(context.Background(), filterWO, optionsWO)
@@ -202,10 +202,10 @@ func GetStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 func GetStretchWorkouts(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var userHandler shared.UserIDRoute
-		if err := c.ShouldBindJSON(&userHandler); err != nil {
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with body binding",
+				"Error": "Issue with userID",
 				"Exact": err.Error(),
 			})
 			return
@@ -248,7 +248,7 @@ func GetStretchWorkouts(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("stretchworkout")
 
 		filterWO := bson.D{
-			{Key: "userid", Value: userHandler.UserID},
+			{Key: "userid", Value: userID},
 		}
 
 		cursor, err := collection.Find(context.Background(), filterWO, optionsWO)
