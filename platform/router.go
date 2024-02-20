@@ -17,6 +17,8 @@ import (
 func New(database *mongo.Database) *gin.Engine {
 	router := gin.Default()
 
+	router.Use(CORSMiddleware())
+
 	// Won't be used
 	router.GET("/", temp(database))
 
