@@ -3,12 +3,13 @@ module fulli9
 go 1.21.0
 
 require (
-	github.com/auth0/go-jwt-middleware/v2 v2.2.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/hashicorp/go-multierror v1.1.1
 	go.mongodb.org/mongo-driver v1.13.1
 )
+
+require github.com/google/go-cmp v0.6.0 // indirect
 
 require (
 	github.com/bytedance/sonic v1.10.2 // indirect
@@ -45,6 +46,5 @@ require (
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
-	gopkg.in/go-jose/go-jose.v2 v2.6.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
