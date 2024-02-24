@@ -31,7 +31,7 @@ func RateIntroWorkout(userID string, roundEnd float32, database *mongo.Database)
 	var userlevel float32
 	if roundEnd < 9 {
 		completed := int(roundEnd)
-		userlevel = levelSteps[completed] + (roundEnd-float32(completed))*levelSteps[completed+1]
+		userlevel = 3 * (levelSteps[completed] + (roundEnd-float32(completed))*levelSteps[completed+1]) / 4
 	} else {
 		userlevel = levelSteps[9]
 	}

@@ -2,6 +2,7 @@ package usergeneral
 
 import (
 	"context"
+	"fulli9/platform/middleware"
 	"fulli9/shared"
 
 	"github.com/gin-gonic/gin"
@@ -57,6 +58,73 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 
 		c.JSON(201, gin.H{
 			"ID": result.InsertedID,
+		})
+	}
+}
+
+func PostLocalUser(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var userBody shared.UserRoute
+		if err := c.ShouldBindJSON(&userBody); err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with body binding",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		user := shared.User{
+			Username:          "",
+			Name:              userBody.Name,
+			PlyoTolerance:     3,
+			BannedExercises:   []string{},
+			BannedStretches:   []string{},
+			BannedParts:       []int{},
+			ExerFavoriteRates: map[string]float32{},
+			ExerModifications: map[string]float32{},
+			TypeModifications: map[string]float32{},
+			RoundEndurance:    map[int]float32{},
+			TimeEndurance:     map[int]float32{},
+		}
+
+		collection := database.Collection("user")
+		result, err := collection.InsertOne(context.Background(), user)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue adding user to database",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		update := bson.M{
+			"$set": bson.M{"username": result.InsertedID.(primitive.ObjectID).Hex()},
+		}
+
+		filter := bson.M{"_id": result.InsertedID}
+
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with updating newly created local user",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		tokenString, err := middleware.GenerateJWT(result.InsertedID.(primitive.ObjectID).Hex())
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with local user JWT gen",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		c.JSON(201, gin.H{
+			"ID":    result.InsertedID,
+			"Token": tokenString,
 		})
 	}
 }
