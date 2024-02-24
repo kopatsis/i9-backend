@@ -18,10 +18,13 @@ var (
 		keys   map[string]interface{}
 		expiry time.Time
 	}
-	jwksURL = "https://" + os.Getenv("AUTH0_DOMAIN") + "/.well-known/jwks.json"
+	// jwksURL = "https://" + os.Getenv("AUTH0_DOMAIN") + "/.well-known/jwks.json"
 )
 
 func fetchJWKS() error {
+
+	jwksURL := "https://" + os.Getenv("AUTH0_DOMAIN") + "/.well-known/jwks.json"
+
 	resp, err := http.Get(jwksURL)
 	if err != nil {
 		return err

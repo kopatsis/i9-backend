@@ -26,14 +26,8 @@ type RateRoute struct {
 	Ratings []float32 `json:"ratings" binding:"required"`
 }
 
-type PostUserRoute struct {
-	Name     string `json:"name" binding:"required"`
-	UserName string `json:"username" binding:"required"`
-}
-
-type PatchUserRoute struct {
-	Name     string `json:"name"`
-	UserName string `json:"username"`
+type UserRoute struct {
+	Name string `json:"name"`
 }
 
 type PlyoRoute struct {

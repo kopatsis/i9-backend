@@ -13,7 +13,7 @@ import (
 func PostUser(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var userBody shared.PostUserRoute
+		var userBody shared.UserRoute
 		if err := c.ShouldBindJSON(&userBody); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with body binding",
@@ -22,8 +22,17 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		username, err := shared.GetSubFromJWT(c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with retrieving sub id",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		user := shared.User{
-			Username:          userBody.UserName,
+			Username:          username,
 			Name:              userBody.Name,
 			PlyoTolerance:     3,
 			BannedExercises:   []string{},
@@ -55,7 +64,7 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 func PatchUser(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var userBody shared.PatchUserRoute
+		var userBody shared.UserRoute
 		if err := c.ShouldBindJSON(&userBody); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with body binding",
@@ -64,24 +73,13 @@ func PatchUser(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if userBody.Name == "" && userBody.UserName == "" {
+		if userBody.Name == "" {
 			c.Status(204)
 			return
 		}
 
-		var update primitive.M
-		if userBody.Name == "" {
-			update = bson.M{
-				"$set": bson.M{"username": userBody.UserName},
-			}
-		} else if userBody.UserName == "" {
-			update = bson.M{
-				"$set": bson.M{"name": userBody.Name},
-			}
-		} else {
-			update = bson.M{
-				"$set": bson.M{"name": userBody.Name, "username": userBody.UserName},
-			}
+		update := bson.M{
+			"$set": bson.M{"name": userBody.Name},
 		}
 
 		userID, err := shared.GetIDFromReq(database, c)
