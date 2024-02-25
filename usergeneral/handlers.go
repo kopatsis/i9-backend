@@ -32,6 +32,23 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		filter := bson.M{"username": username}
+
+		collection := database.Collection("user")
+
+		if err := collection.FindOne(context.TODO(), filter).Err(); err != nil {
+			if err == mongo.ErrNoDocuments {
+				c.Status(204)
+				return
+			} else {
+				c.JSON(400, gin.H{
+					"Error": "Issue with checking user exists",
+					"Exact": err.Error(),
+				})
+				return
+			}
+		}
+
 		user := shared.User{
 			Username:          username,
 			Name:              userBody.Name,
@@ -46,7 +63,6 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 			TimeEndurance:     map[int]float32{},
 		}
 
-		collection := database.Collection("user")
 		result, err := collection.InsertOne(context.Background(), user)
 		if err != nil {
 			c.JSON(400, gin.H{
