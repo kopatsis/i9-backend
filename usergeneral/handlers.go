@@ -204,6 +204,78 @@ func PatchUser(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
+func MergeLocalUser(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var jwtBody shared.MergeRoute
+		if err := c.ShouldBindJSON(&jwtBody); err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with body binding",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		sub, err := shared.GetSubFromJWTStr(jwtBody.LocalJWT)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with old JWT id",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		mongoID, err := shared.AuthIDtoMongoID(database, sub)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with old JWT id to mongo id",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		newAuthID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with new JWT id",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		update := bson.M{
+			"$set": bson.M{"username": newAuthID},
+		}
+
+		var id primitive.ObjectID
+		if oid, err := primitive.ObjectIDFromHex(mongoID); err == nil {
+			id = oid
+		} else {
+			c.JSON(400, gin.H{
+				"Error": "Issue with user ID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		filter := bson.M{"_id": id}
+
+		collection := database.Collection("user")
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with updating user to new id",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"ID": mongoID,
+		})
+	}
+}
+
 func GetUser(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 

@@ -29,6 +29,9 @@ type RateRoute struct {
 type UserRoute struct {
 	Name string `json:"name"`
 }
+type MergeRoute struct {
+	LocalJWT string `json:"localjwt"`
+}
 
 type PlyoRoute struct {
 	Plyo int `json:"plyo" binding:"required,min=0,max=5"`

@@ -37,6 +37,7 @@ func New(database *mongo.Database) *gin.Engine {
 	router.POST("/users/local", usergeneral.PostLocalUser(database))
 	router.POST("/users", usergeneral.PostUser(database))
 	router.PATCH("/users", usergeneral.PatchUser(database))
+	router.PATCH("/users/merge", usergeneral.MergeLocalUser(database))
 	router.GET("/users", usergeneral.GetUser(database))
 	router.DELETE("/users", usergeneral.DeleteUser(database))
 

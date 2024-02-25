@@ -37,3 +37,23 @@ func GetSubFromJWT(c *gin.Context) (string, error) {
 
 	return sub, nil
 }
+
+func GetSubFromJWTStr(tokenString string) (string, error) {
+
+	token, _, err := new(jwt.Parser).ParseUnverified(tokenString, jwt.MapClaims{})
+	if err != nil {
+		return "", err
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return "", jwt.ErrInvalidKey
+	}
+
+	sub, ok := claims["sub"].(string)
+	if !ok {
+		return "", jwt.ErrInvalidKey
+	}
+
+	return sub, nil
+}
