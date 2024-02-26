@@ -90,6 +90,7 @@ type Exercise struct {
 	RepVars      [3]float32         `bson:"repvars"`
 	InSplits     bool               `bson:"insplits"`
 	InPairs      bool               `bson:"inpairs"`
+	UnderCombos  bool               `bson:"undercombos"`
 }
 
 type Stretch struct {

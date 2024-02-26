@@ -36,7 +36,9 @@ func FilterExers(allExercises map[string]shared.Exercise, user shared.User, adjl
 		} else if intersects(user.BannedParts, exercise.BodyParts) {
 			continue
 		}
-		allowedCombo = append(allowedCombo, exercise.ID.Hex())
+		if exercise.UnderCombos {
+			allowedCombo = append(allowedCombo, exercise.ID.Hex())
+		}
 		if exercise.MaxLevel >= adjlevel {
 			allowedNormal = append(allowedNormal, exercise.ID.Hex())
 		}
