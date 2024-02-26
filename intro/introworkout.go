@@ -18,26 +18,11 @@ import (
 
 func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Database) (shared.Workout, error) {
 
-	// client, database, err := dbhandler.ConnectDB()
-	// if err != nil {
-	// 	fmt.Printf("Error connecting to database %s, restart.\n", err.Error())
-	// 	return shared.Workout{}, err
-	// }
-	// defer dbhandler.DisConnectDB(client)
-
-	// user := dbinput.GetUserDB(database, username)
-	// stretches := dbinput.GetStetchesDB(database)
-	// exercises := dbinput.GetExersDB(database)
-	// pastWOs := []shared.Workout{}
-	// typeMatrix := dbinput.GetMatrix(database)
-
 	user, stretches, exercises, _, typeMatrix, err := dbinput.AllInputsAsync(database, userID)
 	if err != nil {
 		return shared.Workout{}, err
 	}
 	pastWOs := []shared.Workout{}
-
-	// minutes := float32(45)
 
 	levelSteps := []float32{50, 125, 200, 350, 500, 800, 1100, 1700, 2300}
 
@@ -64,7 +49,6 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 
 	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, -1, minutes, pairs)
 
-	workout.Name = shared.NameAnimals(false)
 	id, err := dboutput.SaveNewWorkout(database, workout)
 	if err != nil {
 		return shared.Workout{}, err

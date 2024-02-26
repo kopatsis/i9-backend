@@ -38,7 +38,7 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times share
 	return initReps
 }
 
-func GetReps(matrix shared.TypeMatrix, minutes, adjlevel float32, times [9]shared.ExerciseTimes, user shared.User, exerIDs [9][]string, exers map[string]shared.Exercise, types [9]string) ([9][]float32, [9][]bool) {
+func splitReps(currentReps []float32, matrix shared.TypeMatrix, exers map[string]shared.Exercise, round []string, switchRepTotal float32, retPairs [9][]bool, i int) ([]float32, [9][]bool) {
 
 	parentMatIndex := map[string]int{
 		"Pushups":           0,
@@ -52,6 +52,32 @@ func GetReps(matrix shared.TypeMatrix, minutes, adjlevel float32, times [9]share
 		"Kicks":             8,
 		"MISC":              9,
 	}
+
+	exer1 := exers[round[0]]
+	exer2 := exers[round[1]]
+
+	if exer1.InPairs && exer2.InPairs {
+		switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.5))
+		retPairs[i][0] = true
+		retPairs[i][1] = true
+	} else if exer1.InPairs {
+		switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.75))
+		retPairs[i][0] = true
+	} else if exer2.InPairs {
+		switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.75))
+		retPairs[i][1] = true
+	}
+
+	repadjust := matrix.Matrix[parentMatIndex[exer1.Parent]][parentMatIndex[exer2.Parent]]
+
+	adjReps := (switchRepTotal * repadjust) / 2
+
+	currentReps = append(currentReps, adjReps)
+
+	return currentReps, retPairs
+}
+
+func GetReps(matrix shared.TypeMatrix, minutes, adjlevel float32, times [9]shared.ExerciseTimes, user shared.User, exerIDs [9][]string, exers map[string]shared.Exercise, types [9]string) ([9][]float32, [9][]bool) {
 
 	retReps := [9][]float32{}
 	retPairs := [9][]bool{}
@@ -79,26 +105,7 @@ func GetReps(matrix shared.TypeMatrix, minutes, adjlevel float32, times [9]share
 		}
 
 		if types[i] == "Split" {
-			exer1 := exers[round[0]]
-			exer2 := exers[round[1]]
-
-			if exer1.InPairs && exer2.InPairs {
-				switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.5))
-				retPairs[i][0] = true
-				retPairs[i][1] = true
-			} else if exer1.InPairs {
-				switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.75))
-				retPairs[i][0] = true
-			} else if exer2.InPairs {
-				switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.75))
-				retPairs[i][1] = true
-			}
-
-			repadjust := matrix.Matrix[parentMatIndex[exer1.Parent]][parentMatIndex[exer2.Parent]]
-
-			adjReps := (switchRepTotal * repadjust) / 2
-
-			currentReps = append(currentReps, adjReps)
+			currentReps, retPairs = splitReps(currentReps, matrix, exers, round, switchRepTotal, retPairs, i)
 		}
 		retReps[i] = currentReps
 	}

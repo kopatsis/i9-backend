@@ -9,7 +9,7 @@ import (
 
 func FormatWorkout(statics, dynamics []string, reps [9][]float32, exerIDs [9][]string, stretchTimes shared.StretchTimes, exerTimes [9]shared.ExerciseTimes, types [9]string, user shared.User, difficulty int, minutes float32, pairs [9][]bool) shared.Workout {
 	ret := shared.Workout{
-		Name:         "",
+		Name:         shared.NameAnimals(false),
 		UserID:       user.ID.Hex(),
 		Username:     user.Username,
 		Date:         primitive.NewDateTimeFromTime(time.Now()),
