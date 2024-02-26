@@ -25,11 +25,11 @@ func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shar
 
 	dynamicUsable := retStr.FullRound - retStr.DynamicRest
 
-	staticSets := float32(math.Round(float64(retStr.FullRound / 15)))
-	dynamicSets := float32(math.Round(float64(dynamicUsable / 15)))
+	staticSets := float32(math.Round(float64(retStr.FullRound / 20)))
+	dynamicSets := float32(math.Round(float64(dynamicUsable / 20)))
 
-	retStr.StaticPerSet = retStr.FullRound / staticSets
-	retStr.DynamicPerSet = dynamicUsable / dynamicSets
+	// retStr.StaticPerSet = retStr.FullRound / staticSets
+	// retStr.DynamicPerSet = dynamicUsable / dynamicSets
 
 	retStr.StaticSets = int(staticSets)
 	retStr.DynamicSets = int(dynamicSets)

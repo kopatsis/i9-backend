@@ -6,7 +6,7 @@ import (
 	"math/rand"
 )
 
-func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]shared.Stretch, adjlevel float32, exerIDs [9][]string, exercises map[string]shared.Exercise, bannedStretches []string) ([]string, []string, error) {
+func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]shared.Stretch, adjlevel float32, exerIDs [9][]string, exercises map[string]shared.Exercise, bannedStretches []string) ([]string, []string, shared.StretchTimes, error) {
 
 	bodyparts := map[int]bool{}
 
@@ -20,25 +20,29 @@ func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]s
 
 	filteredStretches, err := stretches.FilterStretches(adjlevel, stretchMap, bodyparts, bannedStretches)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, shared.StretchTimes{}, err
 	}
 
-	statics, dynamics := []string{}, []string{}
+	statics, dynamics := []shared.Stretch{}, []shared.Stretch{}
 	for i := 0; i < stretchtimes.StaticSets; i++ {
-		current := filteredStretches["Static"][int(rand.Float64()*float64(len(filteredStretches["Static"])))].ID.Hex()
-		for len(statics) > 0 && statics[len(statics)-1] == current && len(filteredStretches["Static"]) > 1 {
-			current = filteredStretches["Static"][int(rand.Float64()*float64(len(filteredStretches["Static"])))].ID.Hex()
+		current := filteredStretches["Static"][int(rand.Float64()*float64(len(filteredStretches["Static"])))]
+		for len(statics) > 0 && statics[len(statics)-1].ID.Hex() == current.ID.Hex() && len(filteredStretches["Static"]) > 1 {
+			current = filteredStretches["Static"][int(rand.Float64()*float64(len(filteredStretches["Static"])))]
 		}
 		statics = append(statics, current)
 	}
 
 	for i := 0; i < stretchtimes.DynamicSets; i++ {
-		current := filteredStretches["Dynamic"][int(rand.Float64()*float64(len(filteredStretches["Dynamic"])))].ID.Hex()
-		for len(dynamics) > 0 && dynamics[len(dynamics)-1] == current && len(filteredStretches["Dynamic"]) > 1 {
-			current = filteredStretches["Dynamic"][int(rand.Float64()*float64(len(filteredStretches["Dynamic"])))].ID.Hex()
+		current := filteredStretches["Dynamic"][int(rand.Float64()*float64(len(filteredStretches["Dynamic"])))]
+		for len(dynamics) > 0 && dynamics[len(dynamics)-1].ID.Hex() == current.ID.Hex() && len(filteredStretches["Dynamic"]) > 1 {
+			current = filteredStretches["Dynamic"][int(rand.Float64()*float64(len(filteredStretches["Dynamic"])))]
 		}
 		dynamics = append(dynamics, current)
 	}
 
-	return statics, dynamics, nil
+	retStretchTimes := stretchtimes
+	retStretchTimes.DynamicPerSet = stretches.StretchTimeSlice(dynamics, retStretchTimes.FullRound-retStretchTimes.DynamicRest)
+	retStretchTimes.StaticPerSet = stretches.StretchTimeSlice(statics, retStretchTimes.FullRound)
+
+	return stretches.StretchToString(statics), stretches.StretchToString(dynamics), retStretchTimes, nil
 }

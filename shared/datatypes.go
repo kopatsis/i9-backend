@@ -39,12 +39,12 @@ type Workout struct {
 }
 
 type StretchTimes struct {
-	DynamicPerSet float32 `bson:"dynamicperset"`
-	StaticPerSet  float32 `bson:"staticperset"`
-	DynamicSets   int     `bson:"dynamicsets"`
-	StaticSets    int     `bson:"staticsets"`
-	DynamicRest   float32 `bson:"dynamicrest"`
-	FullRound     float32 `bson:"fullround"`
+	DynamicPerSet []float32 `bson:"dynamicperset"`
+	StaticPerSet  []float32 `bson:"staticperset"`
+	DynamicSets   int       `bson:"dynamicsets"`
+	StaticSets    int       `bson:"staticsets"`
+	DynamicRest   float32   `bson:"dynamicrest"`
+	FullRound     float32   `bson:"fullround"`
 }
 
 type ExerciseTimes struct {
@@ -98,6 +98,7 @@ type Stretch struct {
 	MinLevel  float32            `bson:"minlevel"`
 	Status    string             `bson:"status"`
 	BodyParts []int              `bson:"bodyparts"`
+	InPairs   bool               `bson:"inpairs"`
 }
 
 type TypeMatrix struct {
