@@ -14,7 +14,7 @@ func SelectTypes(levelSteps []float32, minutes float32) [9]string {
 
 	for i, level := range levelSteps {
 
-		if i < 3 {
+		if i < 4 {
 			ret[i] = "Regular"
 		} else {
 			tempCombo := (1 + ((level - 200) / 2000)) * comboPos
