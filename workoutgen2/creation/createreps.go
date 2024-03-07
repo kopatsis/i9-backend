@@ -24,7 +24,7 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times share
 		speclevel *= val
 	}
 
-	speclevel *= 1 + (float32(40-minutes) / 70)
+	// speclevel *= 1 + (float32(40-minutes) / 160)
 
 	varA := exercise.RepVars[0]
 	varB := exercise.RepVars[1]
@@ -35,6 +35,12 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times share
 	initReps := float32(exercise.MinReps) + varA*float32(math.Pow(float64((speclevel)/varB), 1/float64(varC)))
 
 	initReps *= (times.ExercisePerSet / 20)
+
+	// Wouldn't ever be < 10, but don't want a crash
+	if minutes >= 10 {
+		initReps *= float32(2/math.Log2(float64(minutes+1))) - .275
+	}
+
 	return initReps
 }
 
