@@ -3,9 +3,9 @@ package selections
 import "math/rand"
 
 func SelectTypes(level, minutes float32) [9]string {
-	regularPos := float32(600)
-	comboPos := float32(200)
-	splitPos := float32(200)
+	regularPos := float32(650)
+	comboPos := float32(400)
+	splitPos := float32(250)
 
 	comboPos *= 1 + ((minutes - 20) / 75)
 	splitPos *= 1 + ((minutes - 20) / 100)
