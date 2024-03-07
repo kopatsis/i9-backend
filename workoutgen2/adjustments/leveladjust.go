@@ -2,6 +2,7 @@ package adjustments
 
 import (
 	"fulli9/shared"
+	"math"
 	"time"
 )
 
@@ -9,15 +10,20 @@ func CalcNewLevel(difficulty int, startLevel float32, pastWOs []shared.Workout) 
 	retLevel := startLevel
 	switch difficulty {
 	case 1:
-		retLevel *= 0.85
+		retLevel *= 0.75
+		retLevel *= 1 - float32(math.Max(float64(startLevel/7500), .667))
 	case 2:
-		retLevel *= 0.925
+		retLevel *= 0.875
+		retLevel *= 1 - float32(math.Max(float64(startLevel/7500), 0.667))
 	case 4:
-		retLevel *= 1.075
+		retLevel *= 1.125
+		retLevel *= 1 + float32(math.Max(float64(startLevel/7500), 0.667))
 	case 5:
-		retLevel *= 1.15
+		retLevel *= 1.25
+		retLevel *= 1 + float32(math.Max(float64(startLevel/7500), 0.667))
 	case 6:
-		retLevel *= 1.3
+		retLevel *= 1.5
+		retLevel *= 1 + float32(math.Max(float64(startLevel/7500), 0.667))
 	default:
 		return retLevel
 	}
