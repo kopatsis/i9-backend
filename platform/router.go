@@ -1,10 +1,12 @@
 package platform
 
 import (
+	"context"
 	"fulli9/adapts"
 	"fulli9/intro"
 	"fulli9/platform/middleware"
 	"fulli9/ratings"
+	"fulli9/shared"
 	"fulli9/userfuncs"
 	"fulli9/usergeneral"
 	"fulli9/views"
@@ -12,6 +14,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -23,6 +27,7 @@ func New(database *mongo.Database) *gin.Engine {
 
 	// Won't be used
 	router.GET("/", temp(database))
+	router.GET("/tpv/:id", tpv(database)) // Temp for personal viewing a workout by id
 
 	// Main functionalities
 	router.POST("/workouts", workoutgen2.PostWorkout(database))
@@ -82,5 +87,153 @@ func temp(database *mongo.Database) gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
+	}
+}
+
+func tpv(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var workout shared.Workout
+
+		idStr, exists := c.Params.Get("id")
+		if !exists {
+			c.JSON(400, gin.H{
+				"Error": "Issue with param",
+				"Exact": "Unable to get ID from URL parameter",
+			})
+			return
+		}
+
+		var id primitive.ObjectID
+		if oid, err := primitive.ObjectIDFromHex(idStr); err == nil {
+			id = oid
+		} else {
+			c.JSON(400, gin.H{
+				"Error": "Issue with user ID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		collection := database.Collection("workout")
+		filter := bson.D{{Key: "_id", Value: id}}
+
+		err := collection.FindOne(context.Background(), filter).Decode(&workout)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing workout",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		var filterEx bson.M
+
+		collection = database.Collection("exercise")
+
+		cursor, err := collection.Find(context.Background(), filterEx)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing exercises",
+				"Exact": err.Error(),
+			})
+			return
+		}
+		defer cursor.Close(context.Background())
+
+		var pastExers []shared.Exercise
+		err = cursor.All(context.Background(), &pastExers)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing exercises",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if len(pastExers) == 0 {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing exercises",
+				"Exact": "No results returned (check type)",
+			})
+			return
+		}
+
+		var filterStr bson.M
+
+		collection = database.Collection("stretch")
+
+		cursor, err = collection.Find(context.Background(), filterStr)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing stretch",
+				"Exact": err.Error(),
+			})
+			return
+		}
+		defer cursor.Close(context.Background())
+
+		var pastStrs []shared.Stretch
+		err = cursor.All(context.Background(), &pastStrs)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing stretch",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if len(pastStrs) == 0 {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing stretch",
+				"Exact": "No results returned (check type)",
+			})
+			return
+		}
+
+		namedStatics := []string{}
+		for _, staticID := range workout.Statics {
+			name := ""
+			for _, str := range pastStrs {
+				if str.ID.Hex() == staticID {
+					name = str.Name
+					break
+				}
+			}
+			namedStatics = append(namedStatics, name)
+		}
+
+		workout.Statics = namedStatics
+
+		namedDynamics := []string{}
+		for _, dynamicID := range workout.Dynamics {
+			name := ""
+			for _, str := range pastStrs {
+				if str.ID.Hex() == dynamicID {
+					name = str.Name
+					break
+				}
+			}
+			namedDynamics = append(namedDynamics, name)
+		}
+
+		workout.Dynamics = namedDynamics
+
+		for i, round := range workout.Exercises {
+			namelist := []string{}
+			for _, exer := range round.ExerciseIDs {
+				name := ""
+				for _, ex := range pastExers {
+					if ex.ID.Hex() == exer {
+						name = ex.Name
+						break
+					}
+				}
+				namelist = append(namelist, name)
+			}
+			workout.Exercises[i].ExerciseIDs = namelist
+		}
+
+		c.JSON(http.StatusOK, workout)
 	}
 }
