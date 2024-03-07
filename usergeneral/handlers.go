@@ -145,6 +145,50 @@ func PostLocalUser(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
+func GetLocalJWT(database *mongo.Database) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
+		idStr, exists := ctx.Params.Get("id")
+		if !exists {
+			ctx.JSON(400, gin.H{
+				"Error": "Issue with param",
+				"Exact": "Unable to get ID from URL parameter",
+			})
+			return
+		}
+
+		userID, err := shared.AuthIDtoMongoID(database, idStr)
+		if err != nil {
+			ctx.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if idStr != userID {
+			ctx.JSON(400, gin.H{
+				"Error": "Issue with param",
+				"Exact": "Non-Local user",
+			})
+			return
+		}
+
+		tokenString, err := middleware.GenerateJWT(idStr)
+		if err != nil {
+			ctx.JSON(400, gin.H{
+				"Error": "Issue with local user JWT retrieval",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		ctx.JSON(200, gin.H{
+			"JWT": tokenString,
+		})
+	}
+}
+
 func PatchUser(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 

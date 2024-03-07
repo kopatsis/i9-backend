@@ -39,6 +39,7 @@ func New(database *mongo.Database) *gin.Engine {
 	router.PATCH("/users", usergeneral.PatchUser(database))
 	router.PATCH("/users/merge", usergeneral.MergeLocalUser(database))
 	router.GET("/users", usergeneral.GetUser(database))
+	router.GET("/users/local/:id", usergeneral.GetLocalJWT(database))
 	router.DELETE("/users", usergeneral.DeleteUser(database))
 
 	// Gets/views

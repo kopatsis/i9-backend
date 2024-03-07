@@ -28,6 +28,11 @@ func interfaceSliceToStringSlice(s []interface{}) ([]string, error) {
 func JWTAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
+		if strings.HasPrefix(c.Request.URL.Path, "/users/local") {
+			c.Next()
+			return
+		}
+
 		if TokenIsLocal(c) {
 			if err := ValidateLocalToken(c); err != nil {
 				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Local token error: " + err.Error()})
