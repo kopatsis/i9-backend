@@ -51,7 +51,8 @@ func splitReps(currentReps []float32, matrix shared.TypeMatrix, exers map[string
 		"Crunches":          6,
 		"Bridges":           7,
 		"Kicks":             8,
-		"MISC":              9,
+		"Planks":            9,
+		"MISC":              10,
 	}
 
 	exer1 := exers[round[0]]
