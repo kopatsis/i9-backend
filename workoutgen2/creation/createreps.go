@@ -36,8 +36,8 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times share
 
 	initReps *= (times.ExercisePerSet / 20)
 
-	// Wouldn't ever be < 10, but don't want a crash
-	if minutes >= 10 {
+	// Wouldn't ever be < 5, but don't want a crash
+	if minutes >= 5 {
 		initReps *= float32(2/math.Log2(float64(minutes+1))) - .275
 	}
 

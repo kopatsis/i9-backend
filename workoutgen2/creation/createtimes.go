@@ -7,8 +7,8 @@ import (
 )
 
 func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shared.ExerciseTimes) {
-	possibleComboTimes := [3]float32{30.0, 45.0, 60.0}
-	possibleSplitTimes := [3]float32{30.0, 45.0, 30.0}
+	possibleComboTimes := [7]float32{30.0, 30.0, 45.0, 45.0, 45.0, 60.0, 60.0}
+	possibleSplitTimes := [5]float32{30.0, 45.0, 30.0, 45.0, 45.0}
 
 	seconds := 60 * minutes
 
@@ -46,12 +46,18 @@ func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shar
 		var roundSets float32
 
 		if round == "Combo" && exerUsableRoundTime >= 2 {
-			comboNum := int(rand.Float64() * 3)
+			comboNum := int(rand.Float64() * 7)
 			timeC := possibleComboTimes[comboNum]
 			roundSets = float32(math.Round(float64(exerUsableRoundTime / timeC)))
-			currentTimes.ComboExers = comboNum + 2
+			if timeC == 30.0 {
+				currentTimes.ComboExers = 2
+			} else if timeC == 45.0 {
+				currentTimes.ComboExers = (comboNum + 2) / 2
+			} else {
+				currentTimes.ComboExers = comboNum - 2
+			}
 		} else if round == "Split" && exerUsableRoundTime >= 2 {
-			splitNum := int(rand.Float64() * 3)
+			splitNum := int(rand.Float64() * 5)
 			timeS := possibleSplitTimes[splitNum]
 			roundSets = float32(math.Round(float64(exerUsableRoundTime / timeS)))
 		} else {
