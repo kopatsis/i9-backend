@@ -24,19 +24,22 @@ type User struct {
 }
 
 type Workout struct {
-	ID           primitive.ObjectID `bson:"_id,omitempty"`
-	Name         string             `bson:"name"`
-	UserID       string             `bson:"userid"`
-	Username     string             `bson:"username"`
-	Date         primitive.DateTime `bson:"date"`
-	Status       string             `bson:"status"`
-	Minutes      float32            `bson:"minutes"`
-	StretchTimes StretchTimes       `bson:"stretchtimes"`
-	LevelAtStart float32            `bson:"level"`
-	Difficulty   int                `bson:"difficulty"`
-	Dynamics     []string           `bson:"dynamics"`
-	Statics      []string           `bson:"statics"`
-	Exercises    [9]WorkoutRound    `bson:"exercises"`
+	ID              primitive.ObjectID `bson:"_id,omitempty"`
+	Name            string             `bson:"name"`
+	UserID          string             `bson:"userid"`
+	Username        string             `bson:"username"`
+	Date            primitive.DateTime `bson:"date"`
+	Status          string             `bson:"status"`
+	Minutes         float32            `bson:"minutes"`
+	StretchTimes    StretchTimes       `bson:"stretchtimes"`
+	LevelAtStart    float32            `bson:"level"`
+	Difficulty      int                `bson:"difficulty"`
+	Dynamics        []string           `bson:"dynamics"`
+	Statics         []string           `bson:"statics"`
+	Exercises       [9]WorkoutRound    `bson:"exercises"`
+	CardioRatings   [9]float32         `bson:"cardioratings"`
+	CardioRating    float32            `bson:"cardiorating"`
+	GeneralTypeVals [3]float32         `bson:"gentypevals"`
 }
 
 type StretchTimes struct {
