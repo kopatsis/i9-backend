@@ -20,6 +20,7 @@ type User struct {
 	TypeModifications map[string]float32 `bson:"typemods"`
 	RoundEndurance    map[int]float32    `bson:"roundendur"`
 	TimeEndurance     map[int]float32    `bson:"timeendur"`
+	PushupSetting     string             `bson:"pushsetting"`
 }
 
 type Workout struct {
@@ -91,6 +92,9 @@ type Exercise struct {
 	InSplits     bool               `bson:"insplits"`
 	InPairs      bool               `bson:"inpairs"`
 	UnderCombos  bool               `bson:"undercombos"`
+	CardioRating float32            `bson:"cardiorating"`
+	PushupType   string             `bson:"pushuptype"`
+	GeneralType  []string           `bson:"generaltype"`
 }
 
 type Stretch struct {
