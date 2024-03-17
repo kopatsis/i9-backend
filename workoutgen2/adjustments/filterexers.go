@@ -35,6 +35,8 @@ func FilterExers(allExercises map[string]shared.Exercise, user shared.User, adjl
 			continue
 		} else if intersects(user.BannedParts, exercise.BodyParts) {
 			continue
+		} else if exercise.PushupType != "" && user.PushupSetting != exercise.PushupType {
+			continue
 		}
 		if exercise.UnderCombos {
 			allowedCombo = append(allowedCombo, exercise.ID.Hex())

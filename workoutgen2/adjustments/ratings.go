@@ -49,3 +49,15 @@ func ExerRatings(exers map[string]shared.Exercise, pastWOs []shared.Workout, use
 
 	return ret
 }
+
+func AdjustBurpeeRatings(user shared.User, exers map[string]shared.Exercise, ratings map[string]float32) {
+	for id, rating := range ratings {
+		exer := exers[id]
+
+		if user.PushupSetting == "Wall" && (exer.Name == "Step Burpees" || exer.Name == "Non-Pushup Burpees") {
+			ratings[id] = rating * 2.25
+		} else if user.PushupSetting == "Knee" && (exer.Name == "Step Burpees" || exer.Name == "Non-Pushup Burpees") {
+			ratings[id] = rating * 1.5
+		}
+	}
+}
