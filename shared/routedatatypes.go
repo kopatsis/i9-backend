@@ -37,6 +37,10 @@ type PlyoRoute struct {
 	Plyo int `json:"plyo" binding:"required,min=0,max=5"`
 }
 
+type PushupSettingRoute struct {
+	Setting string `json:"pushupsetting" binding:"required"`
+}
+
 type ExerListRoute struct {
 	ExerList []string `json:"exerlist" binding:"required"`
 }

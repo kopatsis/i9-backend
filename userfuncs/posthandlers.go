@@ -31,6 +31,68 @@ func uniqueIntList(list1, list2 []int) []int {
 	return new
 }
 
+func PostPushupSetting(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var userBody shared.PushupSettingRoute
+		if err := c.ShouldBindJSON(&userBody); err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with body binding",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if userBody.Setting != "Wall" && userBody.Setting != "Knee" && userBody.Setting != "Regular" {
+			c.JSON(400, gin.H{
+				"Error": "Issue with body binding",
+				"Exact": "provided setting for pushups non-existentx",
+			})
+			return
+		}
+
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		update := bson.M{
+			"$set": bson.M{"pushsetting": userBody.Setting},
+		}
+
+		var id primitive.ObjectID
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
+			id = oid
+		} else {
+			c.JSON(400, gin.H{
+				"Error": "Issue with user ID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		filter := bson.M{"_id": id}
+
+		collection := database.Collection("user")
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with updating user",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"ID": userID,
+		})
+	}
+}
+
 func PostPlyo(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
