@@ -12,6 +12,9 @@ func ExerRatings(exers map[string]shared.Exercise, pastWOs []shared.Workout, use
 		ret[exercise.ID.Hex()] = exercise.StartQuality
 	}
 
+	hoursSince := 100000
+	balance := [3]float32{1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0}
+
 	for _, workout := range pastWOs {
 		if workout.Status == "Unstarted" {
 			continue
@@ -19,8 +22,12 @@ func ExerRatings(exers map[string]shared.Exercise, pastWOs []shared.Workout, use
 		adjustment := int(time.Since(workout.Date.Time()).Hours())
 		for _, exercise := range workout.Exercises {
 			for _, id := range exercise.ExerciseIDs {
-				ret[id] = float32(math.Max(0.0, float64(ret[id]-float32(11-adjustment))))
+				hourAdj := math.Min(float64(ret[id]), float64(ret[id]-float32(18-adjustment)))
+				ret[id] = float32(math.Max(0.0, hourAdj))
 			}
+		}
+		if adjustment < hoursSince {
+			balance = workout.GeneralTypeVals
 		}
 	}
 
@@ -44,6 +51,13 @@ func ExerRatings(exers map[string]shared.Exercise, pastWOs []shared.Workout, use
 			} else if exer.PlyoRating == 4 {
 				ret[id] = plyoPlus * 1.2 * ret[id]
 			}
+		}
+	}
+
+	genTypeToPos := map[string]int{"Legs": 0, "Core": 1, "Push": 2}
+	for _, exer := range exers {
+		for _, gtype := range exer.GeneralType {
+			ret[exer.ID.Hex()] *= 1.0 + (4.0 * (1.0/3.0 - balance[genTypeToPos[gtype]]))
 		}
 	}
 
