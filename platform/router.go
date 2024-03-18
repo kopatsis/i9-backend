@@ -61,6 +61,7 @@ func New(database *mongo.Database) *gin.Engine {
 	router.GET("/exercises", views.GetExercises(database))
 
 	// Sets/adds user specifics
+	router.POST("/users/pushup", userfuncs.PostPushupSetting(database))
 	router.POST("/users/plyo", userfuncs.PostPlyo(database))
 	router.POST("/users/bannedexers", userfuncs.PostBannedExer(database))
 	router.POST("/users/bannedbody", userfuncs.PostBannedBody(database))
