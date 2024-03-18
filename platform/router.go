@@ -26,7 +26,7 @@ func New(database *mongo.Database) *gin.Engine {
 	router.Use(middleware.JWTAuthMiddleware())
 
 	// Won't be used
-	router.GET("/", temp(database))
+	router.GET("/", temp())
 	router.GET("/tpv/:id", tpv(database)) // Temp for personal viewing a workout by id
 
 	// Main functionalities
@@ -83,7 +83,7 @@ func New(database *mongo.Database) *gin.Engine {
 	return router
 }
 
-func temp(database *mongo.Database) gin.HandlerFunc {
+func temp() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",

@@ -7,25 +7,10 @@ import (
 	"fulli9/ratings/dboutput"
 	"fulli9/ratings/operations"
 
-	// "fulli9/ratings/userinput"
-	// "fulli9/workoutgen2/dbhandler"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func RateWorkout(userID string, ratings [9]float32, workoutID string, database *mongo.Database) error {
-
-	// client, database, err := dbhandler.ConnectDB()
-	// if err != nil {
-	// 	fmt.Printf("Error connecting to database %s, restart.\n", err.Error())
-	// 	return err
-	// }
-	// defer dbhandler.DisConnectDB(client)
-
-	// user := dbinput.GetUserDB(database, username)
-	// workout := dbinput.GetPastWOsDB(database, username)
-	// countWO := dbinput.GetUserWorkoutCount(database, username)
-	// countUser := dbinput.GetUserCount(database)
-	// exercises := dbinput.GetExersDB(database)
+func RateWorkout(userID string, ratings [9]float32, favorites [9]float32, workoutID string, database *mongo.Database) error {
 
 	user, workout, countWO, countUser, exercises, err := dbinput.AllInputsAsync(database, userID, workoutID)
 	if err != nil {
@@ -37,33 +22,14 @@ func RateWorkout(userID string, ratings [9]float32, workoutID string, database *
 		return errors.New("no workouts")
 	}
 
-	// ratings := userinput.GetUserRatings(workout, exercises)
-
 	newlevel, average := operations.NewLevel(user, ratings, workout.Difficulty, countWO)
 
 	userExMod, userTypeMod, roundEndur, timeEndur := operations.NewUserMods(user, ratings, workout, exercises, countWO, average)
+	userFavMod := operations.UserFaves(user, favorites, workout)
 
 	exerFacts := operations.NewExerciseFactorialVars(ratings, workout, exercises, countUser)
 
-	// err := dboutput.SaveUser(user, newlevel, userExMod, userTypeMod, database)
-	// if err != nil {
-	// 	fmt.Printf("Error saving user modifications, try again %s\n", err.Error())
-	// 	return err
-	// }
-
-	// err = dboutput.SaveModifiedExercises(exerFacts, database)
-	// if err != nil {
-	// 	fmt.Printf("Error saving exercise modifications, try again %s\n", err.Error())
-	// 	return err
-	// }
-
-	// err = dboutput.SaveWorkout(ratings, workout, database)
-	// if err != nil {
-	// 	fmt.Printf("Error saving workout modifications, try again %s\n", err.Error())
-	// 	return err
-	// }
-
-	userErr, exerErr, workoutErr := dboutput.SaveDBAllAsync(user, newlevel, userExMod, userTypeMod, roundEndur, timeEndur, ratings, workout, exerFacts, database)
+	userErr, exerErr, workoutErr := dboutput.SaveDBAllAsync(user, newlevel, userExMod, userTypeMod, roundEndur, timeEndur, ratings, workout, exerFacts, userFavMod, database)
 
 	errortext := ""
 	if userErr != nil {

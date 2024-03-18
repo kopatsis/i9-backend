@@ -23,7 +23,8 @@ type RateIntroRoute struct {
 }
 
 type RateRoute struct {
-	Ratings []float32 `json:"ratings" binding:"required"`
+	Ratings    []float32 `json:"ratings" binding:"required"`
+	Favoritism []float32 `json:"faves" binding:"required"`
 }
 
 type UserRoute struct {

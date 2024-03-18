@@ -36,6 +36,14 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 			ratings[i] = score
 		}
 
+		favorites := [9]float32{3, 3, 3, 3, 3, 3, 3, 3, 3}
+		for i, score := range rateHandler.Favoritism {
+			if i > 9 {
+				break
+			}
+			favorites[i] = score
+		}
+
 		id, exists := c.Params.Get("id")
 		if !exists {
 			c.JSON(400, gin.H{
@@ -45,7 +53,7 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if err := RateWorkout(userID, ratings, id, database); err != nil {
+		if err := RateWorkout(userID, ratings, favorites, id, database); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with rating route",
 				"Exact": err.Error(),
