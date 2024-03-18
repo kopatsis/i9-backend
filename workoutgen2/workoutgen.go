@@ -38,6 +38,7 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 	exerIDs := selections.SelectExercises(types, exerTimes, ratings, allowedNormal, allowedCombo, allowedSplit)
 
 	types, exerIDs, exerTimes, cardioRatings, cardioRating := adjustments.RateCardio(exerIDs, types, exerTimes, exercises, typeMatrix)
+	genRatings := adjustments.GeneralTyping(exerIDs, types, exercises)
 
 	reps, pairs := creation.GetReps(typeMatrix, minutes, adjlevel, exerTimes, user, exerIDs, exercises, types)
 
@@ -46,7 +47,7 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 		return shared.Workout{}, err
 	}
 
-	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes, pairs, cardioRatings, cardioRating)
+	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes, pairs, cardioRatings, cardioRating, genRatings)
 
 	id, err := dboutput.SaveNewWorkout(database, workout)
 	if err != nil {

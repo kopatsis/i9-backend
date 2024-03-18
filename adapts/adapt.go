@@ -36,11 +36,14 @@ func Adapt(difficulty int, userID string, database *mongo.Database, workoutID st
 
 	stretchTimes := workout.StretchTimes
 
+	types, exerIDs, exerTimes, cardioRatings, cardioRating := adjustments.RateCardio(exerIDs, types, exerTimes, exercises, typeMatrix)
+	genRatings := adjustments.GeneralTyping(exerIDs, types, exercises)
+
 	reps, pairs := creation.GetReps(typeMatrix, minutes, adjlevel, exerTimes, user, exerIDs, exercises, types)
 
 	statics, dynamics := workout.Statics, workout.Dynamics
 
-	newworkout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes, pairs)
+	newworkout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes, pairs, cardioRatings, cardioRating, genRatings)
 
 	if asNew {
 		newworkout.Name = shared.NameAnimals(false)

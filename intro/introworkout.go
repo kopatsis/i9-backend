@@ -38,6 +38,7 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 
 	// Uses new system
 	exerIDs := alteredfuncs.SelectExercises(types, exerTimes, ratings, allowedNormal, allowedCombo, allowedSplit)
+	genRatings := adjustments.GeneralTyping(exerIDs, types, exercises)
 
 	// Uses new system
 	reps, pairs := alteredfuncs.GetReps(typeMatrix, minutes, levelSteps, exerTimes, user, exerIDs, exercises, types)
@@ -47,7 +48,7 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 		return shared.Workout{}, err
 	}
 
-	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, -1, minutes, pairs, [9]float32{}, float32(0))
+	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, -1, minutes, pairs, [9]float32{}, float32(0), genRatings)
 
 	id, err := dboutput.SaveNewWorkout(database, workout)
 	if err != nil {
