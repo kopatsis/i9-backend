@@ -24,6 +24,8 @@ func RateWorkout(userID string, ratings [9]float32, favorites [9]float32, workou
 
 	newlevel, average := operations.NewLevel(user, ratings, workout.Difficulty, countWO)
 
+	ratings = operations.AdjustRatings(ratings, workout)
+
 	userExMod, userTypeMod, roundEndur, timeEndur := operations.NewUserMods(user, ratings, workout, exercises, countWO, average)
 	userFavMod := operations.UserFaves(user, favorites, workout)
 
