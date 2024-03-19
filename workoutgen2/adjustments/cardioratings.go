@@ -38,13 +38,13 @@ func RateCardio(exerIDs [9][]string, types [9]string, exerTimes [9]shared.Exerci
 				sum += exercises[id].CardioRating
 				count += 1
 			}
-			cardioRatings[i] = (sum / count) * 1.45
+			cardioRatings[i] = (sum / count) * 1.4
 		} else {
 			exer1, exer2 := exercises[idlist[0]], exercises[idlist[1]]
 			sum := exer1.CardioRating + exer2.CardioRating
 
 			typeMultiplier := 1 / typeMatrix.Matrix[parentMatIndex[exer1.Parent]][parentMatIndex[exer2.Parent]]
-			cardioRatings[i] = (sum / 2) * (((1.5 * 2) + typeMultiplier) / 3)
+			cardioRatings[i] = (sum / 2) * (((1.6 * 3) + typeMultiplier*2) / 5)
 		}
 
 		cardioRating += cardioRatings[i]

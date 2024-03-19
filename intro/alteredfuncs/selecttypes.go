@@ -14,8 +14,12 @@ func SelectTypes(levelSteps []float32, minutes float32) [9]string {
 
 	for i, level := range levelSteps {
 
-		if i < 4 {
+		if i < 3 {
 			ret[i] = "Regular"
+		} else if i == 4 {
+			ret[i] = "Combo"
+		} else if i == 8 {
+			ret[i] = "Split"
 		} else {
 			tempCombo := (1 + ((level - 200) / 2000)) * comboPos
 			tempSplit := (1 + ((level - 200) / 1500)) * splitPos

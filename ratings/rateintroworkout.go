@@ -14,13 +14,6 @@ import (
 
 func RateIntroWorkout(userID string, roundEnd float32, database *mongo.Database) error {
 
-	// client, database, err := dbhandler.ConnectDB()
-	// if err != nil {
-	// 	fmt.Printf("Error connecting to database %s, restart.\n", err.Error())
-	// 	return err
-	// }
-	// defer dbhandler.DisConnectDB(client)
-
 	user, err := dbinput.GetUserDB(database, userID)
 	if err != nil {
 		return err
@@ -36,11 +29,18 @@ func RateIntroWorkout(userID string, roundEnd float32, database *mongo.Database)
 		userlevel = levelSteps[9]
 	}
 
+	pushupSetting := "Wall"
+	if roundEnd > 4.49 {
+		pushupSetting = "Regular"
+	} else if roundEnd > 2.49 {
+		pushupSetting = "Knee"
+	}
+
 	collection := database.Collection("user")
 
 	filter := bson.M{"_id": user.ID}
 
-	update := bson.M{"$set": bson.M{"level": userlevel}}
+	update := bson.M{"$set": bson.M{"level": userlevel, "pushsetting": pushupSetting}}
 
 	_, err = collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
