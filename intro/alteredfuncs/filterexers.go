@@ -40,7 +40,7 @@ func FilterExers(allExercises map[string]shared.Exercise, user shared.User, leve
 			} else if intersects(user.BannedParts, exercise.BodyParts) {
 				continue
 			}
-			if exercise.UnderCombos {
+			if exercise.UnderCombos && exercise.PushupType != "Wall" {
 				currentCombo = append(currentCombo, exercise.ID.Hex())
 			}
 			if exercise.MaxLevel >= level {

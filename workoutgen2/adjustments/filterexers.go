@@ -40,7 +40,7 @@ func FilterExers(allExercises map[string]shared.Exercise, user shared.User, adjl
 				continue
 			}
 		}
-		if exercise.UnderCombos {
+		if exercise.UnderCombos && exercise.PushupType != "Wall" {
 			allowedCombo = append(allowedCombo, exercise.ID.Hex())
 		}
 		if exercise.MaxLevel >= adjlevel {
