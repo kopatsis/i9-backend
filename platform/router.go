@@ -60,13 +60,16 @@ func New(database *mongo.Database) *gin.Engine {
 	router.GET("/stretches", views.GetStrecthes(database))
 	router.GET("/exercises", views.GetExercises(database))
 
-	// Sets/adds user specifics
-	router.POST("/users/pushup", userfuncs.PostPushupSetting(database))
-	router.POST("/users/plyo", userfuncs.PostPlyo(database))
-	router.POST("/users/bannedexers", userfuncs.PostBannedExer(database))
-	router.POST("/users/bannedbody", userfuncs.PostBannedBody(database))
-	router.POST("/users/favorites", userfuncs.PostExerFav(database))
-	router.POST("/users/bannedstrs", userfuncs.PostBannedStr(database))
+	// Sets user specifics
+	router.PATCH("/users/pushup", userfuncs.PatchPushupSetting(database))
+	router.PATCH("/users/plyo", userfuncs.PatchPlyo(database))
+	router.PATCH("/users/paying", userfuncs.PatchPlyo(database))
+
+	// Adds user specifics
+	router.PATCH("/users/bannedexers", userfuncs.PatchBannedExer(database))
+	router.PATCH("/users/bannedbody", userfuncs.PatchBannedBody(database))
+	router.PATCH("/users/favorites", userfuncs.PatchExerFav(database))
+	router.PATCH("/users/bannedstrs", userfuncs.PatchBannedStr(database))
 
 	// Single deletes
 	router.DELETE("/users/bannedexers", userfuncs.DeleteBannedExer(database))

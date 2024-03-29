@@ -10,6 +10,7 @@ type User struct {
 	ID                primitive.ObjectID `bson:"_id,omitempty"`
 	Name              string             `bson:"name"`
 	Username          string             `bson:"username"`
+	Paying            bool               `bson:"paying"`
 	Level             float32            `bson:"level"`
 	BannedExercises   []string           `bson:"bannedExer"`
 	BannedStretches   []string           `bson:"bannedStr"`
@@ -32,6 +33,7 @@ type Workout struct {
 	Status          string             `bson:"status"`
 	Minutes         float32            `bson:"minutes"`
 	StretchTimes    StretchTimes       `bson:"stretchtimes"`
+	PausedTime      float32            `bson:"paued"`
 	LevelAtStart    float32            `bson:"level"`
 	Difficulty      int                `bson:"difficulty"`
 	Dynamics        []string           `bson:"dynamics"`
@@ -77,6 +79,7 @@ type StretchWorkout struct {
 	Status       string             `bson:"status"`
 	StretchTimes StretchTimes       `bson:"stretchtimes"`
 	LevelAtStart float32            `bson:"level"`
+	PausedTime   float32            `bson:"paued"`
 	Dynamics     []string           `bson:"dynamics"`
 	Statics      []string           `bson:"statics"`
 }

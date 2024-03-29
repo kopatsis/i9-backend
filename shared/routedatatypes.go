@@ -42,6 +42,10 @@ type PushupSettingRoute struct {
 	Setting string `json:"pushupsetting" binding:"required"`
 }
 
+type PaySettingRoute struct {
+	Paying bool `json:"paying" binding:"required"`
+}
+
 type ExerListRoute struct {
 	ExerList []string `json:"exerlist" binding:"required"`
 }

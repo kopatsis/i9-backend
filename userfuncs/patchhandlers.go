@@ -31,7 +31,61 @@ func uniqueIntList(list1, list2 []int) []int {
 	return new
 }
 
-func PostPushupSetting(database *mongo.Database) gin.HandlerFunc {
+func PatchPaySetting(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var userBody shared.PaySettingRoute
+		if err := c.ShouldBindJSON(&userBody); err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with body binding",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		update := bson.M{
+			"$set": bson.M{"paying": userBody.Paying},
+		}
+
+		var id primitive.ObjectID
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
+			id = oid
+		} else {
+			c.JSON(400, gin.H{
+				"Error": "Issue with user ID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		filter := bson.M{"_id": id}
+
+		collection := database.Collection("user")
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with updating user",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"ID": userID,
+		})
+	}
+}
+
+func PatchPushupSetting(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var userBody shared.PushupSettingRoute
@@ -93,7 +147,7 @@ func PostPushupSetting(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PostPlyo(database *mongo.Database) gin.HandlerFunc {
+func PatchPlyo(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var userBody shared.PlyoRoute
@@ -147,7 +201,7 @@ func PostPlyo(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PostBannedExer(database *mongo.Database) gin.HandlerFunc {
+func PatchBannedExer(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var user shared.User
@@ -215,7 +269,7 @@ func PostBannedExer(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PostBannedStr(database *mongo.Database) gin.HandlerFunc {
+func PatchBannedStr(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var user shared.User
@@ -283,7 +337,7 @@ func PostBannedStr(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PostBannedBody(database *mongo.Database) gin.HandlerFunc {
+func PatchBannedBody(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var user shared.User
@@ -351,7 +405,7 @@ func PostBannedBody(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PostExerFav(database *mongo.Database) gin.HandlerFunc {
+func PatchExerFav(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var user shared.User
