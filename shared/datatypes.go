@@ -82,6 +82,7 @@ type StretchWorkout struct {
 	StretchTimes StretchTimes       `bson:"stretchtimes"`
 	LevelAtStart float32            `bson:"level"`
 	PausedTime   float32            `bson:"paued"`
+	Minutes      float32            `bson:"minutes"`
 	Dynamics     []string           `bson:"dynamics"`
 	Statics      []string           `bson:"statics"`
 }

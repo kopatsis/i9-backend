@@ -38,6 +38,10 @@ func New(database *mongo.Database) *gin.Engine {
 	router.POST("/workouts/adapt/:id", adapts.PostAdaptedWorkout(database))
 	router.POST("/workouts/adapt/external/:id", adapts.PostExternalAdaptedWorkout(database))
 
+	// Patching workout
+	router.PATCH("/workouts/:id", workoutgen2.PostWorkout(database))
+	router.PATCH("/workouts/stretch/:id", workoutgen2.PostStretchWorkout(database))
+
 	// General User
 	router.POST("/users/local", usergeneral.PostLocalUser(database))
 	router.POST("/users", usergeneral.PostUser(database))

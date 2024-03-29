@@ -73,6 +73,7 @@ func stretchWOReturn(minutes float32, userID string, database *mongo.Database) (
 	if err != nil {
 		return shared.StretchWorkout{}, err
 	}
+	stretchWorkout.Minutes = minutes
 
 	stretchWorkout.Name = shared.NameAnimals(true)
 	id, err := dboutput.SaveStretchWorkout(database, stretchWorkout)

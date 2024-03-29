@@ -9,6 +9,11 @@ type StrWorkoutRoute struct {
 	Time float32 `json:"time" binding:"required"`
 }
 
+type PatchWorkout struct {
+	PausedMinutes float32 `json:"minutes" binding:"required"`
+	Status        string  `json:"status" binding:"required"`
+}
+
 type IntroWorkoutRoute struct {
 	Time float32 `json:"time" binding:"required,min=25,max=60"`
 }
