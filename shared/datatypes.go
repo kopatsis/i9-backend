@@ -22,6 +22,8 @@ type User struct {
 	RoundEndurance    map[int]float32    `bson:"roundendur"`
 	TimeEndurance     map[int]float32    `bson:"timeendur"`
 	PushupSetting     string             `bson:"pushsetting"`
+	LastMinutes       float32            `bson:"lastmins"`
+	LastDifficulty    int                `bson:"lastdiff"`
 }
 
 type Workout struct {

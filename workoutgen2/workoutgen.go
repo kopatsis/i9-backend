@@ -55,6 +55,11 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 	}
 	workout.ID = id
 
+	err = dboutput.UpdateUserLast(minutes, difficulty, userID, database)
+	if err != nil {
+		return shared.Workout{}, err
+	}
+
 	return workout, nil
 }
 
