@@ -117,7 +117,7 @@ type Stretch struct {
 
 type TypeMatrix struct {
 	ID     primitive.ObjectID `bson:"_id,omitempty"`
-	Matrix [10][10]float32    `bson:"matrix"`
+	Matrix [11][11]float32    `bson:"matrix"`
 }
 
 type AnyWorkout interface {
