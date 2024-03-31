@@ -51,10 +51,9 @@ func PostAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 		if _, exists := c.GetQuery("script"); exists {
 			c.JSON(201, &workout)
 		} else {
-			res, _ := c.GetQuery("res")
 			token := c.GetHeader("Authorization")
 
-			resp, err := shared.PositionsRequestWorkout(workout, res, token)
+			resp, err := shared.PositionsRequestWorkout(workout, token)
 			if err != nil {
 				c.JSON(400, gin.H{
 					"Error": "Issue with positions API",
@@ -112,10 +111,9 @@ func PostExternalAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 		if _, exists := c.GetQuery("script"); exists {
 			c.JSON(201, &workout)
 		} else {
-			res, _ := c.GetQuery("res")
 			token := c.GetHeader("Authorization")
 
-			resp, err := shared.PositionsRequestWorkout(workout, res, token)
+			resp, err := shared.PositionsRequestWorkout(workout, token)
 			if err != nil {
 				c.JSON(400, gin.H{
 					"Error": "Issue with positions API",

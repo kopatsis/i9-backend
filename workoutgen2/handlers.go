@@ -45,11 +45,9 @@ func PostWorkout(database *mongo.Database) gin.HandlerFunc {
 		if _, exists := c.GetQuery("script"); exists {
 			c.JSON(201, &workoutRet)
 		} else {
-
-			res, _ := c.GetQuery("res")
 			token := c.GetHeader("Authorization")
 
-			resp, err := shared.PositionsRequestWorkout(workoutRet, res, token)
+			resp, err := shared.PositionsRequestWorkout(workoutRet, token)
 			if err != nil {
 				c.JSON(400, gin.H{
 					"Error": "Issue with positions API",
@@ -100,11 +98,9 @@ func PostStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		if _, exists := c.GetQuery("script"); exists {
 			c.JSON(201, &workoutRet)
 		} else {
-
-			res, _ := c.GetQuery("res")
 			token := c.GetHeader("Authorization")
 
-			resp, err := shared.PositionsRequestStrWorkout(workoutRet, res, token)
+			resp, err := shared.PositionsRequestStrWorkout(workoutRet, token)
 			if err != nil {
 				c.JSON(400, gin.H{
 					"Error": "Issue with positions API",

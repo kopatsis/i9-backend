@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func PositionsRequestWorkout(workout Workout, res, token string) (any, error) {
+func PositionsRequestWorkout(workout Workout, token string) (any, error) {
 	payload := PosWorkoutRoute{
 		Dynamics:     workout.Dynamics,
 		Statics:      workout.Statics,
@@ -25,14 +25,10 @@ func PositionsRequestWorkout(workout Workout, res, token string) (any, error) {
 
 	url := os.Getenv("POSITIONSURL") + "/workouts"
 
-	if res != "" {
-		url += "/" + res
-	}
-
 	return actualRequest(jsonData, url, token)
 }
 
-func PositionsRequestStrWorkout(workout StretchWorkout, res, token string) (any, error) {
+func PositionsRequestStrWorkout(workout StretchWorkout, token string) (any, error) {
 	payload := PosStretchWorkoutRoute{
 		Dynamics:     workout.Dynamics,
 		Statics:      workout.Statics,
@@ -46,10 +42,6 @@ func PositionsRequestStrWorkout(workout StretchWorkout, res, token string) (any,
 	}
 
 	url := os.Getenv("POSITIONSURL") + "/workouts/stretch"
-
-	if res != "" {
-		url += "/" + res
-	}
 
 	return actualRequest(jsonData, url, token)
 }
