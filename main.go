@@ -23,8 +23,8 @@ func main() {
 
 	rtr := platform.New(database)
 
-	log.Print("Server listening on http://localhost:3500/")
-	if err := http.ListenAndServe("0.0.0.0:3500", rtr); err != nil {
+	log.Print("Server listening on http://localhost:3005/")
+	if err := http.ListenAndServe("0.0.0.0:3005", rtr); err != nil {
 		log.Fatalf("There was an error with the http server: %v", err)
 	}
 }

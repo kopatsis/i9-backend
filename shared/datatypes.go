@@ -35,7 +35,7 @@ type Workout struct {
 	Status          string             `bson:"status"`
 	Minutes         float32            `bson:"minutes"`
 	StretchTimes    StretchTimes       `bson:"stretchtimes"`
-	PausedTime      float32            `bson:"paued"`
+	PausedTime      float32            `bson:"paused"`
 	LevelAtStart    float32            `bson:"level"`
 	Difficulty      int                `bson:"difficulty"`
 	Dynamics        []string           `bson:"dynamics"`

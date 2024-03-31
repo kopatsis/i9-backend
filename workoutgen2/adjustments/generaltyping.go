@@ -1,12 +1,17 @@
 package adjustments
 
-import "fulli9/shared"
+import (
+	"fmt"
+	"fulli9/shared"
+)
 
 func GeneralTyping(exerIDs [9][]string, types [9]string, exercises map[string]shared.Exercise) [3]float32 {
 
+	fmt.Println(exerIDs)
+
 	genTypeToPos := map[string]int{"Legs": 0, "Core": 1, "Push": 2}
 
-	ret := [3]float32{}
+	ret := [3]float32{0.0, 0.0, 0.0}
 	sum := float32(0)
 
 	for i, idList := range exerIDs {

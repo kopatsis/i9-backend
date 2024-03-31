@@ -85,7 +85,13 @@ func SelectExercises(types [9]string, times [9]shared.ExerciseTimes, ratings map
 		if round == "Combo" {
 
 			if i == 4 {
-				current := []string{"65b6ddc0934148cc952d5d76"}
+
+				current := []string{}
+				for k, v := range exercises {
+					if v.Name == "Pushups" {
+						current = append(current, k)
+					}
+				}
 
 				sum := sum(allowedCombo[i], ratings)
 				currentAdd := getComboIDs(times[i].ComboExers-1, sum, allowedCombo[i], ratings)
@@ -112,7 +118,15 @@ func SelectExercises(types [9]string, times [9]shared.ExerciseTimes, ratings map
 			ret[i] = current
 		} else {
 			if i == 2 {
-				ret[i] = []string{"65b6ddc0934148cc952d5d78"}
+
+				current := []string{}
+				for k, v := range exercises {
+					if v.Name == "Knee Pushups" {
+						current = append(current, k)
+					}
+				}
+
+				ret[i] = current
 			} else {
 				sum := sum(allowedNormal[i], ratings)
 				current := []string{selectID(sum, allowedNormal[i], ratings)}
