@@ -5,6 +5,7 @@ import (
 	"fulli9/shared"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -12,7 +13,9 @@ import (
 func main() {
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Failed to load the env vars: %v", err)
+		if os.Getenv("APP_ENV") != "production" {
+			log.Fatalf("Failed to load the env vars: %v", err)
+		}
 	}
 
 	client, database, err := shared.ConnectDB()
@@ -23,8 +26,12 @@ func main() {
 
 	rtr := platform.New(database)
 
-	log.Print("Server listening on http://localhost:3005/")
-	if err := http.ListenAndServe("0.0.0.0:3005", rtr); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	if err := http.ListenAndServe(":"+port, rtr); err != nil {
 		log.Fatalf("There was an error with the http server: %v", err)
 	}
 }
