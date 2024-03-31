@@ -42,7 +42,27 @@ func PostWorkout(database *mongo.Database) gin.HandlerFunc {
 		}
 		workoutRet := workout.(shared.Workout)
 
-		c.JSON(201, &workoutRet)
+		if _, exists := c.GetQuery("script"); exists {
+			c.JSON(201, &workoutRet)
+		} else {
+
+			res, _ := c.GetQuery("res")
+			token := c.GetHeader("Authorization")
+
+			resp, err := shared.PositionsRequestWorkout(workoutRet, res, token)
+			if err != nil {
+				c.JSON(400, gin.H{
+					"Error": "Issue with positions API",
+					"Exact": err.Error(),
+				})
+				return
+			}
+			c.JSON(201, gin.H{
+				"workout":   workoutRet,
+				"positions": resp,
+			})
+		}
+
 	}
 }
 
@@ -77,7 +97,26 @@ func PostStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		}
 		workoutRet := workout.(shared.StretchWorkout)
 
-		c.JSON(201, &workoutRet)
+		if _, exists := c.GetQuery("script"); exists {
+			c.JSON(201, &workoutRet)
+		} else {
+
+			res, _ := c.GetQuery("res")
+			token := c.GetHeader("Authorization")
+
+			resp, err := shared.PositionsRequestStrWorkout(workoutRet, res, token)
+			if err != nil {
+				c.JSON(400, gin.H{
+					"Error": "Issue with positions API",
+					"Exact": err.Error(),
+				})
+				return
+			}
+			c.JSON(201, gin.H{
+				"workout":   workoutRet,
+				"positions": resp,
+			})
+		}
 	}
 }
 

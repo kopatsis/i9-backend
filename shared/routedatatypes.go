@@ -1,5 +1,7 @@
 package shared
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type WorkoutRoute struct {
 	Time       float32 `json:"time" binding:"required,min=10,max=240"`
 	Difficulty int     `json:"diff" binding:"required,min=1,max=6"`
@@ -65,4 +67,19 @@ type BodyListRoute struct {
 
 type ExerMapRoute struct {
 	ExerMap map[string]float32 `json:"exermap" binding:"required"`
+}
+
+type PosStretchWorkoutRoute struct {
+	Dynamics     []string
+	Statics      []string
+	StretchTimes StretchTimes
+	ID           primitive.ObjectID
+}
+
+type PosWorkoutRoute struct {
+	Dynamics     []string
+	Statics      []string
+	StretchTimes StretchTimes
+	ID           primitive.ObjectID
+	Exercises    [9]WorkoutRound
 }

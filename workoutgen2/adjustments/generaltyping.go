@@ -1,13 +1,10 @@
 package adjustments
 
 import (
-	"fmt"
 	"fulli9/shared"
 )
 
 func GeneralTyping(exerIDs [9][]string, types [9]string, exercises map[string]shared.Exercise) [3]float32 {
-
-	fmt.Println(exerIDs)
 
 	genTypeToPos := map[string]int{"Legs": 0, "Core": 1, "Push": 2}
 
