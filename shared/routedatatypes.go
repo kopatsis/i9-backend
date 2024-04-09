@@ -3,12 +3,12 @@ package shared
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type WorkoutRoute struct {
-	Time       float32 `json:"time" binding:"required,min=10,max=240"`
+	Time       float32 `json:"time" binding:"required,min=8,max=240"`
 	Difficulty int     `json:"diff" binding:"required,min=1,max=6"`
 }
 
 type StrWorkoutRoute struct {
-	Time float32 `json:"time" binding:"required"`
+	Time float32 `json:"time" binding:"required,min=1,max=240"`
 }
 
 type PatchWorkout struct {
@@ -37,6 +37,14 @@ type RateRoute struct {
 type UserRoute struct {
 	Name string `json:"name"`
 }
+
+type PatchUserRoute struct {
+	Name       *string `json:"name,omitempty"`
+	Pushup     *string `json:"pushup,omitempty"`
+	Plyo       *int    `json:"plyo,omitempty"`
+	BannedBody *[]int  `json:"banned,omitempty"`
+}
+
 type MergeRoute struct {
 	LocalJWT string `json:"localjwt"`
 }

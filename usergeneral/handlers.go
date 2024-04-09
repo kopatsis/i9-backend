@@ -194,7 +194,7 @@ func GetLocalJWT(database *mongo.Database) gin.HandlerFunc {
 func PatchUser(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var userBody shared.UserRoute
+		var userBody shared.PatchUserRoute
 		if err := c.ShouldBindJSON(&userBody); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with body binding",
@@ -203,13 +203,29 @@ func PatchUser(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if userBody.Name == "" {
-			c.Status(204)
-			return
-		}
+		// if userBody.Name == "" {
+		// 	c.Status(204)
+		// 	return
+		// }
 
 		update := bson.M{
-			"$set": bson.M{"name": userBody.Name},
+			"$set": bson.M{},
+		}
+
+		if userBody.Name != nil {
+			update["$set"].(bson.M)["name"] = *userBody.Name
+		}
+
+		if userBody.Plyo != nil {
+			update["$set"].(bson.M)["plyoToler"] = *userBody.Plyo
+		}
+
+		if userBody.Pushup != nil {
+			update["$set"].(bson.M)["pushsetting"] = *userBody.Pushup
+		}
+
+		if userBody.BannedBody != nil {
+			update["$set"].(bson.M)["bannedParts"] = *userBody.BannedBody
 		}
 
 		userID, err := shared.GetIDFromReq(database, c)

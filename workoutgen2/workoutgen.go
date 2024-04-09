@@ -15,7 +15,7 @@ import (
 
 func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.Database) (shared.AnyWorkout, error) {
 
-	if minutes < 10 || difficulty == 0 {
+	if minutes < 8 || difficulty == 0 {
 		return stretchWOReturn(minutes, userID, database)
 	}
 
