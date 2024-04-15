@@ -13,17 +13,18 @@ import (
 	"fulli9/workoutgen2"
 	"net/http"
 
+	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func New(database *mongo.Database) *gin.Engine {
+func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(middleware.CORSMiddleware())
-	router.Use(middleware.JWTAuthMiddleware())
+	router.Use(middleware.JWTAuthMiddleware(firebase))
 
 	// Won't be used
 	router.GET("/", temp())
