@@ -95,7 +95,7 @@ func PostStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		}
 		workoutRet := workout.(shared.StretchWorkout)
 
-		if _, exists := c.GetQuery("script"); exists {
+		if _, exists := c.GetQuery("noscript"); exists {
 			c.JSON(201, &workoutRet)
 		} else {
 			token := c.GetHeader("Authorization")
