@@ -15,6 +15,7 @@ func PositionsRequestWorkout(workout Workout, token string) (any, error) {
 		Statics:      workout.Statics,
 		StretchTimes: workout.StretchTimes,
 		ID:           workout.ID,
+		Difficulty:   workout.Difficulty,
 		Exercises:    workout.Exercises,
 	}
 

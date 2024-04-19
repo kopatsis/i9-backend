@@ -89,5 +89,6 @@ type PosWorkoutRoute struct {
 	Statics      []string
 	StretchTimes StretchTimes
 	ID           primitive.ObjectID
+	Difficulty   int
 	Exercises    [9]WorkoutRound
 }
