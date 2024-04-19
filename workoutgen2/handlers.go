@@ -42,7 +42,7 @@ func PostWorkout(database *mongo.Database) gin.HandlerFunc {
 		}
 		workoutRet := workout.(shared.Workout)
 
-		if _, exists := c.GetQuery("script"); exists {
+		if _, exists := c.GetQuery("noscript"); exists {
 			c.JSON(201, &workoutRet)
 		} else {
 			token := c.GetHeader("Authorization")

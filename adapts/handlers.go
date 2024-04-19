@@ -48,7 +48,7 @@ func PostAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if _, exists := c.GetQuery("script"); exists {
+		if _, exists := c.GetQuery("noscript"); exists {
 			c.JSON(201, &workout)
 		} else {
 			token := c.GetHeader("Authorization")
@@ -108,7 +108,7 @@ func PostExternalAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if _, exists := c.GetQuery("script"); exists {
+		if _, exists := c.GetQuery("noscript"); exists {
 			c.JSON(201, &workout)
 		} else {
 			token := c.GetHeader("Authorization")

@@ -51,8 +51,24 @@ func GetWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(200, &workout)
+		if _, exists := c.GetQuery("script"); !exists {
+			c.JSON(200, &workout)
+		} else {
+			token := c.GetHeader("Authorization")
 
+			resp, err := shared.PositionsRequestWorkout(workout, token)
+			if err != nil {
+				c.JSON(400, gin.H{
+					"Error": "Issue with positions API",
+					"Exact": err.Error(),
+				})
+				return
+			}
+			c.JSON(201, gin.H{
+				"workout":   workout,
+				"positions": resp,
+			})
+		}
 	}
 }
 
