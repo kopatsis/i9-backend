@@ -124,6 +124,10 @@ func GetWorkouts(database *mongo.Database) gin.HandlerFunc {
 			{Key: "userid", Value: userID},
 		}
 
+		if _, exists := c.GetQuery("includearch"); !exists {
+			filterWO = append(filterWO, bson.E{Key: "status", Value: bson.D{{Key: "$ne", Value: "Archived"}}})
+		}
+
 		cursor, err := collection.Find(context.Background(), filterWO, optionsWO)
 		if err != nil {
 			c.JSON(400, gin.H{
@@ -282,6 +286,10 @@ func GetStretchWorkouts(database *mongo.Database) gin.HandlerFunc {
 
 		filterWO := bson.D{
 			{Key: "userid", Value: userID},
+		}
+
+		if _, exists := c.GetQuery("includearch"); !exists {
+			filterWO = append(filterWO, bson.E{Key: "status", Value: bson.D{{Key: "$ne", Value: "Archived"}}})
 		}
 
 		cursor, err := collection.Find(context.Background(), filterWO, optionsWO)
