@@ -16,7 +16,7 @@ func intersects(slice1 []int, slice2 []int) bool {
 	return false
 }
 
-func FilterExers(allExercises map[string]shared.Exercise, user shared.User, adjlevel float32) ([]string, []string, []string) {
+func FilterExers(diff int, allExercises map[string]shared.Exercise, user shared.User, adjlevel float32) ([]string, []string, []string) {
 
 	allowedNormal := []string{}
 	allowedCombo := []string{}
@@ -25,7 +25,7 @@ func FilterExers(allExercises map[string]shared.Exercise, user shared.User, adjl
 	for _, exercise := range allExercises {
 		if user.PlyoTolerance == 0 && exercise.PlyoRating > 0 {
 			continue
-		} else if user.PlyoTolerance == 1 && exercise.PlyoRating > 1 {
+		} else if (user.PlyoTolerance == 1 || diff == 1) && exercise.PlyoRating > 1 {
 			continue
 		} else if user.PlyoTolerance == 2 && exercise.PlyoRating > 3 {
 			continue
@@ -39,11 +39,14 @@ func FilterExers(allExercises map[string]shared.Exercise, user shared.User, adjl
 			if user.PushupSetting != "Regular" && exercise.PushupType != "Explosive" {
 				continue
 			}
+		} else if exercise.CardioRating > 3.85 && diff == 1 {
+			continue
 		}
+
 		if exercise.UnderCombos && exercise.PushupType != "Wall" {
 			allowedCombo = append(allowedCombo, exercise.ID.Hex())
 		}
-		if exercise.MaxLevel >= adjlevel {
+		if exercise.MaxLevel >= adjlevel && (diff != 6 || exercise.CardioRating < 3.35) {
 			allowedNormal = append(allowedNormal, exercise.ID.Hex())
 		}
 		if exercise.InSplits {

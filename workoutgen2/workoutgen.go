@@ -26,9 +26,9 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 
 	adjlevel := adjustments.CalcNewLevel(difficulty, user.Level, pastWOs)
 
-	allowedNormal, allowedCombo, allowedSplit := adjustments.FilterExers(exercises, user, adjlevel)
+	allowedNormal, allowedCombo, allowedSplit := adjustments.FilterExers(difficulty, exercises, user, adjlevel)
 
-	ratings := adjustments.ExerRatings(exercises, pastWOs, user)
+	ratings := adjustments.ExerRatings(difficulty, exercises, pastWOs, user)
 	adjustments.AdjustBurpeeRatings(user, exercises, ratings)
 
 	types := selections.SelectTypes(adjlevel, minutes, difficulty)

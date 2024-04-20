@@ -29,7 +29,7 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 	// Uses new system
 	allowedNormal, allowedCombo, allowedSplit := alteredfuncs.FilterExers(exercises, user, levelSteps)
 
-	ratings := adjustments.ExerRatings(exercises, pastWOs, user)
+	ratings := adjustments.ExerRatings(5, exercises, pastWOs, user)
 
 	// Uses new system
 	types := alteredfuncs.SelectTypes(levelSteps, minutes)

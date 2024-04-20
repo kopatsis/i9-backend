@@ -6,10 +6,31 @@ import (
 	"time"
 )
 
-func ExerRatings(exers map[string]shared.Exercise, pastWOs []shared.Workout, user shared.User) map[string]float32 {
+func ExerRatings(diff int, exers map[string]shared.Exercise, pastWOs []shared.Workout, user shared.User) map[string]float32 {
 	ret := map[string]float32{}
 	for _, exercise := range exers {
 		ret[exercise.ID.Hex()] = exercise.StartQuality
+	}
+
+	if diff == 1 {
+		for id, val := range ret {
+			if exers[id].CardioRating > 2.85 {
+				ret[id] = (val * 0.667)
+			}
+		}
+	} else if diff > 4 {
+		for id, val := range ret {
+			if exers[id].CardioRating > 4 {
+				ret[id] = (val * 1.45)
+			}
+		}
+	}
+	if diff == 6 {
+		for id, val := range ret {
+			if exers[id].CardioRating > 4.75 {
+				ret[id] = (val * 1.45)
+			}
+		}
 	}
 
 	hoursSince := 100000
