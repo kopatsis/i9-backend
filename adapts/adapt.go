@@ -22,7 +22,7 @@ func Adapt(difficulty int, userID string, database *mongo.Database, workoutID st
 
 	minutes := workout.Minutes
 
-	adjlevel := adjustments.CalcNewLevel(difficulty, user.Level, pastWOs)
+	adjlevel := adjustments.CalcDiffLevel(difficulty, adjustments.CalcInitLevel(user.Level, pastWOs))
 
 	var types [9]string
 	var exerTimes [9]shared.ExerciseTimes

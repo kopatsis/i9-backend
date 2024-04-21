@@ -2,29 +2,11 @@ package adjustments
 
 import (
 	"fulli9/shared"
-	"math"
 	"time"
 )
 
-func CalcNewLevel(difficulty int, startLevel float32, pastWOs []shared.Workout) float32 {
+func CalcInitLevel(startLevel float32, pastWOs []shared.Workout) float32 {
 	retLevel := startLevel
-	switch difficulty {
-	case 1:
-		retLevel *= 0.75
-		retLevel *= 1 - float32(math.Max(float64(startLevel/7500), 0.667))
-	case 2:
-		retLevel *= 0.875
-		retLevel *= 1 - float32(math.Max(float64(startLevel/7500), 0.667))
-	case 4:
-		retLevel *= 1.125
-		retLevel *= 1 + float32(math.Max(float64(startLevel/7500), 0.667))
-	case 5:
-		retLevel *= 1.25
-		retLevel *= 1 + float32(math.Max(float64(startLevel/7500), 0.667))
-	case 6:
-		retLevel *= 1.5
-		retLevel *= 1 + float32(math.Max(float64(startLevel/7500), 0.667))
-	}
 
 	lastWOTime := time.Now().AddDate(0, 0, -1)
 
@@ -42,5 +24,22 @@ func CalcNewLevel(difficulty int, startLevel float32, pastWOs []shared.Workout) 
 		retLevel *= (1 - (1 / (3 * hoursSince)))
 	}
 
+	return retLevel
+}
+
+func CalcDiffLevel(diff int, level float32) float32 {
+	retLevel := level
+	switch diff {
+	case 1:
+		retLevel *= 0.7
+	case 2:
+		retLevel *= 0.7
+	case 3:
+		retLevel *= 0.875
+	case 5:
+		retLevel *= 1.3
+	case 6:
+		retLevel *= 1.45
+	}
 	return retLevel
 }
