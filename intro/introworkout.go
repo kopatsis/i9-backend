@@ -22,14 +22,14 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 	if err != nil {
 		return shared.Workout{}, err
 	}
-	pastWOs := []shared.Workout{}
 
 	levelSteps := []float32{50, 125, 200, 350, 500, 800, 1100, 1700, 2300}
 
 	// Uses new system
 	allowedNormal, allowedCombo, allowedSplit := alteredfuncs.FilterExers(exercises, user, levelSteps)
 
-	ratings := adjustments.ExerRatings(5, exercises, pastWOs, user)
+	// Uses new system
+	ratings := alteredfuncs.ExerRatings(exercises, user)
 
 	// Uses new system
 	types := alteredfuncs.SelectTypes(levelSteps, minutes)

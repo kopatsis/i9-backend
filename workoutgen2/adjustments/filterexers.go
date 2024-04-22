@@ -43,13 +43,13 @@ func FilterExers(diff int, allExercises map[string]shared.Exercise, user shared.
 			continue
 		}
 
-		if exercise.UnderCombos && exercise.PushupType != "Wall" {
+		if exercise.UnderCombos && exercise.PushupType != "Wall" && diff != 2 {
 			allowedCombo = append(allowedCombo, exercise.ID.Hex())
 		}
 		if exercise.MaxLevel >= adjlevel && (diff != 6 || exercise.CardioRating < 3.35) {
 			allowedNormal = append(allowedNormal, exercise.ID.Hex())
 		}
-		if exercise.InSplits {
+		if exercise.InSplits && diff != 2 {
 			allowedSplit = append(allowedSplit, exercise.ID.Hex())
 		}
 	}
