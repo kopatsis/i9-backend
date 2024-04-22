@@ -187,7 +187,7 @@ func PatchWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if woHandler.Status != "Unstarted" && woHandler.Status != "Paused" && woHandler.Status != "Rated" && woHandler.Status != "Archived" {
+		if woHandler.Status != "Unstarted" && woHandler.Status != "Progressing" && woHandler.Status != "Paused" && woHandler.Status != "Rated" && woHandler.Status != "Archived" {
 			c.JSON(400, gin.H{
 				"Error": "Issue with status in request",
 				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)"),
@@ -286,7 +286,7 @@ func PatchStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if woHandler.Status != "Unstarted" && woHandler.Status != "Paused" && woHandler.Status != "Rated" && woHandler.Status != "Archived" {
+		if woHandler.Status != "Unstarted" && woHandler.Status != "Progressing" && woHandler.Status != "Paused" && woHandler.Status != "Rated" && woHandler.Status != "Archived" {
 			c.JSON(400, gin.H{
 				"Error": "Issue with status in request",
 				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)"),
