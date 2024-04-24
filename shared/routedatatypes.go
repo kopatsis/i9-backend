@@ -39,10 +39,12 @@ type UserRoute struct {
 }
 
 type PatchUserRoute struct {
-	Name       *string `json:"name,omitempty"`
-	Pushup     *string `json:"pushup,omitempty"`
-	Plyo       *int    `json:"plyo,omitempty"`
-	BannedBody *[]int  `json:"banned,omitempty"`
+	Name       *string  `json:"name,omitempty"`
+	Pushup     *string  `json:"pushup,omitempty"`
+	Plyo       *int     `json:"plyo,omitempty"`
+	BannedBody *[]int   `json:"banned,omitempty"`
+	Diff       *int     `json:"diff,omitempty"`
+	Minutes    *float32 `json:"mins,omitempty"`
 }
 
 type MergeRoute struct {

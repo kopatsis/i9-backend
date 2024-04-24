@@ -203,11 +203,6 @@ func PatchUser(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		// if userBody.Name == "" {
-		// 	c.Status(204)
-		// 	return
-		// }
-
 		update := bson.M{
 			"$set": bson.M{},
 		}
@@ -226,6 +221,14 @@ func PatchUser(database *mongo.Database) gin.HandlerFunc {
 
 		if userBody.BannedBody != nil {
 			update["$set"].(bson.M)["bannedParts"] = *userBody.BannedBody
+		}
+
+		if userBody.Diff != nil {
+			update["$set"].(bson.M)["lastdiff"] = *userBody.Diff
+		}
+
+		if userBody.Minutes != nil {
+			update["$set"].(bson.M)["lastmins"] = *userBody.Minutes
 		}
 
 		userID, err := shared.GetIDFromReq(database, c)
