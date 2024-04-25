@@ -64,6 +64,7 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router.GET("/exercises/:id", views.GetExerByID(database))
 	router.GET("/stretches", views.GetStrecthes(database))
 	router.GET("/exercises", views.GetExercises(database))
+	router.GET("/library", views.GetLibrary(database))
 
 	// Sets user specifics
 	router.PATCH("/users/pushup", userfuncs.PatchPushupSetting(database))

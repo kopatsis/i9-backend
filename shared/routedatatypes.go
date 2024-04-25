@@ -94,3 +94,20 @@ type PosWorkoutRoute struct {
 	Difficulty   int
 	Exercises    [9]WorkoutRound
 }
+
+type RetLibraryExer struct {
+	ID         string
+	Name       string
+	Parent     string
+	Blocked    bool
+	Favoritism float32
+	BodyParts  []int
+}
+
+type RetLibraryStr struct {
+	ID        string
+	Name      string
+	Type      string
+	Blocked   bool
+	BodyParts []int
+}
