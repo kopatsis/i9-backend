@@ -11,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func GetLibrary(database *mongo.Database) gin.HandlerFunc {
@@ -142,7 +143,9 @@ func getUserHelper(database *mongo.Database, userID string) (shared.User, error)
 func getExersHelper(database *mongo.Database) ([]shared.Exercise, error) {
 	var exercises []shared.Exercise
 
-	cursor, err := database.Collection("exercise").Find(context.Background(), bson.D{{}})
+	findOptions := options.Find().SetSort(bson.D{{Key: "name", Value: 1}})
+
+	cursor, err := database.Collection("exercise").Find(context.Background(), bson.D{}, findOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +161,9 @@ func getExersHelper(database *mongo.Database) ([]shared.Exercise, error) {
 func getStrsHelper(database *mongo.Database) ([]shared.Stretch, error) {
 	var exercises []shared.Stretch
 
-	cursor, err := database.Collection("stretch").Find(context.Background(), bson.D{{}})
+	findOptions := options.Find().SetSort(bson.D{{Key: "name", Value: 1}})
+
+	cursor, err := database.Collection("stretch").Find(context.Background(), bson.D{}, findOptions)
 	if err != nil {
 		return nil, err
 	}
