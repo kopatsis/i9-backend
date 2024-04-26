@@ -58,6 +58,7 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router.GET("/workouts", views.GetWorkouts(database))
 	router.GET("/workouts/stretch/:id", views.GetStretchWorkout(database))
 	router.GET("/workouts/stretch", views.GetStretchWorkouts(database))
+	router.GET("/history", views.GetHistory(database))
 
 	// Gets/views 2
 	router.GET("/stretches/:id", views.GetStrByID(database))
