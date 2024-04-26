@@ -2,6 +2,7 @@ package ratings
 
 import (
 	"fulli9/shared"
+	"math"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -33,7 +34,7 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 			if i > 9 {
 				break
 			}
-			ratings[i] = score
+			ratings[i] = float32(math.Min(math.Max(float64(score), 10), 0.1))
 		}
 
 		favorites := [9]float32{3, 3, 3, 3, 3, 3, 3, 3, 3}
@@ -41,7 +42,7 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 			if i > 9 {
 				break
 			}
-			favorites[i] = score
+			favorites[i] = float32(math.Min(math.Max(float64(score), 5), 1))
 		}
 
 		id, exists := c.Params.Get("id")
