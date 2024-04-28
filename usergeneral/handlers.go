@@ -37,7 +37,7 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 		collection := database.Collection("user")
 
 		if err := collection.FindOne(context.TODO(), filter).Err(); err != nil {
-			if err == mongo.ErrNoDocuments {
+			if err != mongo.ErrNoDocuments {
 				c.Status(204)
 				return
 			} else {
@@ -348,6 +348,10 @@ func GetUser(database *mongo.Database) gin.HandlerFunc {
 
 		userID, err := shared.GetIDFromReq(database, c)
 		if err != nil {
+			if _, exists := c.GetQuery("force"); exists && err == mongo.ErrNoDocuments {
+				createUserGet(database, c)
+				return
+			}
 			c.JSON(400, gin.H{
 				"Error": "Issue with userID",
 				"Exact": err.Error(),
@@ -381,6 +385,46 @@ func GetUser(database *mongo.Database) gin.HandlerFunc {
 		c.JSON(200, &user)
 
 	}
+}
+
+func createUserGet(database *mongo.Database, c *gin.Context) {
+	username, err := shared.GetSubFromJWT(c)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"Error": "Issue with retrieving sub id",
+			"Exact": err.Error(),
+		})
+		return
+	}
+	name := shared.GetNameIfExistsContext(c)
+
+	user := shared.User{
+		Username:          username,
+		Name:              name,
+		PlyoTolerance:     3,
+		PushupSetting:     "Knee",
+		BannedExercises:   []string{},
+		BannedStretches:   []string{},
+		BannedParts:       []int{},
+		ExerFavoriteRates: map[string]float32{},
+		ExerModifications: map[string]float32{},
+		TypeModifications: map[string]float32{},
+		RoundEndurance:    map[int]float32{},
+		TimeEndurance:     map[int]float32{},
+	}
+
+	result, err := database.Collection("user").InsertOne(context.Background(), user)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"Error": "Issue adding user to database",
+			"Exact": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(201, gin.H{
+		"ID": result.InsertedID,
+	})
 }
 
 func DeleteUser(database *mongo.Database) gin.HandlerFunc {
