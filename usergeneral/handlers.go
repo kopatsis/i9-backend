@@ -421,10 +421,17 @@ func createUserGet(database *mongo.Database, c *gin.Context) {
 		})
 		return
 	}
+	oid, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
+		c.JSON(400, gin.H{
+			"Error": "Issue adding user to database",
+			"Exact": err.Error(),
+		})
+		return
+	}
+	user.ID = oid
 
-	c.JSON(201, gin.H{
-		"ID": result.InsertedID,
-	})
+	c.JSON(200, &user)
 }
 
 func DeleteUser(database *mongo.Database) gin.HandlerFunc {
