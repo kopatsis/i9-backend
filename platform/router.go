@@ -38,6 +38,8 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router.POST("/workouts/intro/rate", ratings.PostIntroRating(database))
 	router.POST("/workouts/adapt/:id", adapts.PostAdaptedWorkout(database))
 	router.POST("/workouts/adapt/external/:id", adapts.PostExternalAdaptedWorkout(database))
+	router.POST("/workouts/clone/:id", adapts.CloneWorkoutHandler(database))
+	router.POST("/workouts/stretch/clone/:id", adapts.CloneStretchWorkoutHandler(database))
 
 	// Patching workout
 	router.PATCH("/workouts/:id", workoutgen2.PostWorkout(database))
