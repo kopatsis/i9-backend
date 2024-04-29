@@ -88,6 +88,8 @@ func GetLibrary(database *mongo.Database) gin.HandlerFunc {
 			var fav float32
 			if val, ok := user.ExerFavoriteRates[exer.ID.Hex()]; ok {
 				fav = val
+			} else {
+				fav = 1
 			}
 
 			retExer = append(retExer, shared.RetLibraryExer{
