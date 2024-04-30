@@ -36,17 +36,17 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 
 		collection := database.Collection("user")
 
-		if err := collection.FindOne(context.TODO(), filter).Err(); err != nil {
-			if err != mongo.ErrNoDocuments {
-				c.Status(204)
-				return
-			} else {
-				c.JSON(400, gin.H{
-					"Error": "Issue with checking user exists",
-					"Exact": err.Error(),
-				})
-				return
-			}
+		err = collection.FindOne(context.TODO(), filter).Err()
+		if err == nil {
+			c.Status(204)
+			return
+		}
+		if err != mongo.ErrNoDocuments {
+			c.JSON(400, gin.H{
+				"Error": "Issue with checking user exists",
+				"Exact": err.Error(),
+			})
+			return
 		}
 
 		user := shared.User{
@@ -425,7 +425,7 @@ func createUserGet(database *mongo.Database, c *gin.Context) {
 	if !ok {
 		c.JSON(400, gin.H{
 			"Error": "Issue adding user to database",
-			"Exact": err.Error(),
+			"Exact": "Created user id not primitive object id",
 		})
 		return
 	}
