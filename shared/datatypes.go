@@ -11,6 +11,7 @@ type User struct {
 	Name              string             `bson:"name"`
 	Username          string             `bson:"username"`
 	Paying            bool               `bson:"paying"`
+	Provider          string             `bson:"provider"`
 	Level             float32            `bson:"level"`
 	BannedExercises   []string           `bson:"bannedExer"`
 	BannedStretches   []string           `bson:"bannedStr"`
@@ -45,6 +46,7 @@ type Workout struct {
 	CardioRatings   [9]float32         `bson:"cardioratings"`
 	CardioRating    float32            `bson:"cardiorating"`
 	GeneralTypeVals [3]float32         `bson:"gentypevals"`
+	IsIntro         bool               `bson:"intro"`
 }
 
 type StretchTimes struct {

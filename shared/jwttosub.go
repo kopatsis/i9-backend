@@ -61,29 +61,29 @@ func GetSubFromJWTStr(tokenString string) (string, error) {
 func GetNameIfExistsContext(c *gin.Context) string {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
-		return "local"
+		return ""
 	}
 
 	parts := strings.Split(authHeader, " ")
 	if len(parts) != 2 || parts[0] != "Bearer" {
-		return "local"
+		return ""
 	}
 
 	tokenString := parts[1]
 
 	token, _, err := new(jwt.Parser).ParseUnverified(tokenString, jwt.MapClaims{})
 	if err != nil {
-		return "local"
+		return ""
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return "local"
+		return ""
 	}
 
 	name, ok := claims["name"].(string)
 	if !ok {
-		return "local"
+		return ""
 	}
 
 	return name
