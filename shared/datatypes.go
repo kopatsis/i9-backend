@@ -24,6 +24,7 @@ type User struct {
 	PushupSetting     string             `bson:"pushsetting"`
 	LastMinutes       float32            `bson:"lastmins"`
 	LastDifficulty    int                `bson:"lastdiff"`
+	Assessed          bool               `bson:"assessed"`
 }
 
 type Workout struct {
