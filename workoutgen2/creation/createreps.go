@@ -77,7 +77,7 @@ func splitReps(currentReps []float32, matrix shared.TypeMatrix, exers map[string
 
 	repadjust := matrix.Matrix[parentMatIndex[exer1.Parent]][parentMatIndex[exer2.Parent]]
 
-	adjReps := (switchRepTotal * repadjust) / 2
+	adjReps := float32(math.Max(float64((switchRepTotal*repadjust)/2), 1))
 
 	currentReps = append(currentReps, adjReps)
 
