@@ -180,11 +180,7 @@ func PatchWorkout(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		if workout.Minutes < woHandler.PausedMinutes {
-			c.JSON(400, gin.H{
-				"Error": "Issue with minutes in request",
-				"Exact": errors.New("workout paused minutes greater than actual minute length"),
-			})
-			return
+			woHandler.PausedMinutes = workout.Minutes
 		}
 
 		if woHandler.Status != "Unstarted" && woHandler.Status != "Progressing" && woHandler.Status != "Paused" && woHandler.Status != "Rated" && woHandler.Status != "Archived" {
@@ -279,14 +275,10 @@ func PatchStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		if workout.Minutes < woHandler.PausedMinutes {
-			c.JSON(400, gin.H{
-				"Error": "Issue with minutes in request",
-				"Exact": errors.New("workout paused minutes greater than actual minute length"),
-			})
-			return
+			woHandler.PausedMinutes = workout.Minutes
 		}
 
-		if woHandler.Status != "Unstarted" && woHandler.Status != "Progressing" && woHandler.Status != "Paused" && woHandler.Status != "Rated" && woHandler.Status != "Archived" {
+		if woHandler.Status != "Unstarted" && woHandler.Status != "Progressing" && woHandler.Status != "Paused" && woHandler.Status != "Finished" && woHandler.Status != "Archived" {
 			c.JSON(400, gin.H{
 				"Error": "Issue with status in request",
 				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)"),
