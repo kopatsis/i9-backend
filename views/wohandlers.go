@@ -180,7 +180,7 @@ func GetStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 
 		// Will split to auth and unauth once login developed
 
-		var workout shared.Workout
+		var workout shared.StretchWorkout
 
 		idStr, exists := c.Params.Get("id")
 		if !exists {
@@ -219,7 +219,7 @@ func GetStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		} else {
 			token := c.GetHeader("Authorization")
 
-			resp, err := shared.PositionsRequestWorkout(workout, token)
+			resp, err := shared.PositionsRequestStrWorkout(workout, token)
 			if err != nil {
 				c.JSON(400, gin.H{
 					"Error": "Issue with positions API",
@@ -302,7 +302,7 @@ func GetStretchWorkouts(database *mongo.Database) gin.HandlerFunc {
 		}
 		defer cursor.Close(context.Background())
 
-		var pastWorkouts []shared.Workout
+		var pastWorkouts []shared.StretchWorkout
 		err = cursor.All(context.Background(), &pastWorkouts)
 		if err != nil {
 			c.JSON(400, gin.H{
