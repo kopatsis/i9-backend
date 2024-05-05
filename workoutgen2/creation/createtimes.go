@@ -45,7 +45,7 @@ func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shar
 
 		var roundSets float32
 
-		if round == "Combo" && exerUsableRoundTime >= 2 {
+		if round == "Combo" && exerUsableRoundTime >= 1.75 {
 			comboNum := int(rand.Float64() * 7)
 			timeC := possibleComboTimes[comboNum]
 			roundSets = float32(math.Round(float64(exerUsableRoundTime / timeC)))
@@ -54,9 +54,9 @@ func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shar
 			} else if timeC == 45.0 {
 				currentTimes.ComboExers = (comboNum + 2) / 2
 			} else {
-				currentTimes.ComboExers = comboNum - 2
+				currentTimes.ComboExers = 3
 			}
-		} else if round == "Split" && exerUsableRoundTime >= 2 {
+		} else if round == "Split" && exerUsableRoundTime >= 1.75 {
 			splitNum := int(rand.Float64() * 5)
 			timeS := possibleSplitTimes[splitNum]
 			roundSets = float32(math.Round(float64(exerUsableRoundTime / timeS)))

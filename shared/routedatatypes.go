@@ -12,7 +12,7 @@ type StrWorkoutRoute struct {
 }
 
 type PatchWorkout struct {
-	PausedMinutes float32 `json:"minutes" binding:"required"`
+	PausedMinutes float32 `json:"minutes"`
 	Status        string  `json:"status" binding:"required"`
 }
 
