@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-func unadjustedReps(round int, id string, adjlevel, minutes float32, times shared.ExerciseTimes, user shared.User, exers map[string]shared.Exercise) float32 {
+func UnadjustedReps(round int, id string, adjlevel, minutes float32, times shared.ExerciseTimes, user shared.User, exers map[string]shared.Exercise) float32 {
 
 	exercise := exers[id]
 
@@ -24,13 +24,9 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times share
 		speclevel *= val
 	}
 
-	// speclevel *= 1 + (float32(40-minutes) / 160)
-
 	varA := exercise.RepVars[0]
 	varB := exercise.RepVars[1]
 	varC := exercise.RepVars[2]
-
-	// speclevel = float32(math.Max(float64(speclevel), float64(exercise.MinLevel)))
 
 	initReps := float32(exercise.MinReps) + varA*float32(math.Pow(float64((speclevel)/varB), 1/float64(varC)))
 
@@ -44,7 +40,7 @@ func unadjustedReps(round int, id string, adjlevel, minutes float32, times share
 	return initReps
 }
 
-func splitReps(currentReps []float32, matrix shared.TypeMatrix, exers map[string]shared.Exercise, round []string, switchRepTotal float32, retPairs [9][]bool, i int) ([]float32, [9][]bool) {
+func SplitReps(currentReps []float32, matrix shared.TypeMatrix, exers map[string]shared.Exercise, round []string, switchRepTotal float32, retPairs [9][]bool, i int) ([]float32, [9][]bool) {
 
 	parentMatIndex := map[string]int{
 		"Pushups":           0,
@@ -63,23 +59,19 @@ func splitReps(currentReps []float32, matrix shared.TypeMatrix, exers map[string
 	exer1 := exers[round[0]]
 	exer2 := exers[round[1]]
 
-	if exer1.InPairs && exer2.InPairs {
-		switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.5))
-		retPairs[i][0] = true
-		retPairs[i][1] = true
-	} else if exer1.InPairs {
-		switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.75))
+	if exer1.InPairs {
+		currentReps[0] /= 2
 		retPairs[i][0] = true
 	} else if exer2.InPairs {
-		switchRepTotal = float32(math.Max(2.0, float64(switchRepTotal)*.75))
+		currentReps[1] /= 2
 		retPairs[i][1] = true
 	}
 
-	repadjust := matrix.Matrix[parentMatIndex[exer1.Parent]][parentMatIndex[exer2.Parent]]
+	initReps := math.Min(math.Min(float64(currentReps[0]), float64(currentReps[1])), float64(currentReps[0]/4+currentReps[1]/4))
 
-	adjReps := float32(math.Max(float64((switchRepTotal*repadjust)/2), 1))
+	adjReps := float32(initReps) * matrix.Matrix[parentMatIndex[exer1.Parent]][parentMatIndex[exer2.Parent]]
 
-	currentReps = append(currentReps, adjReps)
+	currentReps = []float32{adjReps}
 
 	return currentReps, retPairs
 }
@@ -100,20 +92,23 @@ func GetReps(matrix shared.TypeMatrix, minutes, adjlevel float32, times [9]share
 		currentReps := []float32{}
 		switchRepTotal := float32(0)
 		for _, id := range round {
-			unAdjReps := unadjustedReps(i+1, id, adjlevel, minutes, times[i], user, exers)
+			unAdjReps := UnadjustedReps(i+1, id, adjlevel, minutes, times[i], user, exers)
 			if types[i] == "Combo" {
 				adjReps := unAdjReps / float32(times[i].ComboExers)
 				currentReps = append(currentReps, adjReps)
-			} else if types[i] == "Split" {
-				switchRepTotal += unAdjReps
 			} else {
 				currentReps = append(currentReps, unAdjReps)
 			}
 		}
 
 		if types[i] == "Split" {
-			currentReps, retPairs = splitReps(currentReps, matrix, exers, round, switchRepTotal, retPairs, i)
+			currentReps, retPairs = SplitReps(currentReps, matrix, exers, round, switchRepTotal, retPairs, i)
 		}
+
+		for i, rep := range currentReps {
+			currentReps[i] = float32(math.Max(float64(rep), 1))
+		}
+
 		retReps[i] = currentReps
 	}
 	return retReps, retPairs
