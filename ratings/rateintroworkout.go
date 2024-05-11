@@ -30,7 +30,7 @@ func RateIntroWorkout(userID string, roundEnd float32, database *mongo.Database)
 	}
 
 	pushupSetting := "Wall"
-	if roundEnd > 4.49 {
+	if roundEnd > 3.99 {
 		pushupSetting = "Regular"
 	} else if roundEnd > 2.49 {
 		pushupSetting = "Knee"

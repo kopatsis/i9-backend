@@ -39,14 +39,18 @@ func FilterExers(allExercises map[string]shared.Exercise, user shared.User, leve
 				continue
 			} else if intersects(user.BannedParts, exercise.BodyParts) {
 				continue
+			} else if i > 3 && exercise.PushupType == "Knee" {
+				continue
+			} else if i > 1 && exercise.PushupType == "Wall" {
+				continue
 			}
-			if exercise.UnderCombos && exercise.PushupType != "Wall" && !(i < 3 && exercise.CardioRating > 3.5) && !(i > 5 && exercise.CardioRating <= 3.5) {
+			if exercise.UnderCombos && exercise.PushupType != "Wall" && (exercise.PushupType == "" && exercise.CardioRating > 2.25) && !(i > 5 && exercise.CardioRating <= 3.5) {
 				currentCombo = append(currentCombo, exercise.ID.Hex())
 			}
-			if exercise.MaxLevel >= level && !(i < 3 && exercise.CardioRating > 4) && !(i > 5 && exercise.CardioRating <= 4) {
+			if exercise.MaxLevel >= level && (exercise.PushupType == "" && exercise.CardioRating > 2.75) && !(i > 5 && exercise.CardioRating <= 4) {
 				currentNormal = append(currentNormal, exercise.ID.Hex())
 			}
-			if exercise.InSplits && !(i < 3 && exercise.CardioRating > 3.25) && !(i > 5 && exercise.CardioRating <= 3.25) {
+			if exercise.InSplits && (exercise.PushupType == "" && exercise.CardioRating > 2.125) && !(i > 5 && exercise.CardioRating <= 3.25) {
 				currentSplit = append(currentSplit, exercise.ID.Hex())
 			}
 		}
