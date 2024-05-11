@@ -15,6 +15,7 @@ func NewExerciseFactorialVars(ratings [9]float32, workout shared.Workout, exerci
 			if vars, ok := ret[id]; ok {
 				currentVars = vars
 			}
+			count += 499
 
 			currentVars[0] = currentVars[0] * (1 + (2*float32(workout.Difficulty-1)-ratings[i])/(10*float32(math.Log(2*float64(count+2)))))
 			currentVars[2] = currentVars[2] * (1 + (ratings[i]-2*float32(workout.Difficulty-1))/(25*float32(math.Log(2*float64(count+2)))))
