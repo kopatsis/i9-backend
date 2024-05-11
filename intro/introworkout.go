@@ -23,7 +23,7 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 		return shared.Workout{}, err
 	}
 
-	levelSteps := []float32{50, 125, 200, 350, 500, 800, 1100, 1700, 2300}
+	levelSteps := []float32{75, 150, 250, 400, 600, 950, 1450, 2150, 2750}
 
 	// Uses new system
 	allowedNormal, allowedCombo, allowedSplit := alteredfuncs.FilterExers(exercises, user, levelSteps)
@@ -43,7 +43,7 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 	// Uses new system
 	reps, pairs := alteredfuncs.GetReps(typeMatrix, minutes, levelSteps, exerTimes, user, exerIDs, exercises, types)
 
-	statics, dynamics, stretchTimes, err := selections.SelectStretches(stretchTimes, stretches, levelSteps[0], exerIDs, exercises, user.BannedStretches)
+	statics, dynamics, stretchTimes, err := selections.SelectStretches(stretchTimes, stretches, 100.1, exerIDs, exercises, user.BannedStretches)
 	if err != nil {
 		return shared.Workout{}, err
 	}
