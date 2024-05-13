@@ -19,7 +19,7 @@ func RateIntroWorkout(userID string, roundEnd float32, database *mongo.Database)
 		return err
 	}
 
-	levelSteps := []float32{50, 125, 200, 350, 500, 800, 1100, 1700, 2300}
+	levelSteps := []float32{50, 100, 200, 350, 550, 800, 1100, 1500, 2000}
 
 	var userlevel float32
 	if roundEnd < 9 {

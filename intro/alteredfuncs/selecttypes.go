@@ -14,9 +14,9 @@ func SelectTypes(levelSteps []float32, minutes float32) [9]string {
 
 	for i, level := range levelSteps {
 
-		if i < 3 {
+		if i < 2 {
 			ret[i] = "Regular"
-		} else if i == 4 {
+		} else if i == 4 || i == 2 {
 			ret[i] = "Combo"
 		} else if i == 8 {
 			ret[i] = "Split"
