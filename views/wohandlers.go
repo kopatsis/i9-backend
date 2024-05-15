@@ -4,6 +4,7 @@ import (
 	"context"
 	"fulli9/shared"
 	"strconv"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -336,5 +337,94 @@ func GetStretchWorkouts(database *mongo.Database) gin.HandlerFunc {
 			})
 		}
 
+	}
+}
+
+func GetMostRecent(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		optionsWO := options.FindOne().SetSort(bson.D{{Key: "date", Value: -1}})
+
+		filterWO := bson.D{
+			{Key: "userid", Value: userID},
+			{Key: "status", Value: bson.D{{Key: "$ne", Value: "Archived"}}},
+		}
+
+		var st shared.StretchWorkout
+		var errSt error
+		var wo shared.Workout
+		var errWo error
+
+		var wg sync.WaitGroup
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			collection := database.Collection("stretchworkout")
+			errSt = collection.FindOne(context.Background(), filterWO, optionsWO).Decode(&st)
+		}()
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			collection := database.Collection("workout")
+			errWo = collection.FindOne(context.Background(), filterWO, optionsWO).Decode(&wo)
+		}()
+
+		wg.Wait()
+
+		if errSt != nil && errSt != mongo.ErrNoDocuments {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing stretch workouts",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if errWo != nil && errWo != mongo.ErrNoDocuments {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing workouts",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if errWo == mongo.ErrNoDocuments && errSt == mongo.ErrNoDocuments {
+			c.Status(204)
+			return
+		}
+
+		if errWo == mongo.ErrNoDocuments || wo.Date.Time().Before(st.Date.Time()) {
+			c.JSON(200, gin.H{
+				"name":   st.Name,
+				"id":     st.ID,
+				"date":   st.Date,
+				"status": st.Status,
+				"type":   "Stretch",
+			})
+			return
+		}
+
+		woType := "Regular"
+		if wo.IsIntro {
+			woType = "Assessment"
+		}
+
+		c.JSON(200, gin.H{
+			"name":   wo.Name,
+			"id":     wo.ID,
+			"date":   wo.Date,
+			"status": wo.Status,
+			"type":   woType,
+		})
 	}
 }

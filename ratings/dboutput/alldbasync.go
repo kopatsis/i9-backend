@@ -33,5 +33,7 @@ func SaveDBAllAsync(user shared.User, newlevel float32, userExMod, userTypeMod m
 		workoutErr = SaveWorkout(ratings, workout, database)
 	}()
 
+	wg.Wait()
+
 	return userErr, exerErr, workoutErr
 }
