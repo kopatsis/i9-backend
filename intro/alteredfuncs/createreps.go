@@ -25,7 +25,7 @@ func UnadjustedReps(id string, adjlevel, minutes float32, times shared.ExerciseT
 		initReps *= (float32(2/math.Log10(float64(minutes+1))) - .275)
 	}
 
-	return initReps
+	return creation.RoundSpecial(initReps)
 }
 
 func GetReps(matrix shared.TypeMatrix, minutes float32, levelSteps []float32, times [9]shared.ExerciseTimes, user shared.User, exerIDs [9][]string, exers map[string]shared.Exercise, types [9]string) ([9][]float32, [9][]bool) {

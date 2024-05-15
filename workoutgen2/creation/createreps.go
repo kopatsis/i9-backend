@@ -5,6 +5,23 @@ import (
 	"math"
 )
 
+func RoundSpecial(value float32) float32 {
+	if value < 10 {
+		return value
+	} else if value < 20 {
+		return float32(math.Round(float64(value)))
+	} else if value < 35 {
+		roundTo2 := float32(math.Round(float64(value)/2) * 2)
+		roundTo5 := float32(math.Round(float64(value)/5) * 5)
+		if math.Abs(float64(value)-float64(roundTo2)) < math.Abs(float64(value)-float64(roundTo5)) {
+			return roundTo2
+		}
+		return roundTo5
+	} else {
+		return float32(math.Round(float64(value)/5) * 5)
+	}
+}
+
 func UnadjustedReps(round int, id string, adjlevel, minutes float32, times shared.ExerciseTimes, user shared.User, exers map[string]shared.Exercise) float32 {
 
 	exercise := exers[id]
@@ -37,7 +54,7 @@ func UnadjustedReps(round int, id string, adjlevel, minutes float32, times share
 		initReps *= (float32(2/math.Log10(float64(minutes+1))) - .275)
 	}
 
-	return initReps
+	return RoundSpecial(initReps)
 }
 
 func SplitReps(currentReps []float32, matrix shared.TypeMatrix, exers map[string]shared.Exercise, round []string, switchRepTotal float32, retPairs [9][]bool, i int) ([]float32, [9][]bool) {
