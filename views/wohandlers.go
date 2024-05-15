@@ -410,6 +410,7 @@ func GetMostRecent(database *mongo.Database) gin.HandlerFunc {
 				"date":   st.Date,
 				"status": st.Status,
 				"type":   "Stretch",
+				"stored": false,
 			})
 			return
 		}
@@ -425,6 +426,7 @@ func GetMostRecent(database *mongo.Database) gin.HandlerFunc {
 			"date":   wo.Date,
 			"status": wo.Status,
 			"type":   woType,
+			"stored": false,
 		})
 	}
 }
