@@ -11,10 +11,10 @@ func FilterStretches(level float32, stretches map[string][]shared.Stretch, bodyp
 	newdynamics := []shared.Stretch{}
 
 	if _, ok := stretches["Static"]; !ok {
-		return nil, errors.New("No static stretches in FilterStretches")
+		return nil, errors.New("no static stretches in FilterStretches")
 	}
 	if _, ok := stretches["Dynamic"]; !ok {
-		return nil, errors.New("No dynamic stretches in FilterStretches")
+		return nil, errors.New("no dynamic stretches in FilterStretches")
 	}
 
 	for _, str := range stretches["Static"] {

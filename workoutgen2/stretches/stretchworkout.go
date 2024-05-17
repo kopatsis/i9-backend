@@ -61,9 +61,16 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 
 	stretchSecs := (60 * minutes) / 2
 
-	stretchSets := int(math.Round(float64(stretchSecs) / 20))
+	secsPerSetInit := 20.0
+	if minutes < 2 {
+		secsPerSetInit = 15
+	} else if minutes > 8 {
+		secsPerSetInit = 30
+	} else if minutes > 24 {
+		secsPerSetInit = 40
+	}
 
-	// stretchSecsPerSet := stretchSecs / float32(stretchSets)
+	stretchSets := int(math.Round(float64(stretchSecs) / secsPerSetInit))
 
 	statics, dynamics := []shared.Stretch{}, []shared.Stretch{}
 	for i := 0; i < stretchSets; i++ {
