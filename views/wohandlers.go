@@ -417,7 +417,7 @@ func GetMostRecent(database *mongo.Database) gin.HandlerFunc {
 
 		woType := "Regular"
 		if wo.IsIntro {
-			woType = "Assessment"
+			woType = "Intro"
 		}
 
 		c.JSON(200, gin.H{
