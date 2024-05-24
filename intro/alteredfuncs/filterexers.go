@@ -47,15 +47,17 @@ func FilterExers(allExercises map[string]shared.Exercise, user shared.User, leve
 				continue
 			} else if slices.Contains(notAllowed, exercise.Name) {
 				continue
+			} else if i < 4 && exercise.PushupType == "Regular" {
+				continue
 			}
 
-			if exercise.UnderCombos && (exercise.PushupType == "" && exercise.CardioRating > 2.25) && !(i > 5 && exercise.CardioRating <= 3.5) {
+			if exercise.UnderCombos && !(i > 5 && exercise.CardioRating < 2) {
 				currentCombo = append(currentCombo, exercise.ID.Hex())
 			}
-			if exercise.MaxLevel >= level && (exercise.PushupType == "" && exercise.CardioRating > 2.75) && !(i > 5 && exercise.CardioRating <= 4) {
+			if exercise.MaxLevel >= level && exercise.CardioRating > 3 && !(i > 5 && exercise.CardioRating < 4) {
 				currentNormal = append(currentNormal, exercise.ID.Hex())
 			}
-			if exercise.InSplits && (exercise.PushupType == "" && exercise.CardioRating > 2.125) && !(i > 5 && exercise.CardioRating <= 3.25) {
+			if exercise.InSplits && !(i > 5 && exercise.CardioRating < 2) {
 				currentSplit = append(currentSplit, exercise.ID.Hex())
 			}
 		}
