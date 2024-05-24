@@ -49,7 +49,7 @@ func FilterExers(allExercises map[string]shared.Exercise, user shared.User, leve
 				continue
 			}
 
-			if exercise.UnderCombos && exercise.PushupType != "Wall" && (exercise.PushupType == "" && exercise.CardioRating > 2.25) && !(i > 5 && exercise.CardioRating <= 3.5) {
+			if exercise.UnderCombos && (exercise.PushupType == "" && exercise.CardioRating > 2.25) && !(i > 5 && exercise.CardioRating <= 3.5) {
 				currentCombo = append(currentCombo, exercise.ID.Hex())
 			}
 			if exercise.MaxLevel >= level && (exercise.PushupType == "" && exercise.CardioRating > 2.75) && !(i > 5 && exercise.CardioRating <= 4) {
