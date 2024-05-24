@@ -9,7 +9,7 @@ func ExerRatings(exers map[string]shared.Exercise, user shared.User) map[string]
 
 	for _, exercise := range exers {
 		if exercise.Parent == "Pushups" {
-			ret[exercise.ID.Hex()] = 0.6 * exercise.StartQuality
+			ret[exercise.ID.Hex()] = 0.875 * exercise.StartQuality
 		} else {
 			ret[exercise.ID.Hex()] = exercise.StartQuality
 		}
