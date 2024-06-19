@@ -53,6 +53,7 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router.PATCH("/users/merge", usergeneral.MergeLocalUser(database))
 	router.GET("/users", usergeneral.GetUser(database))
 	router.GET("/users/local/:id", usergeneral.GetLocalJWT(database))
+	router.GET("/refresh", usergeneral.GetToken(database))
 	router.DELETE("/users", usergeneral.DeleteUser(database))
 
 	// Gets/views
