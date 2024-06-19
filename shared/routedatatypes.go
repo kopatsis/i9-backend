@@ -35,7 +35,8 @@ type RateRoute struct {
 }
 
 type UserRoute struct {
-	Name string `json:"name"`
+	Name  string `json:"name"`
+	Token string `json:"token"`
 }
 
 type PatchUserRoute struct {
