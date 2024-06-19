@@ -123,6 +123,12 @@ type TypeMatrix struct {
 	Matrix [11][11]float32    `bson:"matrix"`
 }
 
+type DBToken struct {
+	ID     primitive.ObjectID `bson:"_id,omitempty"`
+	UserID string             `bson:"user"`
+	Token  string             `bson:"token"`
+}
+
 type AnyWorkout interface {
 	Display()
 }

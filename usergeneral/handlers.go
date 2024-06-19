@@ -487,6 +487,32 @@ func DeleteUser(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
+func GetToken(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(200, gin.H{
+				"Token": "",
+			})
+			return
+		}
+
+		var dbToken shared.DBToken
+		collection := database.Collection("usertoken")
+		err = collection.FindOne(context.TODO(), bson.M{"user": userID}).Decode(&dbToken)
+		if err != nil {
+			c.JSON(200, gin.H{
+				"Token": "",
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"Token": dbToken.Token,
+		})
+	}
+}
+
 func refreshTokenDB(userid, refreshToken string, database *mongo.Database) error {
 	collection := database.Collection("usertoken")
 
