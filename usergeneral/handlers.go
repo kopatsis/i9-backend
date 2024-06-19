@@ -508,7 +508,7 @@ func GetToken(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"Token": dbToken.Token,
+			"token": dbToken.Token,
 		})
 	}
 }
