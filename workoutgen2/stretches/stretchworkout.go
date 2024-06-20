@@ -54,23 +54,37 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 		return shared.StretchWorkout{}, err
 	}
 
-	stretches, err = FilterStretches(user.Level*1.1, stretches, nil, user.BannedStretches)
+	stretches, err = FilterStretches(user.Level*1.3, stretches, nil, user.BannedStretches)
 	if err != nil {
 		return shared.StretchWorkout{}, err
 	}
 
-	stretchSecs := (60 * minutes) / 2
-
-	secsPerSetInit := 20.0
-	if minutes < 2 {
-		secsPerSetInit = 15
-	} else if minutes > 8 {
-		secsPerSetInit = 30
-	} else if minutes > 24 {
-		secsPerSetInit = 40
+	secsPerSet, circles := 15.0, 1
+	if minutes > 2 && minutes < 8 {
+		secsPerSet = 20
+	} else if minutes < 16 {
+		secsPerSet = 20
+		circles = 2
+	} else if minutes < 24 {
+		secsPerSet = 20
+		circles = 3
+	} else if minutes < 36 {
+		secsPerSet = 25
+		circles = 3
+	} else if minutes < 48 {
+		secsPerSet = 30
+		circles = 3
+	} else if minutes < 72 {
+		secsPerSet = 30
+		circles = 4
+	} else {
+		secsPerSet = 30
+		circles = 5
 	}
 
-	stretchSets := int(math.Round(float64(stretchSecs) / secsPerSetInit))
+	stretchSecs := (60 * minutes) / 2
+	stretchSecsCircled := stretchSecs / float32(circles)
+	stretchSets := int(math.Round(float64(stretchSecsCircled) / secsPerSet))
 
 	statics, dynamics := []shared.Stretch{}, []shared.Stretch{}
 	for i := 0; i < stretchSets; i++ {
@@ -85,7 +99,12 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 			current = stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))]
 		}
 		dynamics = append(dynamics, current)
+	}
 
+	realstatics, realdynamics := []shared.Stretch{}, []shared.Stretch{}
+	for i := 0; i < circles; i++ {
+		realstatics = append(realstatics, statics...)
+		realdynamics = append(realdynamics, dynamics...)
 	}
 
 	ret := shared.StretchWorkout{
@@ -94,16 +113,16 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 		Date:   primitive.NewDateTimeFromTime(time.Now()),
 		Status: "Not Started",
 		StretchTimes: shared.StretchTimes{
-			DynamicPerSet: StretchTimeSlice(dynamics, stretchSecs),
-			StaticPerSet:  StretchTimeSlice(statics, stretchSecs),
+			DynamicPerSet: StretchTimeSlice(realdynamics, stretchSecs),
+			StaticPerSet:  StretchTimeSlice(realstatics, stretchSecs),
 			DynamicSets:   stretchSets,
 			StaticSets:    stretchSets,
 			DynamicRest:   0.0,
 			FullRound:     stretchSecs,
 		},
 		LevelAtStart: user.Level,
-		Dynamics:     StretchToString(dynamics),
-		Statics:      StretchToString(statics),
+		Dynamics:     StretchToString(realdynamics),
+		Statics:      StretchToString(realstatics),
 	}
 
 	return ret, nil
