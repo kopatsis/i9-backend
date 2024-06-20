@@ -2,14 +2,17 @@ package alteredfuncs
 
 import (
 	"fulli9/shared"
+	"slices"
 )
 
 func ExerRatings(exers map[string]shared.Exercise, user shared.User) map[string]float32 {
 	ret := map[string]float32{}
 
 	for _, exercise := range exers {
-		if exercise.Parent == "Pushups" {
-			ret[exercise.ID.Hex()] = 0.6 * exercise.StartQuality
+		if slices.Contains(exercise.GeneralType, "Core") {
+			ret[exercise.ID.Hex()] = 1.5 * exercise.StartQuality
+		} else if slices.Contains(exercise.GeneralType, "Push") {
+			ret[exercise.ID.Hex()] = 1.125 * exercise.StartQuality
 		} else {
 			ret[exercise.ID.Hex()] = exercise.StartQuality
 		}

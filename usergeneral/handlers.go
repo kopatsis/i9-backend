@@ -2,6 +2,7 @@ package usergeneral
 
 import (
 	"context"
+	"fmt"
 	"fulli9/platform/middleware"
 	"fulli9/shared"
 
@@ -9,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func PostUser(database *mongo.Database) gin.HandlerFunc {
@@ -35,9 +37,11 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 		filter := bson.M{"username": username}
 
 		collection := database.Collection("user")
+		var exuser shared.User
 
-		err = collection.FindOne(context.TODO(), filter).Err()
+		err = collection.FindOne(context.TODO(), filter).Decode(&exuser)
 		if err == nil {
+			refreshTokenDB(exuser.ID.Hex(), userBody.Token, database)
 			c.Status(204)
 			return
 		}
@@ -73,6 +77,7 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		refreshTokenDB(result.InsertedID.(primitive.ObjectID).Hex(), userBody.Token, database)
 		c.JSON(201, gin.H{
 			"ID": result.InsertedID,
 		})
@@ -480,4 +485,54 @@ func DeleteUser(database *mongo.Database) gin.HandlerFunc {
 		c.Status(204)
 
 	}
+}
+
+func GetToken(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(200, gin.H{
+				"Token": "",
+			})
+			return
+		}
+
+		var dbToken shared.DBToken
+		collection := database.Collection("usertoken")
+		err = collection.FindOne(context.TODO(), bson.M{"user": userID}).Decode(&dbToken)
+		if err != nil {
+			c.JSON(200, gin.H{
+				"Token": "",
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"token": dbToken.Token,
+		})
+	}
+}
+
+func refreshTokenDB(userid, refreshToken string, database *mongo.Database) error {
+	collection := database.Collection("usertoken")
+
+	filter := bson.M{"user": userid}
+	update := bson.M{
+		"$set": bson.M{
+			"token": refreshToken,
+		},
+		"$setOnInsert": bson.M{
+			"_id":  primitive.NewObjectID(),
+			"user": userid,
+		},
+	}
+
+	opts := options.Update().SetUpsert(true)
+	_, err := collection.UpdateOne(context.TODO(), filter, update, opts)
+
+	if err != nil {
+		return fmt.Errorf("failed to update or insert token: %v", err)
+	}
+
+	return nil
 }

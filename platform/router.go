@@ -44,6 +44,7 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	// Patching workout
 	router.PATCH("/workouts/:id", workoutgen2.PatchWorkout(database))
 	router.PATCH("/workouts/stretch/:id", workoutgen2.PatchStretchWorkout(database))
+	router.PATCH("/rename/:id", workoutgen2.Rename(database))
 
 	// General User
 	router.POST("/users/local", usergeneral.PostLocalUser(database))
@@ -52,6 +53,7 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router.PATCH("/users/merge", usergeneral.MergeLocalUser(database))
 	router.GET("/users", usergeneral.GetUser(database))
 	router.GET("/users/local/:id", usergeneral.GetLocalJWT(database))
+	router.GET("/refresh", usergeneral.GetToken(database))
 	router.DELETE("/users", usergeneral.DeleteUser(database))
 
 	// Gets/views

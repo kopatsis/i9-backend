@@ -35,7 +35,8 @@ type RateRoute struct {
 }
 
 type UserRoute struct {
-	Name string `json:"name"`
+	Name  string `json:"name"`
+	Token string `json:"token"`
 }
 
 type PatchUserRoute struct {
@@ -110,4 +111,9 @@ type RetLibraryStr struct {
 	Type      string
 	Blocked   bool
 	BodyParts []int
+}
+
+type RenameRoute struct {
+	Name string `json:"name" binding:"required"`
+	Type string `json:"type" binding:"required"`
 }
