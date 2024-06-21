@@ -9,6 +9,7 @@ import (
 func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shared.ExerciseTimes) {
 	possibleComboTimes := [7]float32{30.0, 30.0, 30.0, 45.0, 45.0, 45.0, 60.0}
 	possibleSplitTimes := [5]float32{30.0, 45.0, 30.0, 45.0, 45.0}
+	restAdj := [9]float32{0.85, 0.9, 0.95, 1, 1.1, 1.1, 1.15, 1.1, 0.85}
 
 	seconds := 60 * minutes
 
@@ -75,8 +76,8 @@ func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shar
 		exerTimePerSet := exerUsableRoundTime / roundSets
 		currentTimes.ExercisePerSet = (exerTimePerSet * 2) / 3
 		currentTimes.RestPerSet = (exerTimePerSet * 1) / 3
-		currentTimes.RestPerRound = exerRestBetweenRounds
-		currentTimes.FullRound = exerTimePerRound
+		currentTimes.RestPerRound = exerRestBetweenRounds * restAdj[i]
+		currentTimes.FullRound = (exerTimePerRound - exerRestBetweenRounds) + currentTimes.RestPerRound
 		currentTimes.Sets = int(roundSets)
 
 		retExer[i] = currentTimes
