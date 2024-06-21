@@ -17,7 +17,7 @@ type PatchWorkout struct {
 }
 
 type IntroWorkoutRoute struct {
-	Time float32 `json:"time" binding:"required,min=25,max=60"`
+	Time float32 `json:"time" binding:"required,min=20,max=60"`
 }
 
 type AdaptWorkoutRoute struct {

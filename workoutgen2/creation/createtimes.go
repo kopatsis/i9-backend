@@ -7,7 +7,7 @@ import (
 )
 
 func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shared.ExerciseTimes) {
-	possibleComboTimes := [7]float32{30.0, 30.0, 45.0, 45.0, 45.0, 60.0, 60.0}
+	possibleComboTimes := [7]float32{30.0, 30.0, 30.0, 45.0, 45.0, 45.0, 60.0}
 	possibleSplitTimes := [5]float32{30.0, 45.0, 30.0, 45.0, 45.0}
 
 	seconds := 60 * minutes
