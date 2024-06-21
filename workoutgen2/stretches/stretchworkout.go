@@ -19,14 +19,14 @@ func StretchTimeSlice(strList []shared.Stretch, usableTime float32) []float32 {
 
 	for _, str := range strList {
 		if str.InPairs {
-			sum += 2
+			sum += 1.667
 		} else {
 			sum++
 		}
 	}
 
 	unpairedTime := usableTime / sum
-	pairedTime := unpairedTime * 2
+	pairedTime := unpairedTime * 1.667
 
 	for _, str := range strList {
 		if str.InPairs {

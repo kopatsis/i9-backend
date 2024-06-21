@@ -26,10 +26,10 @@ func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shar
 	dynamicUsable := retStr.FullRound - retStr.DynamicRest
 
 	secsPerSetInit := 20.0
-	if retStr.FullRound < 120 {
-		secsPerSetInit = 15
-	} else if retStr.FullRound > 200 {
-		secsPerSetInit = 30
+	if retStr.FullRound < 75 {
+		secsPerSetInit = 12
+	} else if retStr.FullRound < 120 {
+		secsPerSetInit = 16
 	}
 
 	staticSets := float32(math.Round(float64(retStr.FullRound) / secsPerSetInit))
