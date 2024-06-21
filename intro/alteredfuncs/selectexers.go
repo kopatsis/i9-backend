@@ -25,22 +25,22 @@ func selectID(sum float32, exers []string, ratings map[string]float32) string {
 	return exers[int(rand.Float32()*float32(len(exers)))]
 }
 
-func getSplitIDs(sum float32, exers []string, ratings map[string]float32) []string {
+func getSplitIDs(sum float32, exers []string, ratings map[string]float32, exercises map[string]shared.Exercise) []string {
 	id1 := selectID(sum, exers, ratings)
 
 	id2 := selectID(sum, exers, ratings)
-	for id1 == id2 {
+	for id1 == id2 || exercises[id1].Parent == exercises[id2].Parent {
 		id2 = selectID(sum, exers, ratings)
 	}
 
 	return []string{id1, id2}
 }
 
-func getComboIDs(count int, sum float32, exers []string, ratings map[string]float32) []string {
+func getComboIDs(count int, sum float32, exers []string, ratings map[string]float32, exercises map[string]shared.Exercise) []string {
 	ret := []string{}
 	for i := 0; i < count; i++ {
 		currentID := selectID(sum, exers, ratings)
-		for slices.Contains(ret, currentID) {
+		for slices.Contains(ret, currentID) || (i > 0 && exercises[ret[i-1]].Parent == exercises[currentID].Parent) {
 			currentID = selectID(sum, exers, ratings)
 		}
 		ret = append(ret, currentID)
@@ -93,9 +93,9 @@ func SelectExercises(types [9]string, times [9]shared.ExerciseTimes, ratings map
 				}
 
 				sum := sum(allowedCombo[i], ratings)
-				currentAdd := getComboIDs(times[i].ComboExers-1, sum, allowedCombo[i], ratings)
+				currentAdd := getComboIDs(times[i].ComboExers-1, sum, allowedCombo[i], ratings, exercises)
 				for !checkPrevRoundsByType(ret, types, currentAdd, i, exercises) {
-					currentAdd = getComboIDs(times[i].ComboExers-1, sum, allowedCombo[i], ratings)
+					currentAdd = getComboIDs(times[i].ComboExers-1, sum, allowedCombo[i], ratings, exercises)
 				}
 
 				current = append(current, currentAdd...)
@@ -109,26 +109,26 @@ func SelectExercises(types [9]string, times [9]shared.ExerciseTimes, ratings map
 				}
 
 				sum := sum(allowedCombo[i], ratings)
-				currentAdd := getComboIDs(times[i].ComboExers-1, sum, allowedCombo[i], ratings)
+				currentAdd := getComboIDs(times[i].ComboExers-1, sum, allowedCombo[i], ratings, exercises)
 				for !checkPrevRoundsByType(ret, types, currentAdd, i, exercises) {
-					currentAdd = getComboIDs(times[i].ComboExers-1, sum, allowedCombo[i], ratings)
+					currentAdd = getComboIDs(times[i].ComboExers-1, sum, allowedCombo[i], ratings, exercises)
 				}
 
 				current = append(current, currentAdd...)
 				ret[i] = current
 			} else {
 				sum := sum(allowedCombo[i], ratings)
-				current := getComboIDs(times[i].ComboExers, sum, allowedCombo[i], ratings)
+				current := getComboIDs(times[i].ComboExers, sum, allowedCombo[i], ratings, exercises)
 				for !checkPrevRoundsByType(ret, types, current, i, exercises) {
-					current = getComboIDs(times[i].ComboExers, sum, allowedCombo[i], ratings)
+					current = getComboIDs(times[i].ComboExers, sum, allowedCombo[i], ratings, exercises)
 				}
 				ret[i] = current
 			}
 		} else if round == "Split" {
 			sum := sum(allowedSplit[i], ratings)
-			current := getSplitIDs(sum, allowedSplit[i], ratings)
+			current := getSplitIDs(sum, allowedSplit[i], ratings, exercises)
 			for !checkPrevRoundsByType(ret, types, current, i, exercises) {
-				current = getSplitIDs(sum, allowedSplit[i], ratings)
+				current = getSplitIDs(sum, allowedSplit[i], ratings, exercises)
 			}
 			ret[i] = current
 		} else {
