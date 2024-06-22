@@ -37,7 +37,7 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 
 	stretchTimes, exerTimes := creation.CreateTimes(minutes, types)
 
-	exerIDs := selections.SelectExercises(types, exerTimes, ratings, allowedNormal, allowedCombo, allowedSplit)
+	exerIDs := selections.SelectExercises(types, exerTimes, ratings, allowedNormal, allowedCombo, allowedSplit, exercises)
 
 	types, exerIDs, exerTimes, cardioRatings, cardioRating := adjustments.RateCardio(exerIDs, types, exerTimes, exercises, typeMatrix)
 	genRatings := adjustments.GeneralTyping(exerIDs, types, exercises)
