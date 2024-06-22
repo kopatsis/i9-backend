@@ -314,7 +314,10 @@ func MergeLocalUser(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		update := bson.M{
-			"$set": bson.M{"username": newAuthID},
+			"$set": bson.M{
+				"username": newAuthID,
+				"name":     jwtBody.Name,
+			},
 		}
 
 		var id primitive.ObjectID
@@ -340,6 +343,7 @@ func MergeLocalUser(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		refreshTokenDB(mongoID, jwtBody.Refresh, database)
 		c.JSON(200, gin.H{
 			"ID": mongoID,
 		})

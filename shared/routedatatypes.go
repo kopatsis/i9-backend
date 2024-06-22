@@ -50,6 +50,8 @@ type PatchUserRoute struct {
 
 type MergeRoute struct {
 	LocalJWT string `json:"localjwt"`
+	Name     string `json:"name"`
+	Refresh  string `json:"refresh"`
 }
 
 type PlyoRoute struct {
