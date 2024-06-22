@@ -89,13 +89,13 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 	statics, dynamics := []shared.Stretch{}, []shared.Stretch{}
 	for i := 0; i < stretchSets; i++ {
 		current := stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))]
-		for len(statics) > 0 && statics[len(statics)-1].ID.Hex() == current.ID.Hex() && len(stretches["Static"]) > 1 {
+		for ForLoopConditions(statics, stretches["Static"], current) {
 			current = stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))]
 		}
 		statics = append(statics, current)
 
 		current = stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))]
-		for len(dynamics) > 0 && dynamics[len(dynamics)-1].ID.Hex() == current.ID.Hex() && len(stretches["Dynamic"]) > 1 {
+		for ForLoopConditions(dynamics, stretches["Dynamic"], current) {
 			current = stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))]
 		}
 		dynamics = append(dynamics, current)
@@ -127,4 +127,36 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 
 	return ret, nil
 
+}
+
+func ForLoopConditions(existing, filtered []shared.Stretch, current shared.Stretch) bool {
+	if len(existing) == 0 || len(filtered) < 2 {
+		return false
+	}
+
+	if existing[len(existing)-1].ID.Hex() == current.ID.Hex() {
+		return true
+	}
+
+	if len(existing) > 1 && len(filtered) > 2 && existing[len(existing)-2].ID.Hex() == current.ID.Hex() {
+		return true
+	}
+
+	if len(existing) > 2 && len(filtered) > 3 && existing[len(existing)-3].ID.Hex() == current.ID.Hex() {
+		return true
+	}
+
+	if len(existing) <= len(filtered) {
+		count := 0
+		for _, stretch := range existing {
+			if stretch.ID.Hex() == current.ID.Hex() {
+				count++
+				if count >= 2 {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
 }
