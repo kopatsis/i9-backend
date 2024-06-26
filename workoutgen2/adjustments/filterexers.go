@@ -36,7 +36,7 @@ func FilterExers(diff int, allExercises map[string]shared.Exercise, user shared.
 		} else if intersects(user.BannedParts, exercise.BodyParts) {
 			continue
 		} else if exercise.PushupType != "" && user.PushupSetting != exercise.PushupType {
-			if user.PushupSetting != "Regular" && exercise.PushupType != "Explosive" {
+			if !(user.PushupSetting == "Regular" && exercise.PushupType == "Explosive") {
 				continue
 			}
 		} else if exercise.CardioRating > 3.85 && diff == 1 {
