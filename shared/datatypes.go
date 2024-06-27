@@ -110,12 +110,14 @@ type Exercise struct {
 }
 
 type Stretch struct {
-	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	Name      string             `bson:"name"`
-	MinLevel  float32            `bson:"minlevel"`
-	Status    string             `bson:"status"`
-	BodyParts []int              `bson:"bodyparts"`
-	InPairs   bool               `bson:"inpairs"`
+	ID           primitive.ObjectID `bson:"_id,omitempty"`
+	Name         string             `bson:"name"`
+	MinLevel     float32            `bson:"minlevel"`
+	Status       string             `bson:"status"`
+	BodyParts    []int              `bson:"bodyparts"`
+	InPairs      bool               `bson:"inpairs"`
+	DynamicPairs []string           `bson:"dynamicpairs"`
+	Weight       float32            `bson:"weight"`
 }
 
 type TypeMatrix struct {
