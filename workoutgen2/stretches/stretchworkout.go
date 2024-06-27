@@ -86,29 +86,32 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 	stretchSecsCircled := stretchSecs / float32(circles)
 	stretchSets := int(math.Round(float64(stretchSecsCircled) / secsPerSet))
 
+	dynamicSt := stretches["Dynamic"]
+	staticSt := stretches["Static"]
+
+	sum := float32(0)
+	for _, st := range dynamicSt {
+		sum += st.Weight
+	}
+
 	statics, dynamics := []shared.Stretch{}, []shared.Stretch{}
 	for i := 0; i < stretchSets; i++ {
-		// current := stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))]
-		// for ForLoopConditions(statics, stretches["Static"], current) {
-		// 	current = stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))]
-		// }
-		// statics = append(statics, current)
 
-		current := stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))]
-		for ForLoopConditions(dynamics, stretches["Dynamic"], current) {
-			current = stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))]
+		current := SelectDynamic(dynamicSt, sum)
+		for ForLoopConditions(dynamics, dynamicSt, current) {
+			current = SelectDynamic(dynamicSt, sum)
 		}
 		dynamics = append(dynamics, current)
 
 		staticID := current.DynamicPairs[int(rand.Float64()*float64(len(current.DynamicPairs)))]
 		currentStatic := shared.Stretch{}
-		for _, str := range stretches["Static"] {
+		for _, str := range staticSt {
 			if str.ID.Hex() == staticID {
 				currentStatic = str
 			}
 		}
 		if currentStatic.Name == "" {
-			currentStatic = stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))]
+			currentStatic = staticSt[int(rand.Float64()*float64(len(staticSt)))]
 		}
 		statics = append(statics, currentStatic)
 	}
@@ -138,6 +141,18 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 	}
 
 	return ret, nil
+
+}
+
+func SelectDynamic(dynamics []shared.Stretch, sum float32) shared.Stretch {
+	randSelect := rand.Float32() * sum
+	for _, st := range dynamics {
+		randSelect -= st.Weight
+		if randSelect <= 0.1 {
+			return st
+		}
+	}
+	return dynamics[int(rand.Float64()*float64(len(dynamics)))]
 
 }
 
