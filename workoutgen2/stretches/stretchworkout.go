@@ -88,17 +88,29 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 
 	statics, dynamics := []shared.Stretch{}, []shared.Stretch{}
 	for i := 0; i < stretchSets; i++ {
-		current := stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))]
-		for ForLoopConditions(statics, stretches["Static"], current) {
-			current = stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))]
-		}
-		statics = append(statics, current)
+		// current := stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))]
+		// for ForLoopConditions(statics, stretches["Static"], current) {
+		// 	current = stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))]
+		// }
+		// statics = append(statics, current)
 
-		current = stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))]
+		current := stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))]
 		for ForLoopConditions(dynamics, stretches["Dynamic"], current) {
 			current = stretches["Dynamic"][int(rand.Float64()*float64(len(stretches["Dynamic"])))]
 		}
 		dynamics = append(dynamics, current)
+
+		staticID := current.DynamicPairs[int(rand.Float64()*float64(len(current.DynamicPairs)))]
+		currentStatic := shared.Stretch{}
+		for _, str := range stretches["Static"] {
+			if str.ID.Hex() == staticID {
+				currentStatic = str
+			}
+		}
+		if currentStatic.Name == "" {
+			currentStatic = stretches["Static"][int(rand.Float64()*float64(len(stretches["Static"])))]
+		}
+		statics = append(statics, currentStatic)
 	}
 
 	realstatics, realdynamics := []shared.Stretch{}, []shared.Stretch{}
