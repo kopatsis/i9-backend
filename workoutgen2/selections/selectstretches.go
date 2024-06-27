@@ -24,20 +24,34 @@ func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]s
 	}
 
 	statics, dynamics := []shared.Stretch{}, []shared.Stretch{}
-	for i := 0; i < stretchtimes.StaticSets; i++ {
-		current := filteredStretches["Static"][int(rand.Float64()*float64(len(filteredStretches["Static"])))]
-		for stretches.ForLoopConditions(statics, filteredStretches["Static"], current) {
-			current = filteredStretches["Static"][int(rand.Float64()*float64(len(filteredStretches["Static"])))]
-		}
-		statics = append(statics, current)
-	}
+	// for i := 0; i < stretchtimes.StaticSets; i++ {
+	// 	current := filteredStretches["Static"][int(rand.Float64()*float64(len(filteredStretches["Static"])))]
+	// 	for stretches.ForLoopConditions(statics, filteredStretches["Static"], current) {
+	// 		current = filteredStretches["Static"][int(rand.Float64()*float64(len(filteredStretches["Static"])))]
+	// 	}
+	// 	statics = append(statics, current)
+	// }
 
 	for i := 0; i < stretchtimes.DynamicSets; i++ {
 		current := filteredStretches["Dynamic"][int(rand.Float64()*float64(len(filteredStretches["Dynamic"])))]
 		for stretches.ForLoopConditions(dynamics, filteredStretches["Dynamic"], current) {
 			current = filteredStretches["Dynamic"][int(rand.Float64()*float64(len(filteredStretches["Dynamic"])))]
+
 		}
 		dynamics = append(dynamics, current)
+
+		staticID := current.DynamicPairs[int(rand.Float64()*float64(len(current.DynamicPairs)))]
+		currentStatic := shared.Stretch{}
+		for _, str := range filteredStretches["Static"] {
+			if str.ID.Hex() == staticID {
+				currentStatic = str
+			}
+		}
+		if currentStatic.Name == "" {
+			currentStatic = filteredStretches["Static"][int(rand.Float64()*float64(len(filteredStretches["Static"])))]
+		}
+		statics = append(statics, currentStatic)
+
 	}
 
 	retStretchTimes := stretchtimes
