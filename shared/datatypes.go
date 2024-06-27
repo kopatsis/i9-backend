@@ -107,6 +107,7 @@ type Exercise struct {
 	CardioRating float32            `bson:"cardiorating"`
 	PushupType   string             `bson:"pushuptype"`
 	GeneralType  []string           `bson:"generaltype"`
+	SinglesGroup int                `bson:"singlesgroup"`
 }
 
 type Stretch struct {
