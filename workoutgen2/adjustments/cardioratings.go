@@ -108,9 +108,15 @@ func specialSortSlice(originalArray [9][]string, indexOrder [9]int) [9][]string 
 }
 
 func specialSortExerTimes(originalArray [9]shared.ExerciseTimes, indexOrder [9]int) [9]shared.ExerciseTimes {
+	restAdj := [9]float32{0.85, 0.9, 0.95, 1, 1.1, 1.1, 1.15, 1.1, 0.85}
 	var sortedArray [9]shared.ExerciseTimes
 	for i, index := range indexOrder {
 		sortedArray[i] = originalArray[index]
+		oldrest := sortedArray[i].RestPerRound
+		newrest := oldrest * restAdj[i]
+		newFT := (sortedArray[i].FullRound - oldrest) + newrest
+		sortedArray[i].FullRound = newFT
+		sortedArray[i].RestPerRound = newrest
 	}
 	return sortedArray
 }
