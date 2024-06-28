@@ -156,6 +156,15 @@ func SelectDynamic(dynamics []shared.Stretch, sum float32) shared.Stretch {
 
 }
 
+func ContainsReqGroup(stlist []shared.Stretch, group int) bool {
+	for _, st := range stlist {
+		if st.ReqGroup == 1 {
+			return true
+		}
+	}
+	return false
+}
+
 func ForLoopConditions(existing, filtered []shared.Stretch, current shared.Stretch) bool {
 	if len(existing) == 0 || len(filtered) < 2 {
 		return false

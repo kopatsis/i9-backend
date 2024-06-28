@@ -34,11 +34,37 @@ func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]s
 	statics, dynamics := []shared.Stretch{}, []shared.Stretch{}
 
 	for i := 0; i < stretchtimes.DynamicSets; i++ {
-		current := stretches.SelectDynamic(dynamicSt, sum)
-		for stretches.ForLoopConditions(dynamics, dynamicSt, current) {
-			current = stretches.SelectDynamic(dynamicSt, sum)
 
+		reqGroup := 0
+
+		if stretchtimes.DynamicSets > 3 && i > stretchtimes.DynamicSets-3 {
+			if i == stretchtimes.DynamicSets-1 && !stretches.ContainsReqGroup(dynamics, 1) {
+				reqGroup = 1
+			} else if i == stretchtimes.DynamicSets-2 && !stretches.ContainsReqGroup(dynamics, 2) {
+				reqGroup = 2
+			}
 		}
+
+		current := dynamicSt[rand.Intn(len(dynamicSt))]
+		if reqGroup != 0 && stretches.ContainsReqGroup(dynamicSt, reqGroup) {
+			count := 0
+
+			for _, st := range dynamicSt {
+				if st.ReqGroup == reqGroup {
+					count++
+					if rand.Intn(count) == 0 {
+						current = st
+					}
+				}
+			}
+		} else {
+			current := stretches.SelectDynamic(dynamicSt, sum)
+			for stretches.ForLoopConditions(dynamics, dynamicSt, current) {
+				current = stretches.SelectDynamic(dynamicSt, sum)
+
+			}
+		}
+
 		dynamics = append(dynamics, current)
 
 		staticID := current.DynamicPairs[int(rand.Float64()*float64(len(current.DynamicPairs)))]
