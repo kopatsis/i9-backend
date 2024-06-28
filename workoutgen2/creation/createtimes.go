@@ -43,6 +43,11 @@ func CreateTimes(minutes float32, types [9]string) (shared.StretchTimes, [9]shar
 	exerTimePerRound := exerTimeTotal / 9
 
 	exerRestBetweenRounds := float32(math.Min(90, math.Max(15, 0.2*float64(exerTimePerRound))))
+	if minutes < 20 {
+		exerRestBetweenRounds = float32(math.Min(90, math.Max(15, 0.125*float64(exerTimePerRound))))
+	} else if minutes < 30 {
+		exerRestBetweenRounds = float32(math.Min(90, math.Max(15, 0.15*float64(exerTimePerRound))))
+	}
 	exerUsableRoundTime := exerTimePerRound - exerRestBetweenRounds
 
 	for i, round := range types {
