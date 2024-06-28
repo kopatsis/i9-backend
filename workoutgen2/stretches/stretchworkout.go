@@ -97,10 +97,36 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (
 	statics, dynamics := []shared.Stretch{}, []shared.Stretch{}
 	for i := 0; i < stretchSets; i++ {
 
-		current := SelectDynamic(dynamicSt, sum)
-		for ForLoopConditions(dynamics, dynamicSt, current) {
-			current = SelectDynamic(dynamicSt, sum)
+		reqGroup := 0
+
+		if stretchSets > 3 && i > stretchSets-3 {
+			if i == stretchSets-1 && !ContainsReqGroup(dynamics, 1) {
+				reqGroup = 1
+			} else if i == stretchSets-2 && !ContainsReqGroup(dynamics, 2) {
+				reqGroup = 2
+			}
 		}
+
+		current := dynamicSt[rand.Intn(len(dynamicSt))]
+		if reqGroup != 0 && ContainsReqGroup(dynamicSt, reqGroup) {
+			count := 0
+
+			for _, st := range dynamicSt {
+				if st.ReqGroup == reqGroup {
+					count++
+					if rand.Intn(count) == 0 {
+						current = st
+					}
+				}
+			}
+		} else {
+			current := SelectDynamic(dynamicSt, sum)
+			for ForLoopConditions(dynamics, dynamicSt, current) {
+				current = SelectDynamic(dynamicSt, sum)
+
+			}
+		}
+
 		dynamics = append(dynamics, current)
 
 		staticID := current.DynamicPairs[int(rand.Float64()*float64(len(current.DynamicPairs)))]
