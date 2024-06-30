@@ -43,7 +43,7 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 
 	// Discard and retries
 	router.POST("/workouts/retry/:id", workoutgen2.PostWorkoutRetry(database))
-	router.POST("/workouts/intro/retry/:id")
+	router.POST("/workouts/intro/retry/:id", intro.PostIntroWorkoutRetry(database))
 	router.POST("/workouts/stretch/retry/:id", workoutgen2.PostStretchWorkoutRetry(database))
 
 	// Patching workout
