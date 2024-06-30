@@ -49,7 +49,7 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 		if !exists {
 			c.JSON(400, gin.H{
 				"Error": "Issue with param",
-				"Exact": "Unable to get ID from URL paramete",
+				"Exact": "Unable to get ID from URL parameter",
 			})
 			return
 		}

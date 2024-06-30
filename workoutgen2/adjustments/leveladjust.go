@@ -11,7 +11,7 @@ func CalcInitLevel(startLevel float32, pastWOs []shared.Workout) float32 {
 	lastWOTime := time.Now().AddDate(0, 0, -1)
 
 	for _, workout := range pastWOs {
-		if workout.Status == "Unstarted" {
+		if workout.Status != "Rated" {
 			continue
 		}
 		if workout.Date.Time().After(lastWOTime) {

@@ -33,11 +33,10 @@ func ExerRatings(diff int, exers map[string]shared.Exercise, pastWOs []shared.Wo
 		}
 	}
 
-	hoursSince := 100000
-	balance := [3]float32{1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0}
+	balance := [3]float32{1.0 / 2.0, 1.0 / 4.0, 1.0 / 4.0}
 
-	for _, workout := range pastWOs {
-		if workout.Status == "Unstarted" {
+	for i, workout := range pastWOs {
+		if workout.Status != "Rated" {
 			continue
 		}
 		adjustment := int(time.Since(workout.Date.Time()).Hours())
@@ -47,9 +46,11 @@ func ExerRatings(diff int, exers map[string]shared.Exercise, pastWOs []shared.Wo
 				ret[id] = float32(math.Max(0.0, hourAdj))
 			}
 		}
-		if adjustment < hoursSince {
-			balance = workout.GeneralTypeVals
-		}
+		weight := 1 / float32(math.Pow(2, float64(i+1)))
+
+		balance[0] = weight*workout.GeneralTypeVals[0] + (1-weight)*balance[0]
+		balance[1] = weight*workout.GeneralTypeVals[1] + (1-weight)*balance[1]
+		balance[2] = weight*workout.GeneralTypeVals[2] + (1-weight)*balance[2]
 	}
 
 	for id, adjustment := range user.ExerFavoriteRates {
@@ -78,7 +79,12 @@ func ExerRatings(diff int, exers map[string]shared.Exercise, pastWOs []shared.Wo
 	genTypeToPos := map[string]int{"Legs": 0, "Core": 1, "Push": 2}
 	for _, exer := range exers {
 		for _, gtype := range exer.GeneralType {
-			ret[exer.ID.Hex()] *= 1.0 + (4.0 * (1.0/3.0 - balance[genTypeToPos[gtype]]))
+			if gtype == "Legs" {
+				ret[exer.ID.Hex()] *= 1.0 + (2.5 * (1.0/2.0 - balance[genTypeToPos[gtype]]))
+			} else {
+				ret[exer.ID.Hex()] *= 1.0 + (2.5 * (1.0/4.0 - balance[genTypeToPos[gtype]]))
+			}
+
 		}
 	}
 
@@ -89,10 +95,10 @@ func AdjustBurpeeRatings(user shared.User, exers map[string]shared.Exercise, rat
 	for id, rating := range ratings {
 		exer := exers[id]
 
-		if user.PushupSetting == "Wall" && (exer.Name == "Step Burpees" || exer.Name == "Non-Pushup Burpees") {
-			ratings[id] = rating * 2.25
-		} else if user.PushupSetting == "Knee" && (exer.Name == "Step Burpees" || exer.Name == "Non-Pushup Burpees") {
-			ratings[id] = rating * 1.5
+		if user.PushupSetting == "Wall" && exer.Parent == "Burpees" && exer.PushupType == "" {
+			ratings[id] = rating * 1.667
+		} else if user.PushupSetting == "Knee" && exer.Parent == "Burpees" && exer.PushupType == "Knee" {
+			ratings[id] = rating * 1.333
 		}
 	}
 }
