@@ -41,6 +41,11 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router.POST("/workouts/clone/:id", adapts.CloneWorkoutHandler(database))
 	router.POST("/workouts/stretch/clone/:id", adapts.CloneStretchWorkoutHandler(database))
 
+	// Discard and retries
+	router.POST("/workouts/retry/:id", workoutgen2.PostWorkoutRetry(database))
+	router.POST("/workouts/intro/retry/:id")
+	router.POST("/workouts/stretch/retry/:id")
+
 	// Patching workout
 	router.PATCH("/workouts/:id", workoutgen2.PatchWorkout(database))
 	router.PATCH("/workouts/stretch/:id", workoutgen2.PatchStretchWorkout(database))
