@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func RateWorkout(userID string, ratings [9]float32, favorites [9]float32, workoutID string, database *mongo.Database) error {
+func RateWorkout(userID string, ratings [9]float32, favorites [9]float32, fullRating float32, fullFave float32, onlyWorkout bool, workoutID string, database *mongo.Database) error {
 
 	user, workout, countWO, countUser, exercises, err := dbinput.AllInputsAsync(database, userID, workoutID)
 	if err != nil {
