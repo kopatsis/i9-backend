@@ -52,16 +52,6 @@ func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.
 		}
 	}()
 
-	// wg.Add(1)
-	// go func() {
-	// 	defer wg.Done()
-	// 	var err error
-	// 	countUser, err = GetUserCount(database)
-	// 	if err != nil {
-	// 		errChan <- err
-	// 	}
-	// }()
-
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
@@ -84,9 +74,7 @@ func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.
 	}
 
 	if !hasErr {
-		// return user, workout, countWO, countUser, exercises, nil
 		return user, workout, countWO, exercises, nil
 	}
-	// return user, workout, countWO, countUser, exercises, errGroup
 	return user, workout, countWO, exercises, errGroup
 }
