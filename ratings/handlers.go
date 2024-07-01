@@ -2,7 +2,6 @@ package ratings
 
 import (
 	"fulli9/shared"
-	"math"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -29,20 +28,21 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		ratings := [9]float32{-1, -1, -1, -1, -1, -1, -1, -1, -1}
+		completedRounds := len(rateHandler.Ratings)
+		ratings := [9]int{-1, -1, -1, -1, -1, -1, -1, -1, -1}
 		for i, score := range rateHandler.Ratings {
-			if i > 9 {
+			if i > 8 {
 				break
 			}
-			ratings[i] = float32(math.Min(math.Max(float64(score), 10), 0))
+			ratings[i] = limitSizeRating(score)
 		}
 
-		favorites := [9]float32{-1, -1, -1, -1, -1, -1, -1, -1, -1}
+		favorites := [9]int{-1, -1, -1, -1, -1, -1, -1, -1, -1}
 		for i, score := range rateHandler.Favoritism {
-			if i > 9 {
+			if i > 8 {
 				break
 			}
-			favorites[i] = float32(math.Min(math.Max(float64(score), 10), 0))
+			favorites[i] = limitSizeRating(score)
 		}
 
 		id, exists := c.Params.Get("id")
@@ -54,7 +54,7 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if err := RateWorkout(userID, ratings, favorites, rateHandler.FullRating, rateHandler.FullFave, rateHandler.OnlyWorkout, id, database); err != nil {
+		if err := RateWorkout(userID, ratings, favorites, rateHandler.FullRating, rateHandler.FullFave, rateHandler.OnlyWorkout, completedRounds, id, database); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with rating route",
 				"Exact": err.Error(),
@@ -97,4 +97,14 @@ func PostIntroRating(database *mongo.Database) gin.HandlerFunc {
 
 		c.Status(204)
 	}
+}
+
+func limitSizeRating(rating int) int {
+	if rating > 10 {
+		return 10
+	}
+	if rating < 0 {
+		return 0
+	}
+	return rating
 }

@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func SaveModifiedExercises(exerFacts map[string][3]float32, database *mongo.Database) error {
+func SaveAnalysisRatings(exerFacts map[string][3]float32, database *mongo.Database) error {
 
 	collection := database.Collection("exercise")
 

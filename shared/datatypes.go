@@ -133,6 +133,27 @@ type DBToken struct {
 	Token  string             `bson:"token"`
 }
 
+type StoredRating struct {
+	ID            primitive.ObjectID `bson:"_id,omitempty"`
+	UserID        string             `bson:"user"`
+	WorkoutID     string             `bson:"workoutid"`
+	Date          primitive.DateTime `bson:"date"`
+	Minutes       float32            `bson:"minutes"`
+	LevelAtStart  float32            `bson:"level"`
+	Difficulty    int                `bson:"difficulty"`
+	OverallRating int                `bson:"rating"`
+	OverallFave   int                `bson:"fave"`
+	RoundRatings  [9]RoundRating     `bson:"roundratings"`
+}
+
+type RoundRating struct {
+	ActualRound WorkoutRound `bson:"round"`
+	Rating      int          `bson:"rating"`
+	Fave        int          `bson:"fave"`
+	HasRating   bool         `bson:"hasrating"`
+	HasFave     bool         `bson:"hasfave"`
+}
+
 type AnyWorkout interface {
 	Display()
 }

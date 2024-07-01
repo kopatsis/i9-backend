@@ -30,11 +30,11 @@ type RateIntroRoute struct {
 }
 
 type RateRoute struct {
-	Ratings     []float32 `json:"ratings"`
-	Favoritism  []float32 `json:"faves"`
-	FullRating  float32   `json:"fullrating" binding:"required"`
-	FullFave    float32   `json:"fullfave" binding:"required"`
-	OnlyWorkout bool      `json:"onlyworkout" binding:"required"`
+	Ratings     []int `json:"ratings"`
+	Favoritism  []int `json:"faves"`
+	FullRating  int   `json:"fullrating" binding:"required"`
+	FullFave    int   `json:"fullfave" binding:"required"`
+	OnlyWorkout bool  `json:"onlyworkout" binding:"required"`
 }
 
 type UserRoute struct {

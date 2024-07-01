@@ -8,16 +8,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.User, shared.Workout, int64, int64, map[string]shared.Exercise, error) {
+func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.User, shared.Workout, int64, map[string]shared.Exercise, error) {
+	// func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.User, shared.Workout, int64, int64, map[string]shared.Exercise, error) {
 	var user shared.User
 	var workout shared.Workout
 	var countWO int64
-	var countUser int64
+	// var countUser int64
 	var exercises map[string]shared.Exercise
 
 	var wg sync.WaitGroup
 
-	errChan := make(chan error, 5)
+	// errChan := make(chan error, 5)
+	errChan := make(chan error, 4)
 	var errGroup *multierror.Error
 
 	wg.Add(1)
@@ -50,15 +52,15 @@ func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.
 		}
 	}()
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		var err error
-		countUser, err = GetUserCount(database)
-		if err != nil {
-			errChan <- err
-		}
-	}()
+	// wg.Add(1)
+	// go func() {
+	// 	defer wg.Done()
+	// 	var err error
+	// 	countUser, err = GetUserCount(database)
+	// 	if err != nil {
+	// 		errChan <- err
+	// 	}
+	// }()
 
 	wg.Add(1)
 	go func() {
@@ -82,7 +84,9 @@ func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.
 	}
 
 	if !hasErr {
-		return user, workout, countWO, countUser, exercises, nil
+		// return user, workout, countWO, countUser, exercises, nil
+		return user, workout, countWO, exercises, nil
 	}
-	return user, workout, countWO, countUser, exercises, errGroup
+	// return user, workout, countWO, countUser, exercises, errGroup
+	return user, workout, countWO, exercises, errGroup
 }
