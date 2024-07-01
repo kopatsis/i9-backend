@@ -27,11 +27,11 @@ func SaveDBAllAsync(user shared.User, newlevel float32, userExMod, userTypeMod m
 	// 	exerErr = SaveAnalysisRatings(ratings, database)
 	// }()
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		workoutErr = SaveWorkout(ratings, workout, database)
-	}()
+	// wg.Add(1)
+	// go func() {
+	// 	defer wg.Done()
+	// 	workoutErr = SaveWorkout(ratings, workout, database)
+	// }()
 
 	wg.Wait()
 

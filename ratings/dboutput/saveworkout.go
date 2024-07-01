@@ -9,23 +9,48 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func SaveWorkout(ratings [9]float32, workout shared.Workout, database *mongo.Database) error {
+func SaveWorkout(ratings, faves [9]int, fullRating, fullFave int, onlyWorkout bool, workout shared.Workout, database *mongo.Database) error {
 
-	newExercises := [9]shared.WorkoutRound{}
-	for i, round := range workout.Exercises {
-		newRound := round
-		newRound.AvgRating = ratings[i]
-		newExercises[i] = newRound
+	if workout.AvgRating == -1 {
+		workout.AvgRating = float32(fullRating)
+	} else {
+		workout.AvgRating = (((workout.AvgRating) * float32(workout.RatedCount)) + float32(fullRating)) / float32(workout.RatedCount+1)
 	}
-	newWorkout := workout
-	newWorkout.Exercises = newExercises
-	newWorkout.Status = "Rated"
+
+	if workout.AvgFaves == -1 {
+		workout.AvgFaves = float32(fullFave)
+	} else {
+		workout.AvgFaves = (((workout.AvgFaves) * float32(workout.RatedCount)) + float32(fullFave)) / float32(workout.RatedCount+1)
+	}
+
+	workout.RatedCount++
+	workout.Status = "Rated"
+	workout.LastFaves = fullFave
+	workout.LastRating = fullRating
+
+	if !onlyWorkout {
+		for i, round := range workout.Exercises {
+			if round.AvgRating == -1 {
+				round.AvgRating = float32(ratings[i])
+			} else {
+				round.AvgRating = (((workout.AvgRating) * float32(workout.RatedCount)) + float32(ratings[i])) / float32(workout.RatedCount+1)
+			}
+
+			if round.AvgFaves == -1 {
+				round.AvgFaves = float32(faves[i])
+			} else {
+				round.AvgFaves = (((round.AvgFaves) * float32(workout.RatedCount)) + float32(faves[i])) / float32(workout.RatedCount+1)
+			}
+
+			workout.Exercises[i] = round
+		}
+	}
 
 	collection := database.Collection("workout")
 
 	filter := bson.M{"_id": workout.ID}
 
-	update := bson.M{"$set": newWorkout}
+	update := bson.M{"$set": workout}
 
 	_, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
