@@ -24,8 +24,8 @@ func RateWorkout(userID string, ratings, favorites [9]int, fullRating, fullFave 
 
 	user.Level = operations.NewLevel(user, fullRating, workout.Difficulty, completedRounds, countWO)
 
-	user.ExerModifications, user.TypeModifications, user.RoundEndurance, user.TimeEndurance = operations.NewUserMods(user, ratings, workout, exercises, countWO, average)
-	user.ExerFavoriteRates = operations.UserFaves(user, favorites, workout)
+	user.ExerModifications, user.TypeModifications, user.RoundEndurance, user.TimeEndurance = operations.NewUserMods(user, ratings, workout, exercises, countWO, fullRating, onlyWorkout)
+	user.ExerFavoriteRates = operations.UserFaves(user, favorites, workout, onlyWorkout)
 
 	databaseRating := operations.CreateDatabaseRating(ratings, favorites, fullRating, fullFave, onlyWorkout, workout)
 
