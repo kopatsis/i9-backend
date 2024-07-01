@@ -39,7 +39,7 @@ func ExerRatings(diff int, exers map[string]shared.Exercise, pastWOs []shared.Wo
 		if workout.Status != "Rated" {
 			continue
 		}
-		adjustment := int(time.Since(workout.Date.Time()).Hours())
+		adjustment := int(time.Since(workout.Created.Time()).Hours())
 		for _, exercise := range workout.Exercises {
 			for _, id := range exercise.ExerciseIDs {
 				hourAdj := math.Min(float64(ret[id]), float64(ret[id]-float32(18-adjustment)))

@@ -385,7 +385,7 @@ func GetMostRecent(database *mongo.Database) gin.HandlerFunc {
 		if errSt != nil && errSt != mongo.ErrNoDocuments {
 			c.JSON(400, gin.H{
 				"Error": "Issue with viewing stretch workouts",
-				"Exact": err.Error(),
+				"Exact": errSt.Error(),
 			})
 			return
 		}
@@ -393,7 +393,7 @@ func GetMostRecent(database *mongo.Database) gin.HandlerFunc {
 		if errWo != nil && errWo != mongo.ErrNoDocuments {
 			c.JSON(400, gin.H{
 				"Error": "Issue with viewing workouts",
-				"Exact": err.Error(),
+				"Exact": errWo.Error(),
 			})
 			return
 		}
@@ -403,11 +403,11 @@ func GetMostRecent(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if errWo == mongo.ErrNoDocuments || wo.Date.Time().Before(st.Date.Time()) {
+		if errWo == mongo.ErrNoDocuments || wo.Created.Time().Before(st.Created.Time()) {
 			c.JSON(200, gin.H{
 				"name":   st.Name,
 				"id":     st.ID,
-				"date":   st.Date,
+				"date":   st.Created,
 				"status": st.Status,
 				"type":   "Stretch",
 				"stored": false,
@@ -423,7 +423,7 @@ func GetMostRecent(database *mongo.Database) gin.HandlerFunc {
 		c.JSON(200, gin.H{
 			"name":   wo.Name,
 			"id":     wo.ID,
-			"date":   wo.Date,
+			"date":   wo.Created,
 			"status": wo.Status,
 			"type":   woType,
 			"stored": false,

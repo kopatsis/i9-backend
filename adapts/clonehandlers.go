@@ -56,7 +56,7 @@ func CloneWorkoutHandler(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout.Date = primitive.NewDateTimeFromTime(time.Now())
+		workout.Created = primitive.NewDateTimeFromTime(time.Now())
 		workout.ID = primitive.NilObjectID
 		workout.UserID = user.ID.Hex()
 		workout.Username = user.Username
@@ -136,7 +136,7 @@ func CloneStretchWorkoutHandler(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout.Date = primitive.NewDateTimeFromTime(time.Now())
+		workout.Created = primitive.NewDateTimeFromTime(time.Now())
 		workout.ID = primitive.NilObjectID
 		workout.UserID = user.ID.Hex()
 		workout.Status = "Unstarted"

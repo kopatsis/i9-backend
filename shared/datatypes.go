@@ -26,27 +26,38 @@ type User struct {
 	LastMinutes       float32            `bson:"lastmins"`
 	LastDifficulty    int                `bson:"lastdiff"`
 	Assessed          bool               `bson:"assessed"`
+	Badges            []string           `bson:"badges"`    //New
+	CompletedCount    int                `bson:"completed"` //New
 }
 
 type Workout struct {
-	ID              primitive.ObjectID `bson:"_id,omitempty"`
-	Name            string             `bson:"name"`
-	UserID          string             `bson:"userid"`
-	Username        string             `bson:"username"`
-	Date            primitive.DateTime `bson:"date"`
-	Status          string             `bson:"status"`
-	Minutes         float32            `bson:"minutes"`
-	StretchTimes    StretchTimes       `bson:"stretchtimes"`
-	PausedTime      float32            `bson:"paused"`
-	LevelAtStart    float32            `bson:"level"`
-	Difficulty      int                `bson:"difficulty"`
-	Dynamics        []string           `bson:"dynamics"`
-	Statics         []string           `bson:"statics"`
-	Exercises       [9]WorkoutRound    `bson:"exercises"`
-	CardioRatings   [9]float32         `bson:"cardioratings"`
-	CardioRating    float32            `bson:"cardiorating"`
-	GeneralTypeVals [3]float32         `bson:"gentypevals"`
-	IsIntro         bool               `bson:"intro"`
+	ID              primitive.ObjectID   `bson:"_id,omitempty"`
+	Name            string               `bson:"name"`
+	UserID          string               `bson:"userid"`
+	Username        string               `bson:"username"`
+	Created         primitive.DateTime   `bson:"date"`     //PtlNew
+	LastStarted     primitive.DateTime   `bson:"lastdate"` //New
+	DateList        []primitive.DateTime `bson:"datelist"` //New
+	Status          string               `bson:"status"`
+	Minutes         float32              `bson:"minutes"`
+	StretchTimes    StretchTimes         `bson:"stretchtimes"`
+	PausedTime      float32              `bson:"paused"`
+	LevelAtStart    float32              `bson:"level"`
+	Difficulty      int                  `bson:"difficulty"`
+	Dynamics        []string             `bson:"dynamics"`
+	Statics         []string             `bson:"statics"`
+	Exercises       [9]WorkoutRound      `bson:"exercises"`
+	CardioRatings   [9]float32           `bson:"cardioratings"`
+	CardioRating    float32              `bson:"cardiorating"`
+	GeneralTypeVals [3]float32           `bson:"gentypevals"`
+	IsIntro         bool                 `bson:"intro"`
+	IsPinned        bool                 `bson:"pinned"`     //New
+	AvgRating       float32              `bson:"rating"`     //New
+	AvgFaves        float32              `bson:"faves"`      //New
+	LastRating      int                  `bson:"lastrating"` //New
+	LastFaves       int                  `bson:"lastfaves"`  //New
+	RatedCount      int                  `bson:"ratedct"`    //New
+	StartedCount    int                  `bson:"startedct"`  //New
 }
 
 type StretchTimes struct {
@@ -73,21 +84,26 @@ type WorkoutRound struct {
 	Pairs       []bool        `bson:"pairs"`
 	Status      string        `bson:"status"`
 	Times       ExerciseTimes `bson:"times"`
-	Rating      float32       `bson:"rating"`
+	AvgRating   float32       `bson:"rating"` //PtlNew
+	AvgFaves    float32       `bson:"faves"`  //New
 }
 
 type StretchWorkout struct {
-	ID           primitive.ObjectID `bson:"_id,omitempty"`
-	Name         string             `bson:"name"`
-	UserID       string             `bson:"userid"`
-	Date         primitive.DateTime `bson:"date"`
-	Status       string             `bson:"status"`
-	StretchTimes StretchTimes       `bson:"stretchtimes"`
-	LevelAtStart float32            `bson:"level"`
-	PausedTime   float32            `bson:"paused"`
-	Minutes      float32            `bson:"minutes"`
-	Dynamics     []string           `bson:"dynamics"`
-	Statics      []string           `bson:"statics"`
+	ID           primitive.ObjectID   `bson:"_id,omitempty"`
+	Name         string               `bson:"name"`
+	UserID       string               `bson:"userid"`
+	Created      primitive.DateTime   `bson:"date"`     //PtlNew
+	LastStarted  primitive.DateTime   `bson:"lastdate"` //New
+	DateList     []primitive.DateTime `bson:"datelist"` //New
+	Status       string               `bson:"status"`
+	StretchTimes StretchTimes         `bson:"stretchtimes"`
+	LevelAtStart float32              `bson:"level"`
+	PausedTime   float32              `bson:"paused"`
+	Minutes      float32              `bson:"minutes"`
+	Dynamics     []string             `bson:"dynamics"`
+	Statics      []string             `bson:"statics"`
+	IsPinned     bool                 `bson:"pinned"`    //New
+	StartedCount int                  `bson:"startedct"` //New
 }
 
 type Exercise struct {

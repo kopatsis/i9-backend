@@ -12,7 +12,7 @@ func FormatWorkout(statics, dynamics []string, reps [9][]float32, exerIDs [9][]s
 		Name:            shared.NameAnimals(false),
 		UserID:          user.ID.Hex(),
 		Username:        user.Username,
-		Date:            primitive.NewDateTimeFromTime(time.Now()),
+		Created:         primitive.NewDateTimeFromTime(time.Now()),
 		Minutes:         minutes,
 		Status:          "Unstarted",
 		StretchTimes:    stretchTimes,
@@ -33,7 +33,7 @@ func FormatWorkout(statics, dynamics []string, reps [9][]float32, exerIDs [9][]s
 			Pairs:       pairs[i],
 			Status:      types[i],
 			Times:       exerTimes[i],
-			Rating:      float32(-1),
+			AvgRating:   float32(-1),
 		}
 		roundSlice[i] = round
 	}

@@ -14,7 +14,7 @@ func SaveWorkout(ratings [9]float32, workout shared.Workout, database *mongo.Dat
 	newExercises := [9]shared.WorkoutRound{}
 	for i, round := range workout.Exercises {
 		newRound := round
-		newRound.Rating = ratings[i]
+		newRound.AvgRating = ratings[i]
 		newExercises[i] = newRound
 	}
 	newWorkout := workout
