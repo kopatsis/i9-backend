@@ -39,7 +39,7 @@ func PostAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := Adapt(woHandler.Difficulty, userID, database, id, woHandler.AsNew)
+		workout, err := Adapt(woHandler.Difficulty, userID, database, id, woHandler.AsNew, false)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with adapted workout generator",
@@ -99,7 +99,7 @@ func PostExternalAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := Adapt(woHandler.Difficulty, userID, database, id, true)
+		workout, err := Adapt(woHandler.Difficulty, userID, database, id, true, true)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with adapted workout generator",

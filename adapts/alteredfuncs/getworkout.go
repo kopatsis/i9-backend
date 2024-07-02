@@ -30,3 +30,25 @@ func GetWorkoutByID(database *mongo.Database, workoutID string) (shared.Workout,
 
 	return result, nil
 }
+
+func GetStretchWorkoutByID(database *mongo.Database, workoutID string) (shared.StretchWorkout, error) {
+	collection := database.Collection("stretchworkout")
+
+	var id primitive.ObjectID
+	if oid, err := primitive.ObjectIDFromHex(workoutID); err == nil {
+		id = oid
+	} else {
+		return shared.StretchWorkout{}, err
+	}
+
+	filter := bson.D{{Key: "_id", Value: id}}
+
+	// Perform the query.
+	var result shared.StretchWorkout
+	err := collection.FindOne(context.Background(), filter).Decode(&result)
+	if err != nil {
+		return shared.StretchWorkout{}, err
+	}
+
+	return result, nil
+}

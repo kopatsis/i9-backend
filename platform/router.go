@@ -34,8 +34,17 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router.POST("/workouts", workoutgen2.PostWorkout(database))
 	router.POST("/workouts/stretch", workoutgen2.PostStretchWorkout(database))
 	router.POST("/workouts/intro", intro.PostIntroWorkout(database))
+
+	// Rating functionalities
 	router.POST("/workouts/rate/:id", ratings.PostRating(database))
 	router.POST("/workouts/intro/rate", ratings.PostIntroRating(database))
+
+	// Restart (ptl adapt) functionalities
+	router.POST("/workouts/restart/:id", adapts.PostRestartedWorkout(database))
+	router.POST("/workouts/stretch/restart/:id", adapts.PostRestartedStrWorkout(database))
+	router.POST("/workouts/intro/restart/:id", adapts.PostRestartedIntroWorkout(database))
+
+	// Mildly deprecated functionalities
 	router.POST("/workouts/adapt/:id", adapts.PostAdaptedWorkout(database))
 	router.POST("/workouts/adapt/external/:id", adapts.PostExternalAdaptedWorkout(database))
 	router.POST("/workouts/clone/:id", adapts.CloneWorkoutHandler(database))

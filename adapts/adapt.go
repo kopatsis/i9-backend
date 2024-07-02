@@ -1,6 +1,7 @@
 package adapts
 
 import (
+	"errors"
 	"fulli9/adapts/alteredfuncs"
 
 	"fulli9/shared"
@@ -11,16 +12,27 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func Adapt(difficulty int, userID string, database *mongo.Database, workoutID string, asNew bool) (shared.Workout, error) {
+func Adapt(difficulty int, userID string, database *mongo.Database, workoutID string, asNew, external bool) (shared.Workout, error) {
 
 	user, exercises, pastWOs, typeMatrix, workout, err := alteredfuncs.AllInputsAsync(database, userID, workoutID)
 	if err != nil {
 		return shared.Workout{}, nil
 	}
 
+	if !external && workout.UserID != userID {
+		return shared.Workout{}, errors.New("workout does not match the user that's requesting it")
+	}
+
 	minutes := workout.Minutes
 
-	adjlevel := adjustments.CalcDiffLevel(difficulty, adjustments.CalcInitLevel(user.Level, pastWOs))
+	var newdiff int
+	if difficulty == -1 {
+		newdiff = workout.Difficulty
+	} else {
+		newdiff = difficulty
+	}
+
+	adjlevel := adjustments.CalcDiffLevel(newdiff, adjustments.CalcInitLevel(user.Level, pastWOs))
 
 	var types [9]string
 	var exerTimes [9]shared.ExerciseTimes

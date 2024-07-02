@@ -17,3 +17,13 @@ func SaveUpdatedWorkout(database *mongo.Database, workout shared.Workout) error 
 	}
 	return nil
 }
+
+func SaveUpdatedStretchWorkout(database *mongo.Database, workout shared.StretchWorkout) error {
+	collection := database.Collection("stretchworkout")
+	filter := bson.M{"_id": workout.ID}
+	_, err := collection.ReplaceOne(context.TODO(), filter, workout)
+	if err != nil {
+		return err
+	}
+	return nil
+}
