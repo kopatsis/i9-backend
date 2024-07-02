@@ -8,8 +8,6 @@ import (
 	"fulli9/workoutgen2/creation"
 	"fulli9/workoutgen2/dboutput"
 
-	// "fulli9/workoutgen2/datatypes"
-
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -34,32 +32,27 @@ func Adapt(difficulty int, userID string, database *mongo.Database, workoutID st
 		exerIDs[i] = workout.Exercises[i].ExerciseIDs
 	}
 
-	stretchTimes := workout.StretchTimes
-
 	types, exerIDs, exerTimes, cardioRatings, cardioRating := adjustments.RateCardio(exerIDs, types, exerTimes, exercises, typeMatrix)
 	genRatings := adjustments.GeneralTyping(exerIDs, types, exercises)
 
 	reps, pairs := creation.GetReps(typeMatrix, minutes, adjlevel, exerTimes, user, exerIDs, exercises, types)
 
-	statics, dynamics := workout.Statics, workout.Dynamics
-
-	newworkout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes, pairs, cardioRatings, cardioRating, genRatings)
-
 	if asNew {
+		newworkout := creation.FormatWorkout(workout.Statics, workout.Dynamics, reps, exerIDs, workout.StretchTimes, exerTimes, types, user, difficulty, minutes, pairs, cardioRatings, cardioRating, genRatings)
 		newworkout.Name = shared.NameAnimals(false)
 		id, err := dboutput.SaveNewWorkout(database, newworkout)
 		if err != nil {
 			return shared.Workout{}, err
 		}
 		newworkout.ID = id
+		return newworkout, nil
 	} else {
-		newworkout.ID = workout.ID
-		newworkout.Name = workout.Name
-		err := alteredfuncs.SaveUpdatedWorkout(database, newworkout)
+		workout = alteredfuncs.ModifyExisting(workout, reps, pairs, genRatings, cardioRatings, cardioRating)
+		err := alteredfuncs.SaveUpdatedWorkout(database, workout)
 		if err != nil {
 			return shared.Workout{}, err
 		}
+		return workout, nil
 	}
 
-	return newworkout, nil
 }
