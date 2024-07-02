@@ -86,6 +86,10 @@ func PatchWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		if (woHandler.Status == "Progressing" || woHandler.Status == "Paused") && workout.Status == "Unstarted" {
+			workout.StartedCount++
+		}
+
 		workout.PausedTime = woHandler.PausedMinutes
 		workout.Status = woHandler.Status
 
@@ -179,6 +183,10 @@ func PatchStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)"),
 			})
 			return
+		}
+
+		if (woHandler.Status == "Progressing" || woHandler.Status == "Paused") && workout.Status == "Unstarted" {
+			workout.StartedCount++
 		}
 
 		workout.PausedTime = woHandler.PausedMinutes
