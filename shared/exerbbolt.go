@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"log"
 
-	"go.etcd.io/bbolt"
+	bolt "go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -13,10 +13,10 @@ import (
 
 const bucketName = "CacheBucket"
 
-func GetExersHelper(database *mongo.Database, boltDB *bbolt.DB) ([]Exercise, error) {
+func GetExersHelper(database *mongo.Database, boltDB *bolt.DB) ([]Exercise, error) {
 	var exercises []Exercise
 
-	err := boltDB.Update(func(tx *bbolt.Tx) error {
+	err := boltDB.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists([]byte(bucketName))
 		if err != nil {
 			return err
