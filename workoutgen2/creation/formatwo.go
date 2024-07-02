@@ -23,6 +23,8 @@ func FormatWorkout(statics, dynamics []string, reps [9][]float32, exerIDs [9][]s
 		CardioRatings:   cardioRatings,
 		CardioRating:    cardioRating,
 		GeneralTypeVals: genRatings,
+		AvgRating:       float32(-1),
+		AvgFaves:        float32(-1),
 	}
 
 	roundSlice := [9]shared.WorkoutRound{}
@@ -34,6 +36,7 @@ func FormatWorkout(statics, dynamics []string, reps [9][]float32, exerIDs [9][]s
 			Status:      types[i],
 			Times:       exerTimes[i],
 			AvgRating:   float32(-1),
+			AvgFaves:    float32(-1),
 		}
 		roundSlice[i] = round
 	}

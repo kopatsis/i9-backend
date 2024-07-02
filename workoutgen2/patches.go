@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fulli9/shared"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -88,6 +89,8 @@ func PatchWorkout(database *mongo.Database) gin.HandlerFunc {
 
 		if (woHandler.Status == "Progressing" || woHandler.Status == "Paused") && workout.Status == "Unstarted" {
 			workout.StartedCount++
+			workout.LastStarted = primitive.NewDateTimeFromTime(time.Now())
+			workout.DateList = append(workout.DateList, workout.LastStarted)
 		}
 
 		workout.PausedTime = woHandler.PausedMinutes
@@ -187,6 +190,8 @@ func PatchStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 
 		if (woHandler.Status == "Progressing" || woHandler.Status == "Paused") && workout.Status == "Unstarted" {
 			workout.StartedCount++
+			workout.LastStarted = primitive.NewDateTimeFromTime(time.Now())
+			workout.DateList = append(workout.DateList, workout.LastStarted)
 		}
 
 		workout.PausedTime = woHandler.PausedMinutes
