@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"time"
 
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -48,8 +49,8 @@ func StretchToString(strList []shared.Stretch) []string {
 	return ret
 }
 
-func GetStretchWO(user shared.User, minutes float32, database *mongo.Database) (shared.StretchWorkout, error) {
-	stretches, err := dbinput.GetStretchesDB(database)
+func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, boltDB *bbolt.DB) (shared.StretchWorkout, error) {
+	stretches, err := dbinput.GetStretchesDB(database, boltDB)
 	if err != nil {
 		return shared.StretchWorkout{}, err
 	}

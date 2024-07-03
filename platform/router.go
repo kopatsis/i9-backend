@@ -15,12 +15,13 @@ import (
 
 	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
+func New(database *mongo.Database, firebase *firebase.App, boltDB *bbolt.DB) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(middleware.CORSMiddleware())
@@ -31,9 +32,9 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router.GET("/tpv/:id", tpv(database)) // Temp for personal viewing a workout by id
 
 	// Main functionalities
-	router.POST("/workouts", workoutgen2.PostWorkout(database))
-	router.POST("/workouts/stretch", workoutgen2.PostStretchWorkout(database))
-	router.POST("/workouts/intro", intro.PostIntroWorkout(database))
+	router.POST("/workouts", workoutgen2.PostWorkout(database, boltDB))
+	router.POST("/workouts/stretch", workoutgen2.PostStretchWorkout(database, boltDB))
+	router.POST("/workouts/intro", intro.PostIntroWorkout(database, boltDB))
 
 	// Rating functionalities
 	router.POST("/workouts/rate/:id", ratings.PostRating(database))
@@ -51,9 +52,9 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router.POST("/workouts/stretch/clone/:id", adapts.CloneStretchWorkoutHandler(database))
 
 	// Discard and retries
-	router.POST("/workouts/retry/:id", workoutgen2.PostWorkoutRetry(database))
-	router.POST("/workouts/intro/retry/:id", intro.PostIntroWorkoutRetry(database))
-	router.POST("/workouts/stretch/retry/:id", workoutgen2.PostStretchWorkoutRetry(database))
+	router.POST("/workouts/retry/:id", workoutgen2.PostWorkoutRetry(database, boltDB))
+	router.POST("/workouts/intro/retry/:id", intro.PostIntroWorkoutRetry(database, boltDB))
+	router.POST("/workouts/stretch/retry/:id", workoutgen2.PostStretchWorkoutRetry(database, boltDB))
 
 	// Patching workout
 	router.PATCH("/workouts/:id", workoutgen2.PatchWorkout(database))
@@ -80,11 +81,11 @@ func New(database *mongo.Database, firebase *firebase.App) *gin.Engine {
 	router.GET("/recent", views.GetMostRecent(database))
 
 	// Gets/views 2
-	router.GET("/stretches/:id", views.GetStrByID(database))
+	router.GET("/stretches/:id", views.GetStrByID(database, boltDB))
 	router.GET("/exercises/:id", views.GetExerByID(database))
 	router.GET("/stretches", views.GetStrecthes(database))
 	router.GET("/exercises", views.GetExercises(database))
-	router.GET("/library", views.GetLibrary(database))
+	router.GET("/library", views.GetLibrary(database, boltDB))
 
 	// Sets user specifics
 	router.PATCH("/users/pushup", userfuncs.PatchPushupSetting(database))

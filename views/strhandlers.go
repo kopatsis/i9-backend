@@ -2,15 +2,17 @@ package views
 
 import (
 	"context"
+	"errors"
 	"fulli9/shared"
 
 	"github.com/gin-gonic/gin"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetStrByID(database *mongo.Database) gin.HandlerFunc {
+func GetStrByID(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var stretch shared.Stretch
@@ -35,10 +37,7 @@ func GetStrByID(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		collection := database.Collection("stretch")
-		filter := bson.D{{Key: "_id", Value: id}}
-
-		err := collection.FindOne(context.Background(), filter).Decode(&stretch)
+		strs, err := shared.GetStretchHelper(database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with viewing stretch",
@@ -47,8 +46,17 @@ func GetStrByID(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(200, &stretch)
+		for _, str := range strs {
+			if str.ID == id {
+				c.JSON(200, &stretch)
+				return
+			}
+		}
 
+		c.JSON(400, gin.H{
+			"Error": "Issue with viewing stretch",
+			"Exact": errors.New("does not exist with provided id"),
+		})
 	}
 }
 

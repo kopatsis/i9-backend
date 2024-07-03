@@ -10,16 +10,17 @@ import (
 	"fulli9/workoutgen2/selections"
 	"fulli9/workoutgen2/stretches"
 
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.Database) (shared.AnyWorkout, error) {
+func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.Database, boltDB *bbolt.DB) (shared.AnyWorkout, error) {
 
 	if minutes < 8 || difficulty == 0 {
-		return stretchWOReturn(minutes, userID, database)
+		return stretchWOReturn(minutes, userID, database, boltDB)
 	}
 
-	user, stretches, exercises, pastWOs, typeMatrix, err := dbinput.AllInputsAsync(database, userID)
+	user, stretches, exercises, pastWOs, typeMatrix, err := dbinput.AllInputsAsync(database, boltDB, userID)
 	if err != nil {
 		return shared.Workout{}, err
 	}
@@ -65,13 +66,13 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 	return workout, nil
 }
 
-func stretchWOReturn(minutes float32, userID string, database *mongo.Database) (shared.StretchWorkout, error) {
+func stretchWOReturn(minutes float32, userID string, database *mongo.Database, boltDB *bbolt.DB) (shared.StretchWorkout, error) {
 	user, err := dbinput.GetUserDB(database, userID)
 	if err != nil {
 		return shared.StretchWorkout{}, err
 	}
 
-	stretchWorkout, err := stretches.GetStretchWO(user, minutes, database)
+	stretchWorkout, err := stretches.GetStretchWO(user, minutes, database, boltDB)
 	if err != nil {
 		return shared.StretchWorkout{}, err
 	}

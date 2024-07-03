@@ -6,12 +6,13 @@ import (
 	"fulli9/shared"
 
 	"github.com/gin-gonic/gin"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func PostIntroWorkout(database *mongo.Database) gin.HandlerFunc {
+func PostIntroWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var woHandler shared.IntroWorkoutRoute
@@ -32,7 +33,7 @@ func PostIntroWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := GenerateIntroWorkout(woHandler.Time, userID, database)
+		workout, err := GenerateIntroWorkout(woHandler.Time, userID, database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with workout generator",
@@ -62,7 +63,7 @@ func PostIntroWorkout(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PostIntroWorkoutRetry(database *mongo.Database) gin.HandlerFunc {
+func PostIntroWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var woHandler shared.IntroWorkoutRoute
@@ -87,7 +88,7 @@ func PostIntroWorkoutRetry(database *mongo.Database) gin.HandlerFunc {
 		if !exists {
 			c.JSON(400, gin.H{
 				"Error": "Issue with param",
-				"Exact": "Unable to get ID from URL paramete",
+				"Exact": "Unable to get ID from URL parameter",
 			})
 			return
 		}
@@ -133,7 +134,7 @@ func PostIntroWorkoutRetry(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workoutRet, err := GenerateIntroWorkout(woHandler.Time, userID, database)
+		workoutRet, err := GenerateIntroWorkout(woHandler.Time, userID, database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with workout generator",

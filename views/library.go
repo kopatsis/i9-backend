@@ -8,13 +8,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hashicorp/go-multierror"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetLibrary(database *mongo.Database) gin.HandlerFunc {
+func GetLibrary(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := shared.GetIDFromReq(database, c)
 		if err != nil {
@@ -56,7 +57,7 @@ func GetLibrary(database *mongo.Database) gin.HandlerFunc {
 		go func() {
 			defer wg.Done()
 			var err error
-			strs, err = getStrsHelper(database)
+			strs, err = shared.GetStretchHelper(database, boltDB)
 			if err != nil {
 				errChan <- err
 			}
@@ -148,24 +149,6 @@ func getExersHelper(database *mongo.Database) ([]shared.Exercise, error) {
 	findOptions := options.Find().SetSort(bson.D{{Key: "name", Value: 1}})
 
 	cursor, err := database.Collection("exercise").Find(context.Background(), bson.D{}, findOptions)
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(context.Background())
-
-	if err = cursor.All(context.Background(), &exercises); err != nil {
-		return nil, err
-	}
-
-	return exercises, nil
-}
-
-func getStrsHelper(database *mongo.Database) ([]shared.Stretch, error) {
-	var exercises []shared.Stretch
-
-	findOptions := options.Find().SetSort(bson.D{{Key: "name", Value: 1}})
-
-	cursor, err := database.Collection("stretch").Find(context.Background(), bson.D{}, findOptions)
 	if err != nil {
 		return nil, err
 	}

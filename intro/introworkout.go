@@ -13,12 +13,13 @@ import (
 	"fulli9/workoutgen2/dboutput"
 	"fulli9/workoutgen2/selections"
 
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Database) (shared.Workout, error) {
+func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Database, boltDB *bbolt.DB) (shared.Workout, error) {
 
-	user, stretches, exercises, _, typeMatrix, err := dbinput.AllInputsAsync(database, userID)
+	user, stretches, exercises, _, typeMatrix, err := dbinput.AllInputsAsync(database, boltDB, userID)
 	if err != nil {
 		return shared.Workout{}, err
 	}

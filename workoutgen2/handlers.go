@@ -6,12 +6,13 @@ import (
 	"fulli9/shared"
 
 	"github.com/gin-gonic/gin"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func PostWorkout(database *mongo.Database) gin.HandlerFunc {
+func PostWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var woHandler shared.WorkoutRoute
@@ -32,7 +33,7 @@ func PostWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := WorkoutGen(woHandler.Time, woHandler.Difficulty, userID, database)
+		workout, err := WorkoutGen(woHandler.Time, woHandler.Difficulty, userID, database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with workout generator",
@@ -64,7 +65,7 @@ func PostWorkout(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PostStretchWorkout(database *mongo.Database) gin.HandlerFunc {
+func PostStretchWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var woHandler shared.StrWorkoutRoute
@@ -85,7 +86,7 @@ func PostStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := WorkoutGen(woHandler.Time, 0, userID, database)
+		workout, err := WorkoutGen(woHandler.Time, 0, userID, database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with stretch workout generator",
@@ -116,7 +117,7 @@ func PostStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PostWorkoutRetry(database *mongo.Database) gin.HandlerFunc {
+func PostWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var woHandler shared.WorkoutRoute
@@ -187,7 +188,7 @@ func PostWorkoutRetry(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		newworkout, err := WorkoutGen(woHandler.Time, woHandler.Difficulty, userID, database)
+		newworkout, err := WorkoutGen(woHandler.Time, woHandler.Difficulty, userID, database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with workout generator",
@@ -224,7 +225,7 @@ func PostWorkoutRetry(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PostStretchWorkoutRetry(database *mongo.Database) gin.HandlerFunc {
+func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var woHandler shared.StrWorkoutRoute
@@ -295,7 +296,7 @@ func PostStretchWorkoutRetry(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		newworkout, err := WorkoutGen(woHandler.Time, 0, userID, database)
+		newworkout, err := WorkoutGen(woHandler.Time, 0, userID, database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with workout generator",

@@ -1,32 +1,24 @@
 package dbinput
 
 import (
-	"context"
 	"fulli9/shared"
 
-	"go.mongodb.org/mongo-driver/bson"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetStretchesDB(database *mongo.Database) (map[string][]shared.Stretch, error) {
-	collection := database.Collection("stretch")
-
-	filter := bson.D{}
-
-	cursor, err := collection.Find(context.Background(), filter)
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(context.Background())
+func GetStretchesDB(database *mongo.Database, boltDB *bbolt.DB) (map[string][]shared.Stretch, error) {
 
 	allstretches := map[string][]shared.Stretch{}
 	dynamics := []shared.Stretch{}
 	statics := []shared.Stretch{}
-	for cursor.Next(context.TODO()) {
-		var str shared.Stretch
-		if err := cursor.Decode(&str); err != nil {
-			return nil, err
-		}
+
+	strs, err := shared.GetStretchHelper(database, boltDB)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, str := range strs {
 		if str.Status == "Dynamic" {
 			dynamics = append(dynamics, str)
 		} else {
