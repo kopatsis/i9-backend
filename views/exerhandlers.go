@@ -2,18 +2,18 @@ package views
 
 import (
 	"context"
+	"errors"
 	"fulli9/shared"
 
 	"github.com/gin-gonic/gin"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetExerByID(database *mongo.Database) gin.HandlerFunc {
+func GetExerByID(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
-		var exercise shared.Exercise
 
 		idStr, exists := c.Params.Get("id")
 		if !exists {
@@ -35,19 +35,26 @@ func GetExerByID(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		collection := database.Collection("exercise")
-		filter := bson.D{{Key: "_id", Value: id}}
-
-		err := collection.FindOne(context.Background(), filter).Decode(&exercise)
+		exers, err := shared.GetExersHelper(database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with viewing exercise",
+				"Error": "Issue with viewing exer",
 				"Exact": err.Error(),
 			})
 			return
 		}
 
-		c.JSON(200, &exercise)
+		for _, exer := range exers {
+			if exer.ID == id {
+				c.JSON(200, &exer)
+				return
+			}
+		}
+
+		c.JSON(400, gin.H{
+			"Error": "Issue with viewing exer",
+			"Exact": errors.New("does not exist with provided id"),
+		})
 
 	}
 }

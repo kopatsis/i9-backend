@@ -5,10 +5,11 @@ import (
 	"sync"
 
 	"github.com/hashicorp/go-multierror"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.User, shared.Workout, int64, map[string]shared.Exercise, error) {
+func AllInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string, id string) (shared.User, shared.Workout, int64, map[string]shared.Exercise, error) {
 	// func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.User, shared.Workout, int64, int64, map[string]shared.Exercise, error) {
 	var user shared.User
 	var workout shared.Workout
@@ -56,7 +57,7 @@ func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.
 	go func() {
 		defer wg.Done()
 		var err error
-		exercises, err = GetExersDB(database)
+		exercises, err = GetExersDB(database, boltDB)
 		if err != nil {
 			errChan <- err
 		}

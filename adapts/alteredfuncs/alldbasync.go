@@ -47,7 +47,7 @@ func AllInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string, w
 	go func() {
 		defer wg.Done()
 		var err error
-		exercises, err = dbinput.GetExersDB(database)
+		exercises, err = dbinput.GetExersDB(database, boltDB)
 		if err != nil {
 			errChan <- err
 		}

@@ -7,12 +7,13 @@ import (
 	"fulli9/ratings/dboutput"
 	"fulli9/ratings/operations"
 
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func RateWorkout(userID string, ratings, favorites [9]int, fullRating, fullFave int, onlyWorkout bool, completedRounds int, workoutID string, database *mongo.Database) error {
+func RateWorkout(userID string, ratings, favorites [9]int, fullRating, fullFave int, onlyWorkout bool, completedRounds int, workoutID string, database *mongo.Database, boltDB *bbolt.DB) error {
 
-	user, workout, countWO, exercises, err := dbinput.AllInputsAsync(database, userID, workoutID)
+	user, workout, countWO, exercises, err := dbinput.AllInputsAsync(database, boltDB, userID, workoutID)
 	if err != nil {
 		return err
 	}

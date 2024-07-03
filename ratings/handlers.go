@@ -4,10 +4,11 @@ import (
 	"fulli9/shared"
 
 	"github.com/gin-gonic/gin"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func PostRating(database *mongo.Database) gin.HandlerFunc {
+func PostRating(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var rateHandler shared.RateRoute
@@ -54,7 +55,7 @@ func PostRating(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		if err := RateWorkout(userID, ratings, favorites, rateHandler.FullRating, rateHandler.FullFave, rateHandler.OnlyWorkout, completedRounds, id, database); err != nil {
+		if err := RateWorkout(userID, ratings, favorites, rateHandler.FullRating, rateHandler.FullFave, rateHandler.OnlyWorkout, completedRounds, id, database, boltDB); err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with rating route",
 				"Exact": err.Error(),

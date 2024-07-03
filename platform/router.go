@@ -37,7 +37,7 @@ func New(database *mongo.Database, firebase *firebase.App, boltDB *bbolt.DB) *gi
 	router.POST("/workouts/intro", intro.PostIntroWorkout(database, boltDB))
 
 	// Rating functionalities
-	router.POST("/workouts/rate/:id", ratings.PostRating(database))
+	router.POST("/workouts/rate/:id", ratings.PostRating(database, boltDB))
 	router.POST("/workouts/intro/rate", ratings.PostIntroRating(database))
 
 	// Restart (ptl adapt) functionalities
@@ -82,7 +82,7 @@ func New(database *mongo.Database, firebase *firebase.App, boltDB *bbolt.DB) *gi
 
 	// Gets/views 2
 	router.GET("/stretches/:id", views.GetStrByID(database, boltDB))
-	router.GET("/exercises/:id", views.GetExerByID(database))
+	router.GET("/exercises/:id", views.GetExerByID(database, boltDB))
 	router.GET("/stretches", views.GetStrecthes(database))
 	router.GET("/exercises", views.GetExercises(database))
 	router.GET("/library", views.GetLibrary(database, boltDB))

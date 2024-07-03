@@ -15,8 +15,6 @@ import (
 func GetStrByID(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		var stretch shared.Stretch
-
 		idStr, exists := c.Params.Get("id")
 		if !exists {
 			c.JSON(400, gin.H{
@@ -48,7 +46,7 @@ func GetStrByID(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 
 		for _, str := range strs {
 			if str.ID == id {
-				c.JSON(200, &stretch)
+				c.JSON(200, &str)
 				return
 			}
 		}

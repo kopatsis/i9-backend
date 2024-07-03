@@ -12,7 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func GetLibrary(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
@@ -47,7 +46,7 @@ func GetLibrary(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 		go func() {
 			defer wg.Done()
 			var err error
-			exers, err = getExersHelper(database)
+			exers, err = shared.GetExersHelper(database, boltDB)
 			if err != nil {
 				errChan <- err
 			}
@@ -141,22 +140,4 @@ func getUserHelper(database *mongo.Database, userID string) (shared.User, error)
 	}
 
 	return user, nil
-}
-
-func getExersHelper(database *mongo.Database) ([]shared.Exercise, error) {
-	var exercises []shared.Exercise
-
-	findOptions := options.Find().SetSort(bson.D{{Key: "name", Value: 1}})
-
-	cursor, err := database.Collection("exercise").Find(context.Background(), bson.D{}, findOptions)
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(context.Background())
-
-	if err = cursor.All(context.Background(), &exercises); err != nil {
-		return nil, err
-	}
-
-	return exercises, nil
 }
