@@ -39,6 +39,7 @@ func New(database *mongo.Database, firebase *firebase.App, boltDB *bbolt.DB) *gi
 	// Rating functionalities
 	router.POST("/workouts/rate/:id", ratings.PostRating(database, boltDB))
 	router.POST("/workouts/intro/rate", ratings.PostIntroRating(database))
+	router.POST("/users/quiz", ratings.PostQuiz(database))
 
 	// Restart (ptl adapt) functionalities
 	router.POST("/workouts/restart/:id", adapts.PostRestartedWorkout(database, boltDB))

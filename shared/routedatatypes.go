@@ -122,3 +122,11 @@ type RenameRoute struct {
 	Name string `json:"name" binding:"required"`
 	Type string `json:"type" binding:"required"`
 }
+
+type QuizRoute struct {
+	Stamina       int `json:"stamina"`
+	Endurance     int `json:"endurance"`
+	LowerStrength int `json:"lowerstrength"`
+	UpperStrength int `json:"upperstrength"`
+	Plyo          int `json:"plyo"`
+}
