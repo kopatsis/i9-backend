@@ -496,7 +496,7 @@ func GetToken(database *mongo.Database) gin.HandlerFunc {
 		userID, err := shared.GetIDFromReq(database, c)
 		if err != nil {
 			c.JSON(200, gin.H{
-				"Token": "",
+				"idcode": "",
 			})
 			return
 		}
@@ -506,13 +506,13 @@ func GetToken(database *mongo.Database) gin.HandlerFunc {
 		err = collection.FindOne(context.TODO(), bson.M{"user": userID}).Decode(&dbToken)
 		if err != nil {
 			c.JSON(200, gin.H{
-				"Token": "",
+				"idcode": "",
 			})
 			return
 		}
 
 		c.JSON(200, gin.H{
-			"token": dbToken.Token,
+			"idcode": dbToken.ID.Hex(),
 		})
 	}
 }
