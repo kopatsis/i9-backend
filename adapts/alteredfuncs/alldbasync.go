@@ -7,10 +7,11 @@ import (
 	"sync"
 
 	"github.com/hashicorp/go-multierror"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func AllInputsAsync(database *mongo.Database, userID string, workoutID string) (shared.User, map[string]shared.Exercise, []shared.Workout, shared.TypeMatrix, shared.Workout, error) {
+func AllInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string, workoutID string) (shared.User, map[string]shared.Exercise, []shared.Workout, shared.TypeMatrix, shared.Workout, error) {
 	var user shared.User
 	var exercises map[string]shared.Exercise
 	var pastWOs []shared.Workout
@@ -66,7 +67,7 @@ func AllInputsAsync(database *mongo.Database, userID string, workoutID string) (
 	go func() {
 		defer wg.Done()
 		var err error
-		typeMatrix, err = dbinput.GetMatrix(database)
+		typeMatrix, err = shared.GetMatrixHelper(database, boltDB)
 		if err != nil {
 			errChan <- err
 		}

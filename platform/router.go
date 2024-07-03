@@ -41,13 +41,13 @@ func New(database *mongo.Database, firebase *firebase.App, boltDB *bbolt.DB) *gi
 	router.POST("/workouts/intro/rate", ratings.PostIntroRating(database))
 
 	// Restart (ptl adapt) functionalities
-	router.POST("/workouts/restart/:id", adapts.PostRestartedWorkout(database))
+	router.POST("/workouts/restart/:id", adapts.PostRestartedWorkout(database, boltDB))
 	router.POST("/workouts/stretch/restart/:id", adapts.PostRestartedStrWorkout(database))
 	router.POST("/workouts/intro/restart/:id", adapts.PostRestartedIntroWorkout(database))
 
 	// Mildly deprecated functionalities
-	router.POST("/workouts/adapt/:id", adapts.PostAdaptedWorkout(database))
-	router.POST("/workouts/adapt/external/:id", adapts.PostExternalAdaptedWorkout(database))
+	router.POST("/workouts/adapt/:id", adapts.PostAdaptedWorkout(database, boltDB))
+	router.POST("/workouts/adapt/external/:id", adapts.PostExternalAdaptedWorkout(database, boltDB))
 	router.POST("/workouts/clone/:id", adapts.CloneWorkoutHandler(database))
 	router.POST("/workouts/stretch/clone/:id", adapts.CloneStretchWorkoutHandler(database))
 

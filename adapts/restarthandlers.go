@@ -6,10 +6,11 @@ import (
 	"fulli9/shared"
 
 	"github.com/gin-gonic/gin"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func PostRestartedWorkout(database *mongo.Database) gin.HandlerFunc {
+func PostRestartedWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		userID, err := shared.GetIDFromReq(database, c)
@@ -30,7 +31,7 @@ func PostRestartedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := Adapt(-1, userID, database, id, false, false)
+		workout, err := Adapt(-1, userID, database, boltDB, id, false, false)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with adapted workout generator",

@@ -9,12 +9,13 @@ import (
 	"fulli9/workoutgen2/creation"
 	"fulli9/workoutgen2/dboutput"
 
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func Adapt(difficulty int, userID string, database *mongo.Database, workoutID string, asNew, external bool) (shared.Workout, error) {
+func Adapt(difficulty int, userID string, database *mongo.Database, boltDB *bbolt.DB, workoutID string, asNew, external bool) (shared.Workout, error) {
 
-	user, exercises, pastWOs, typeMatrix, workout, err := alteredfuncs.AllInputsAsync(database, userID, workoutID)
+	user, exercises, pastWOs, typeMatrix, workout, err := alteredfuncs.AllInputsAsync(database, boltDB, userID, workoutID)
 	if err != nil {
 		return shared.Workout{}, nil
 	}

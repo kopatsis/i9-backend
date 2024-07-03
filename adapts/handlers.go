@@ -4,10 +4,11 @@ import (
 	"fulli9/shared"
 
 	"github.com/gin-gonic/gin"
+	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func PostAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
+func PostAdaptedWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var woHandler shared.AdaptWorkoutRoute
@@ -39,7 +40,7 @@ func PostAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := Adapt(woHandler.Difficulty, userID, database, id, woHandler.AsNew, false)
+		workout, err := Adapt(woHandler.Difficulty, userID, database, boltDB, id, woHandler.AsNew, false)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with adapted workout generator",
@@ -69,7 +70,7 @@ func PostAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func PostExternalAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
+func PostExternalAdaptedWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var woHandler shared.AdaptWorkoutRoute
@@ -99,7 +100,7 @@ func PostExternalAdaptedWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := Adapt(woHandler.Difficulty, userID, database, id, true, true)
+		workout, err := Adapt(woHandler.Difficulty, userID, database, boltDB, id, true, true)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with adapted workout generator",

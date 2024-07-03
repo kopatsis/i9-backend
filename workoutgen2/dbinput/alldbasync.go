@@ -70,7 +70,7 @@ func AllInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string) (
 	go func() {
 		defer wg.Done()
 		var err error
-		typeMatrix, err = GetMatrix(database)
+		typeMatrix, err = shared.GetMatrixHelper(database, boltDB)
 		if err != nil {
 			fmt.Println(err)
 			errChan <- err
