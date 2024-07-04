@@ -356,11 +356,17 @@ func patchUserStarted(database *mongo.Database, userID string, isWO bool) error 
 	var update bson.M
 	if isWO {
 		update = bson.M{
-			"$inc": bson.M{"wostartct": 1},
+			"$inc": bson.M{
+				"wostartct": 1,
+				"displevel": 2,
+			},
 		}
 	} else {
 		update = bson.M{
-			"$inc": bson.M{"strwostartct": 1},
+			"$inc": bson.M{
+				"strwostartct": 1,
+				"displevel":    2,
+			},
 		}
 	}
 

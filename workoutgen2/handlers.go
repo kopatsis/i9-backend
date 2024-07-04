@@ -353,11 +353,17 @@ func patchUserGenerated(database *mongo.Database, userID string, isWO bool) erro
 	var update bson.M
 	if isWO {
 		update = bson.M{
-			"$inc": bson.M{"wogenct": 1},
+			"$inc": bson.M{
+				"wogenct":   1,
+				"displevel": 2,
+			},
 		}
 	} else {
 		update = bson.M{
-			"$inc": bson.M{"strwogenct": 1},
+			"$inc": bson.M{
+				"strwogenct": 1,
+				"displevel":  2,
+			},
 		}
 	}
 

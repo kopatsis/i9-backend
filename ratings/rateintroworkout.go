@@ -40,7 +40,14 @@ func RateIntroWorkout(userID string, roundEnd float32, database *mongo.Database)
 
 	filter := bson.M{"_id": user.ID}
 
-	update := bson.M{"$set": bson.M{"level": userlevel, "pushsetting": pushupSetting, "assessed": true}}
+	dispLevel := user.DisplayLevel
+	if dispLevel == 0 {
+		dispLevel = int(userlevel)
+	} else {
+		dispLevel += 5
+	}
+
+	update := bson.M{"$set": bson.M{"level": userlevel, "pushsetting": pushupSetting, "assessed": true, "displevel": dispLevel}}
 
 	_, err = collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {

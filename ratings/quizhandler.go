@@ -127,6 +127,9 @@ func UpdateUser(database *mongo.Database, userID string, level float32, plyo int
 			"pushsetting": pushup,
 			"assessed":    true,
 		},
+		"$inc": bson.M{
+			"displevel": 8,
+		},
 	}
 
 	_, err = collection.UpdateOne(context.Background(), filter, update)
