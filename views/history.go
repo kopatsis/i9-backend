@@ -126,13 +126,32 @@ func GetHistory(database *mongo.Database) gin.HandlerFunc {
 func getWOsHelper(database *mongo.Database, userID string) ([]shared.Workout, error) {
 	collection := database.Collection("workout")
 
-	optionsWO := options.Find().SetSort(bson.D{{Key: "date", Value: -1}})
+	optionsWO := options.Find().SetSort(bson.D{{Key: "date", Value: -1}}).SetLimit(3)
 
 	filterWO := bson.D{
 		{Key: "userid", Value: userID},
+		{Key: "status", Value: bson.D{{Key: "$ne", Value: "Archived"}}},
+		{Key: "pinned", Value: true},
 	}
 
-	filterWO = append(filterWO, bson.E{Key: "status", Value: bson.D{{Key: "$ne", Value: "Archived"}}})
+	cursorPinned, err := collection.Find(context.Background(), filterWO, optionsWO)
+	if err != nil {
+		return nil, err
+	}
+	defer cursorPinned.Close(context.Background())
+
+	var pinnedWorkouts []shared.Workout
+	err = cursorPinned.All(context.Background(), &pinnedWorkouts)
+	if err != nil {
+		return nil, err
+	}
+
+	optionsWO = options.Find().SetSort(bson.D{{Key: "date", Value: -1}})
+	filterWO = bson.D{
+		{Key: "userid", Value: userID},
+		{Key: "status", Value: bson.D{{Key: "$ne", Value: "Archived"}}},
+		{Key: "pinned", Value: bson.D{{Key: "$ne", Value: true}}},
+	}
 
 	cursor, err := collection.Find(context.Background(), filterWO, optionsWO)
 	if err != nil {
@@ -140,11 +159,13 @@ func getWOsHelper(database *mongo.Database, userID string) ([]shared.Workout, er
 	}
 	defer cursor.Close(context.Background())
 
-	var pastWorkouts []shared.Workout
-	err = cursor.All(context.Background(), &pastWorkouts)
+	var unpinnedWorkouts []shared.Workout
+	err = cursor.All(context.Background(), &unpinnedWorkouts)
 	if err != nil {
 		return nil, err
 	}
+
+	pastWorkouts := append(pinnedWorkouts, unpinnedWorkouts...)
 
 	return pastWorkouts, nil
 }
@@ -152,13 +173,32 @@ func getWOsHelper(database *mongo.Database, userID string) ([]shared.Workout, er
 func getStrWOsHelper(database *mongo.Database, userID string) ([]shared.StretchWorkout, error) {
 	collection := database.Collection("stretchworkout")
 
-	optionsWO := options.Find().SetSort(bson.D{{Key: "date", Value: -1}})
+	optionsWO := options.Find().SetSort(bson.D{{Key: "date", Value: -1}}).SetLimit(3)
 
 	filterWO := bson.D{
 		{Key: "userid", Value: userID},
+		{Key: "status", Value: bson.D{{Key: "$ne", Value: "Archived"}}},
+		{Key: "pinned", Value: true},
 	}
 
-	filterWO = append(filterWO, bson.E{Key: "status", Value: bson.D{{Key: "$ne", Value: "Archived"}}})
+	cursorPinned, err := collection.Find(context.Background(), filterWO, optionsWO)
+	if err != nil {
+		return nil, err
+	}
+	defer cursorPinned.Close(context.Background())
+
+	var pinnedWorkouts []shared.StretchWorkout
+	err = cursorPinned.All(context.Background(), &pinnedWorkouts)
+	if err != nil {
+		return nil, err
+	}
+
+	optionsWO = options.Find().SetSort(bson.D{{Key: "date", Value: -1}})
+	filterWO = bson.D{
+		{Key: "userid", Value: userID},
+		{Key: "status", Value: bson.D{{Key: "$ne", Value: "Archived"}}},
+		{Key: "pinned", Value: bson.D{{Key: "$ne", Value: true}}},
+	}
 
 	cursor, err := collection.Find(context.Background(), filterWO, optionsWO)
 	if err != nil {
@@ -166,11 +206,13 @@ func getStrWOsHelper(database *mongo.Database, userID string) ([]shared.StretchW
 	}
 	defer cursor.Close(context.Background())
 
-	var pastWorkouts []shared.StretchWorkout
-	err = cursor.All(context.Background(), &pastWorkouts)
+	var unpinnedWorkouts []shared.StretchWorkout
+	err = cursor.All(context.Background(), &unpinnedWorkouts)
 	if err != nil {
 		return nil, err
 	}
+
+	pastWorkouts := append(pinnedWorkouts, unpinnedWorkouts...)
 
 	return pastWorkouts, nil
 }
