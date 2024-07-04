@@ -198,6 +198,9 @@ func PostWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFun
 		}
 		workoutRet := newworkout.(shared.Workout)
 
+		patchUserGenerated(database, userID, true) // Even if it does error out, we don't want it to interrupt the WO generation process
+		// The constantly running daily update code will check and update these anyways
+
 		token := c.GetHeader("Authorization")
 
 		resp, err := shared.PositionsRequestWorkout(workoutRet, token)
@@ -306,6 +309,9 @@ func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Han
 		}
 		workoutRet := newworkout.(shared.StretchWorkout)
 
+		patchUserGenerated(database, userID, false) // Even if it does error out, we don't want it to interrupt the WO generation process
+		// The constantly running daily update code will check and update these anyways
+
 		token := c.GetHeader("Authorization")
 
 		resp, err := shared.PositionsRequestStrWorkout(workoutRet, token)
@@ -331,4 +337,34 @@ func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Han
 		})
 
 	}
+}
+
+func patchUserGenerated(database *mongo.Database, userID string, isWO bool) error {
+	var id primitive.ObjectID
+	if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
+		id = oid
+	} else {
+		return err
+	}
+
+	collection := database.Collection("user")
+	filter := bson.M{"_id": id}
+
+	var update bson.M
+	if isWO {
+		update = bson.M{
+			"$inc": bson.M{"wogenct": 1},
+		}
+	} else {
+		update = bson.M{
+			"$inc": bson.M{"strwogenct": 1},
+		}
+	}
+
+	_, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
