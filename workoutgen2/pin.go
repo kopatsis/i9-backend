@@ -69,7 +69,7 @@ func PinStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		if workout.UserID != userID {
 			c.JSON(400, gin.H{
 				"Error": "Issue with user in request",
-				"Exact": errors.New("workout does not belong to provided user"),
+				"Exact": errors.New("workout does not belong to provided user").Error(),
 			})
 			return
 		}
@@ -86,7 +86,7 @@ func PinStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		if woHandler.Pinned && pinCount > 2 {
 			c.JSON(400, gin.H{
 				"Error": "Issue with pinning",
-				"Exact": errors.New("should not be able to push a pin when more than 2 are pinened"),
+				"Exact": errors.New("should not be able to push a pin when more than 2 are pinened").Error(),
 			})
 			return
 		}
@@ -173,7 +173,7 @@ func PinWorkout(database *mongo.Database) gin.HandlerFunc {
 		if workout.UserID != userID {
 			c.JSON(400, gin.H{
 				"Error": "Issue with user in request",
-				"Exact": errors.New("workout does not belong to provided user"),
+				"Exact": errors.New("workout does not belong to provided user").Error(),
 			})
 			return
 		}
@@ -190,7 +190,7 @@ func PinWorkout(database *mongo.Database) gin.HandlerFunc {
 		if woHandler.Pinned && pinCount > 2 {
 			c.JSON(400, gin.H{
 				"Error": "Issue with pinning",
-				"Exact": errors.New("should not be able to push a pin when more than 2 are pinened"),
+				"Exact": errors.New("should not be able to push a pin when more than 2 are pinened").Error(),
 			})
 			return
 		}
