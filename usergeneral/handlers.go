@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"fulli9/platform/middleware"
 	"fulli9/shared"
+	"slices"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -391,6 +394,15 @@ func GetUser(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		user, err = userBadges(user, database)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with updating user badges",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
 		c.JSON(200, &user)
 
 	}
@@ -539,4 +551,111 @@ func refreshTokenDB(userid, refreshToken string, database *mongo.Database) error
 	}
 
 	return nil
+}
+
+func userBadges(user shared.User, database *mongo.Database) (shared.User, error) {
+
+	changed := false
+	badges := user.Badges
+
+	levelBdg := "Achieved a Progress Level of " + roundDownLevel(user.DisplayLevel)
+	if !slices.Contains(badges, levelBdg) {
+		changed = true
+		badges = replaceInUser("Achieved a Progress Level of ", levelBdg, badges)
+	}
+
+	woGenBdg := "Workouts: Generated at least " + roundDownCount(user.WOGeneratedCt)
+	if !slices.Contains(badges, woGenBdg) {
+		changed = true
+		badges = replaceInUser("Workouts: Generated at least ", woGenBdg, badges)
+	}
+
+	stwoGenBdg := "Stretch Workouts: Generated at least " + roundDownCount(user.StrWOGeneratedCt)
+	if !slices.Contains(badges, stwoGenBdg) {
+		changed = true
+		badges = replaceInUser("Stretch Workouts: Generated at least ", stwoGenBdg, badges)
+	}
+
+	ratedBdg := "Workouts: Rated at least " + roundDownCount(user.WORatedCt)
+	if !slices.Contains(badges, ratedBdg) {
+		changed = true
+		badges = replaceInUser("Workouts: Rated at least ", ratedBdg, badges)
+	}
+
+	woStBdg := "Workouts: Started at least " + roundDownCount(user.WOStartedCt)
+	if !slices.Contains(user.Badges, woStBdg) {
+		changed = true
+		badges = replaceInUser("Workouts: Started at least ", woStBdg, badges)
+	}
+
+	stwoStBdg := "Stretch Workouts: Started at least " + roundDownCount(user.StrWOGeneratedCt)
+	if !slices.Contains(badges, stwoStBdg) {
+		changed = true
+		badges = replaceInUser("Stretch Workouts: Started at least ", stwoStBdg, badges)
+	}
+
+	if !changed {
+		return user, nil
+	} else {
+		collection := database.Collection("user")
+		filter := bson.M{"_id": user.ID}
+		update := bson.M{
+			"$set": bson.M{
+				"badges": badges,
+			},
+		}
+
+		opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
+
+		var updatedUser shared.User
+		err := collection.FindOneAndUpdate(context.Background(), filter, update, opts).Decode(&updatedUser)
+		if err != nil {
+			return updatedUser, err
+		}
+
+		return updatedUser, nil
+	}
+
+}
+
+func replaceInUser(prefix, phrase string, slice []string) []string {
+	new := []string{}
+
+	for _, st := range slice {
+		if !strings.Contains(st, prefix) {
+			new = append(new, st)
+		}
+	}
+
+	new = append(new, phrase)
+
+	return new
+}
+
+func roundDownCount(ct int) string {
+	thresholds := []int{1, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000}
+	rounded := 1 // Default to the smallest value
+
+	for _, threshold := range thresholds {
+		if ct < threshold {
+			break
+		}
+		rounded = threshold
+	}
+
+	return strconv.Itoa(rounded)
+}
+
+func roundDownLevel(ct int) string {
+	thresholds := []int{50, 100, 250, 500, 750, 1000, 1250, 1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000, 7000, 8000, 10000, 12500, 15000, 20000, 25000, 30000, 40000, 50000, 75000, 100000}
+	rounded := 50 // Default to the smallest value in the list
+
+	for _, threshold := range thresholds {
+		if ct < threshold {
+			break
+		}
+		rounded = threshold
+	}
+
+	return strconv.Itoa(rounded)
 }
