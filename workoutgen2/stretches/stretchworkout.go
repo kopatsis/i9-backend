@@ -165,6 +165,7 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 		LevelAtStart: user.Level,
 		Dynamics:     StretchToString(realdynamics),
 		Statics:      StretchToString(realstatics),
+		CycleLength:  stretchSets,
 	}
 
 	return ret, nil

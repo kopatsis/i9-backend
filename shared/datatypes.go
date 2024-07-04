@@ -102,8 +102,9 @@ type StretchWorkout struct {
 	Minutes      float32              `bson:"minutes"`
 	Dynamics     []string             `bson:"dynamics"`
 	Statics      []string             `bson:"statics"`
-	IsPinned     bool                 `bson:"pinned"`    //New
-	StartedCount int                  `bson:"startedct"` //New
+	IsPinned     bool                 `bson:"pinned"`      //New
+	StartedCount int                  `bson:"startedct"`   //New
+	CycleLength  int                  `bson:"cyclelength"` //New
 }
 
 type Exercise struct {
