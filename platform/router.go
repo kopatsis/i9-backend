@@ -61,6 +61,8 @@ func New(database *mongo.Database, firebase *firebase.App, boltDB *bbolt.DB) *gi
 	router.PATCH("/workouts/:id", workoutgen2.PatchWorkout(database))
 	router.PATCH("/workouts/stretch/:id", workoutgen2.PatchStretchWorkout(database))
 	router.PATCH("/rename/:id", workoutgen2.Rename(database))
+	router.PATCH("/workouts/pin/:id", workoutgen2.PinWorkout(database))
+	router.PATCH("/workouts/stretch/pin/:id", workoutgen2.PinStretchWorkout(database))
 
 	// General User
 	router.POST("/users/local", usergeneral.PostLocalUser(database))

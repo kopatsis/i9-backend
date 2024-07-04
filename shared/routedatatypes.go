@@ -130,3 +130,7 @@ type QuizRoute struct {
 	UpperStrength int `json:"upperstrength"`
 	Plyo          int `json:"plyo"`
 }
+
+type PinRoute struct {
+	Pinned bool `json:"pinned" binding:"required"`
+}
