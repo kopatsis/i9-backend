@@ -132,5 +132,5 @@ type QuizRoute struct {
 }
 
 type PinRoute struct {
-	Pinned bool `json:"pinned" binding:"required"`
+	Pinned bool `json:"pinned"`
 }
