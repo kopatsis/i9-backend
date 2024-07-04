@@ -91,6 +91,13 @@ func PatchWorkout(database *mongo.Database) gin.HandlerFunc {
 			workout.StartedCount++
 			workout.LastStarted = primitive.NewDateTimeFromTime(time.Now())
 			workout.DateList = append(workout.DateList, workout.LastStarted)
+			if err := patchUserStarted(database, userID, true); err != nil {
+				c.JSON(400, gin.H{
+					"Error": "Issue with updating user ct",
+					"Exact": err.Error(),
+				})
+				return
+			}
 		}
 
 		workout.PausedTime = woHandler.PausedMinutes
@@ -192,6 +199,13 @@ func PatchStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 			workout.StartedCount++
 			workout.LastStarted = primitive.NewDateTimeFromTime(time.Now())
 			workout.DateList = append(workout.DateList, workout.LastStarted)
+			if err := patchUserStarted(database, userID, false); err != nil {
+				c.JSON(400, gin.H{
+					"Error": "Issue with updating user ct",
+					"Exact": err.Error(),
+				})
+				return
+			}
 		}
 
 		workout.PausedTime = woHandler.PausedMinutes
@@ -325,6 +339,35 @@ func Rename(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.Status(204)
-
 	}
+}
+
+func patchUserStarted(database *mongo.Database, userID string, isWO bool) error {
+	var id primitive.ObjectID
+	if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
+		id = oid
+	} else {
+		return err
+	}
+
+	collection := database.Collection("user")
+	filter := bson.M{"_id": id}
+
+	var update bson.M
+	if isWO {
+		update = bson.M{
+			"$inc": bson.M{"wostartct": 1},
+		}
+	} else {
+		update = bson.M{
+			"$inc": bson.M{"strwostartct": 1},
+		}
+	}
+
+	_, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
