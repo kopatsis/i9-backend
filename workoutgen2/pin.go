@@ -74,6 +74,23 @@ func PinStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		pinCount, err := countPinnedWorkouts(database, userID, "stretchworkout")
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with counting pinned",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if woHandler.Pinned && pinCount > 2 {
+			c.JSON(400, gin.H{
+				"Error": "Issue with pinning",
+				"Exact": errors.New("should not be able to push a pin when more than 2 are pinened"),
+			})
+			return
+		}
+
 		if workout.IsPinned != woHandler.Pinned {
 			update := bson.D{
 				{Key: "$set", Value: bson.D{
@@ -161,6 +178,23 @@ func PinWorkout(database *mongo.Database) gin.HandlerFunc {
 			return
 		}
 
+		pinCount, err := countPinnedWorkouts(database, userID, "workout")
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with counting pinned",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if woHandler.Pinned && pinCount > 2 {
+			c.JSON(400, gin.H{
+				"Error": "Issue with pinning",
+				"Exact": errors.New("should not be able to push a pin when more than 2 are pinened"),
+			})
+			return
+		}
+
 		if workout.IsPinned != woHandler.Pinned {
 			update := bson.D{
 				{Key: "$set", Value: bson.D{
@@ -183,4 +217,21 @@ func PinWorkout(database *mongo.Database) gin.HandlerFunc {
 			})
 		}
 	}
+}
+
+func countPinnedWorkouts(database *mongo.Database, userID, collectionName string) (int64, error) {
+	collection := database.Collection(collectionName)
+
+	filterPinned := bson.D{
+		{Key: "userid", Value: userID},
+		{Key: "status", Value: bson.D{{Key: "$ne", Value: "Archived"}}},
+		{Key: "pinned", Value: true},
+	}
+
+	count, err := collection.CountDocuments(context.Background(), filterPinned)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
