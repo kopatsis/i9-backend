@@ -10,17 +10,14 @@ import (
 )
 
 func AllInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string, id string) (shared.User, shared.Workout, int64, map[string]shared.Exercise, error) {
-	// func AllInputsAsync(database *mongo.Database, userID string, id string) (shared.User, shared.Workout, int64, int64, map[string]shared.Exercise, error) {
 	var user shared.User
 	var workout shared.Workout
 	var countWO int64
-	// var countUser int64
 	var exercises map[string]shared.Exercise
 
 	var wg sync.WaitGroup
 
-	// errChan := make(chan error, 5)
-	errChan := make(chan error, 4)
+	errChan := make(chan error, 3)
 	var errGroup *multierror.Error
 
 	wg.Add(1)
@@ -38,16 +35,6 @@ func AllInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string, i
 		defer wg.Done()
 		var err error
 		workout, err = GetPastWOsDB(database, id)
-		if err != nil {
-			errChan <- err
-		}
-	}()
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		var err error
-		countWO, err = GetUserWorkoutCount(database, userID)
 		if err != nil {
 			errChan <- err
 		}
@@ -77,5 +64,8 @@ func AllInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string, i
 	if !hasErr {
 		return user, workout, countWO, exercises, nil
 	}
+
+	countWO = int64(user.WORatedCt + 1)
+
 	return user, workout, countWO, exercises, errGroup
 }
