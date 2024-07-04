@@ -24,6 +24,7 @@ func RateWorkout(userID string, ratings, favorites [9]int, fullRating, fullFave 
 	}
 
 	user.Level = operations.NewLevel(user, fullRating, workout.Difficulty, completedRounds, countWO)
+	user.WORatedCt++
 
 	user.ExerModifications, user.TypeModifications, user.RoundEndurance, user.TimeEndurance = operations.NewUserMods(user, ratings, workout, exercises, countWO, fullRating, onlyWorkout)
 	user.ExerFavoriteRates = operations.UserFaves(user, favorites, workout, onlyWorkout)
