@@ -4,6 +4,7 @@ import (
 	"context"
 	"fulli9/adapts"
 	"fulli9/intro"
+	"fulli9/platform/cache"
 	"fulli9/platform/middleware"
 	"fulli9/ratings"
 	"fulli9/shared"
@@ -112,6 +113,9 @@ func New(database *mongo.Database, firebase *firebase.App, boltDB *bbolt.DB) *gi
 	router.DELETE("/users/bannedbody/clear", userfuncs.ClearBannedBody(database))
 	router.DELETE("/users/favorites/clear", userfuncs.ClearExerFav(database))
 	router.DELETE("/users/bannedstrs/clear", userfuncs.ClearBannedStr(database))
+
+	// Clears cache
+	router.DELETE("/clearcache", cache.ClearCache(boltDB))
 
 	return router
 }
