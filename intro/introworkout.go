@@ -8,7 +8,6 @@ import (
 	"fulli9/workoutgen2/adjustments"
 	"fulli9/workoutgen2/creation"
 
-	// "fulli9/workoutgen2/dbhandler"
 	"fulli9/workoutgen2/dbinput"
 	"fulli9/workoutgen2/dboutput"
 	"fulli9/workoutgen2/selections"
@@ -24,7 +23,7 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 		return shared.Workout{}, err
 	}
 
-	levelSteps := []float32{600, 650, 700, 800, 900, 1200, 1700, 2400, 3300}
+	levelSteps := []float32{650, 700, 800, 950, 1150, 1400, 1700, 2400, 3300}
 
 	// Uses new system
 	allowedNormal, allowedCombo, allowedSplit := alteredfuncs.FilterExers(exercises, user, levelSteps)
@@ -35,7 +34,8 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 	// Uses new system
 	types := alteredfuncs.SelectTypes(levelSteps, minutes)
 
-	stretchTimes, exerTimes := creation.CreateTimes(minutes, types)
+	// Uses new system
+	stretchTimes, exerTimes := alteredfuncs.CreateTimes(minutes, types)
 
 	// Uses new system
 	exerIDs := alteredfuncs.SelectExercises(types, exerTimes, ratings, allowedNormal, allowedCombo, allowedSplit, exercises)
