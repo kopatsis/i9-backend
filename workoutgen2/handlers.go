@@ -3,6 +3,7 @@ package workoutgen2
 import (
 	"context"
 	"errors"
+	"fmt"
 	"fulli9/shared"
 
 	"github.com/gin-gonic/gin"
@@ -256,7 +257,7 @@ func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Han
 		if !exists {
 			c.JSON(400, gin.H{
 				"Error": "Issue with param",
-				"Exact": "Unable to get ID from URL paramete",
+				"Exact": "Unable to get ID from URL parameter",
 			})
 			return
 		}
@@ -279,6 +280,8 @@ func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Han
 
 		err = collection.FindOne(context.Background(), filter).Decode(&workout)
 		if err != nil {
+			fmt.Println("HERE!!!!!!!! idstr:" + workoutID)
+			fmt.Println("HERE!!!!!!!! id:" + id.Hex())
 			c.JSON(400, gin.H{
 				"Error": "Issue with viewing str wo",
 				"Exact": err.Error(),
