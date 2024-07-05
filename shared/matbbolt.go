@@ -28,13 +28,8 @@ func GetMatrixHelper(database *mongo.Database, boltDB *bolt.DB) (TypeMatrix, err
 			log.Printf("Failed to unmarshal from bbolt: %v, fetching from MongoDB", err)
 		}
 
-		cursor, err := database.Collection("typematrix").Find(context.Background(), bson.D{})
+		err = database.Collection("typematrix").FindOne(context.Background(), bson.D{}).Decode(&matrix)
 		if err != nil {
-			return err
-		}
-		defer cursor.Close(context.Background())
-
-		if err = cursor.All(context.Background(), &matrix); err != nil {
 			return err
 		}
 
