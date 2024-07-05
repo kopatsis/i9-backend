@@ -53,7 +53,7 @@ func GetStrByID(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 
 		c.JSON(400, gin.H{
 			"Error": "Issue with viewing stretch",
-			"Exact": errors.New("does not exist with provided id"),
+			"Exact": errors.New("does not exist with provided id").Error(),
 		})
 	}
 }

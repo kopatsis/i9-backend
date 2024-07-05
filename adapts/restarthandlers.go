@@ -94,7 +94,7 @@ func PostRestartedStrWorkout(database *mongo.Database) gin.HandlerFunc {
 		if workout.UserID != userID {
 			c.JSON(400, gin.H{
 				"Error": "Issue with matching wo",
-				"Exact": errors.New("workout does not match the user that's requesting it"),
+				"Exact": errors.New("workout does not match the user that's requesting it").Error(),
 			})
 			return
 		}
@@ -164,7 +164,7 @@ func PostRestartedIntroWorkout(database *mongo.Database) gin.HandlerFunc {
 		if workout.UserID != userID {
 			c.JSON(400, gin.H{
 				"Error": "Issue with matching wo",
-				"Exact": errors.New("workout does not match the user that's requesting it"),
+				"Exact": errors.New("workout does not match the user that's requesting it").Error(),
 			})
 			return
 		}

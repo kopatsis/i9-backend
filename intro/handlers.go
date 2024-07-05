@@ -121,7 +121,7 @@ func PostIntroWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Handl
 		if workout.UserID != userID {
 			c.JSON(400, gin.H{
 				"Error": "Issue with user in request",
-				"Exact": errors.New("workout does not belong to provided user"),
+				"Exact": errors.New("workout does not belong to provided user").Error(),
 			})
 			return
 		}
@@ -129,7 +129,7 @@ func PostIntroWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Handl
 		if workout.Status != "Unstarted" {
 			c.JSON(400, gin.H{
 				"Error": "Issue with status in request",
-				"Exact": errors.New("workout has already started, can't discard and retry"),
+				"Exact": errors.New("workout has already started, can't discard and retry").Error(),
 			})
 			return
 		}

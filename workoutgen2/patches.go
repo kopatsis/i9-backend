@@ -70,7 +70,7 @@ func PatchWorkout(database *mongo.Database) gin.HandlerFunc {
 		if workout.UserID != userID {
 			c.JSON(400, gin.H{
 				"Error": "Issue with user in request",
-				"Exact": errors.New("workout does not belong to provided user"),
+				"Exact": errors.New("workout does not belong to provided user").Error(),
 			})
 			return
 		}
@@ -82,7 +82,7 @@ func PatchWorkout(database *mongo.Database) gin.HandlerFunc {
 		if woHandler.Status != "Unstarted" && woHandler.Status != "Progressing" && woHandler.Status != "Paused" && woHandler.Status != "Rated" && woHandler.Status != "Archived" {
 			c.JSON(400, gin.H{
 				"Error": "Issue with status in request",
-				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)"),
+				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)").Error(),
 			})
 			return
 		}
@@ -111,7 +111,7 @@ func PatchWorkout(database *mongo.Database) gin.HandlerFunc {
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with saving update",
-				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)"),
+				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)").Error(),
 			})
 			return
 		}
@@ -178,7 +178,7 @@ func PatchStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		if workout.UserID != userID {
 			c.JSON(400, gin.H{
 				"Error": "Issue with user in request",
-				"Exact": errors.New("workout does not belong to provided user"),
+				"Exact": errors.New("workout does not belong to provided user").Error(),
 			})
 			return
 		}
@@ -190,7 +190,7 @@ func PatchStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		if woHandler.Status != "Unstarted" && woHandler.Status != "Progressing" && woHandler.Status != "Paused" && woHandler.Status != "Finished" && woHandler.Status != "Archived" {
 			c.JSON(400, gin.H{
 				"Error": "Issue with status in request",
-				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)"),
+				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)").Error(),
 			})
 			return
 		}
@@ -219,7 +219,7 @@ func PatchStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with saving update",
-				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)"),
+				"Exact": errors.New("workout status not in allowable values (Unstarted, Paused, Rated, Archived)").Error(),
 			})
 			return
 		}
@@ -300,7 +300,7 @@ func Rename(database *mongo.Database) gin.HandlerFunc {
 			if strwo.UserID != userID {
 				c.JSON(400, gin.H{
 					"Error": "Issue with user in request",
-					"Exact": errors.New("workout does not belong to provided user"),
+					"Exact": errors.New("workout does not belong to provided user").Error(),
 				})
 				return
 			}
@@ -320,7 +320,7 @@ func Rename(database *mongo.Database) gin.HandlerFunc {
 			if workout.UserID != userID {
 				c.JSON(400, gin.H{
 					"Error": "Issue with user in request",
-					"Exact": errors.New("workout does not belong to provided user"),
+					"Exact": errors.New("workout does not belong to provided user").Error(),
 				})
 				return
 			}
