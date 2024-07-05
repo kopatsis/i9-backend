@@ -60,7 +60,7 @@ func PinStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 		err = collection.FindOne(context.Background(), filter).Decode(&workout)
 		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with viewing user",
+				"Error": "Issue with viewing str wo",
 				"Exact": err.Error(),
 			})
 			return
@@ -164,7 +164,7 @@ func PinWorkout(database *mongo.Database) gin.HandlerFunc {
 		err = collection.FindOne(context.Background(), filter).Decode(&workout)
 		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with viewing user",
+				"Error": "Issue with viewing wo",
 				"Exact": err.Error(),
 			})
 			return

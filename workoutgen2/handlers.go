@@ -43,6 +43,9 @@ func PostWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 		}
 		workoutRet := workout.(shared.Workout)
 
+		patchUserGenerated(database, userID, true) // Even if it does error out, we don't want it to interrupt the WO generation process
+		// The constantly running daily update code will check and update these anyways
+
 		if _, exists := c.GetQuery("noscript"); exists {
 			c.JSON(201, &workoutRet)
 		} else {
@@ -95,6 +98,9 @@ func PostStretchWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerF
 			return
 		}
 		workoutRet := workout.(shared.StretchWorkout)
+
+		patchUserGenerated(database, userID, false) // Even if it does error out, we don't want it to interrupt the WO generation process
+		// The constantly running daily update code will check and update these anyways
 
 		if _, exists := c.GetQuery("noscript"); exists {
 			c.JSON(201, &workoutRet)
@@ -166,7 +172,7 @@ func PostWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFun
 		err = collection.FindOne(context.Background(), filter).Decode(&workout)
 		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with viewing user",
+				"Error": "Issue with viewing wo",
 				"Exact": err.Error(),
 			})
 			return
@@ -197,9 +203,6 @@ func PostWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFun
 			return
 		}
 		workoutRet := newworkout.(shared.Workout)
-
-		patchUserGenerated(database, userID, true) // Even if it does error out, we don't want it to interrupt the WO generation process
-		// The constantly running daily update code will check and update these anyways
 
 		token := c.GetHeader("Authorization")
 
@@ -277,7 +280,7 @@ func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Han
 		err = collection.FindOne(context.Background(), filter).Decode(&workout)
 		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with viewing user",
+				"Error": "Issue with viewing str wo",
 				"Exact": err.Error(),
 			})
 			return
@@ -308,9 +311,6 @@ func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Han
 			return
 		}
 		workoutRet := newworkout.(shared.StretchWorkout)
-
-		patchUserGenerated(database, userID, false) // Even if it does error out, we don't want it to interrupt the WO generation process
-		// The constantly running daily update code will check and update these anyways
 
 		token := c.GetHeader("Authorization")
 

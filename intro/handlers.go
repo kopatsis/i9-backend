@@ -112,7 +112,7 @@ func PostIntroWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Handl
 		err = collection.FindOne(context.Background(), filter).Decode(&workout)
 		if err != nil {
 			c.JSON(400, gin.H{
-				"Error": "Issue with viewing user",
+				"Error": "Issue with viewing wo",
 				"Exact": err.Error(),
 			})
 			return
