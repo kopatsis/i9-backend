@@ -294,7 +294,7 @@ func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Han
 			return
 		}
 
-		if workout.Status != "Unstarted" {
+		if workout.Status != "Unstarted" && workout.Status != "Not Started" {
 			c.JSON(400, gin.H{
 				"Error": "Issue with status in request",
 				"Exact": errors.New("workout has already started, can't discard and retry"),

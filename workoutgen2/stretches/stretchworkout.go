@@ -153,7 +153,7 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 		Name:    "",
 		UserID:  user.ID.Hex(),
 		Created: primitive.NewDateTimeFromTime(time.Now()),
-		Status:  "Not Started",
+		Status:  "Unstarted",
 		StretchTimes: shared.StretchTimes{
 			DynamicPerSet: StretchTimeSlice(realdynamics, stretchSecs),
 			StaticPerSet:  StretchTimeSlice(realstatics, stretchSecs),
