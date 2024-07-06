@@ -1,8 +1,6 @@
 package ratings
 
 import (
-	"errors"
-	"fmt"
 	"fulli9/ratings/dbinput"
 	"fulli9/ratings/dboutput"
 	"fulli9/ratings/operations"
@@ -18,10 +16,10 @@ func RateWorkout(userID string, ratings, favorites [9]int, fullRating, fullFave 
 		return err
 	}
 
-	if countWO == 0 {
-		fmt.Println("No workouts for user")
-		return errors.New("no workouts")
-	}
+	// if countWO == 0 {
+	// 	fmt.Println("No workouts for user")
+	// 	return errors.New("no workouts")
+	// }
 
 	oldLevel := user.Level
 	user.Level = operations.NewLevel(user, fullRating, workout.Difficulty, completedRounds, countWO)

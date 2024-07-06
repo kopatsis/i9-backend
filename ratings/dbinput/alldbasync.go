@@ -65,7 +65,7 @@ func AllInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string, i
 		return user, workout, countWO, exercises, nil
 	}
 
-	countWO = int64(user.WORatedCt + 1)
+	countWO = int64(user.WORatedCt) + 2
 
 	return user, workout, countWO, exercises, errGroup
 }
