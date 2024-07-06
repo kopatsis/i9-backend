@@ -37,7 +37,7 @@ func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]s
 
 		reqGroup := 0
 
-		if stretchtimes.DynamicSets > 3 && i > stretchtimes.DynamicSets-3 {
+		if stretchtimes.DynamicSets > 5 && i > stretchtimes.DynamicSets-3 {
 			if i == stretchtimes.DynamicSets-1 && !stretches.ContainsReqGroup(dynamics, 1) {
 				reqGroup = 1
 			} else if i == stretchtimes.DynamicSets-2 && !stretches.ContainsReqGroup(dynamics, 2) {
@@ -58,10 +58,11 @@ func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]s
 				}
 			}
 		} else {
-			current := stretches.SelectDynamic(dynamicSt, sum)
-			for stretches.ForLoopConditions(dynamics, dynamicSt, current) {
+			ct := 0
+			current = stretches.SelectDynamic(dynamicSt, sum)
+			for stretches.ForLoopConditions(dynamics, dynamicSt, current, ct) {
 				current = stretches.SelectDynamic(dynamicSt, sum)
-
+				ct++
 			}
 		}
 

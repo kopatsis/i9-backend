@@ -100,7 +100,7 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 
 		reqGroup := 0
 
-		if stretchSets > 3 && i > stretchSets-3 {
+		if stretchSets > 5 && i > stretchSets-3 {
 			if i == stretchSets-1 && !ContainsReqGroup(dynamics, 1) {
 				reqGroup = 1
 			} else if i == stretchSets-2 && !ContainsReqGroup(dynamics, 2) {
@@ -121,10 +121,11 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 				}
 			}
 		} else {
-			current := SelectDynamic(dynamicSt, sum)
-			for ForLoopConditions(dynamics, dynamicSt, current) {
+			ct := 0
+			current = SelectDynamic(dynamicSt, sum)
+			for ForLoopConditions(dynamics, dynamicSt, current, ct) {
 				current = SelectDynamic(dynamicSt, sum)
-
+				ct++
 			}
 		}
 
@@ -193,7 +194,12 @@ func ContainsReqGroup(stlist []shared.Stretch, group int) bool {
 	return false
 }
 
-func ForLoopConditions(existing, filtered []shared.Stretch, current shared.Stretch) bool {
+func ForLoopConditions(existing, filtered []shared.Stretch, current shared.Stretch, ct int) bool {
+
+	if ct > 6 {
+		return false
+	}
+
 	if len(existing) == 0 || len(filtered) < 2 {
 		return false
 	}
