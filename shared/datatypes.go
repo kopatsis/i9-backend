@@ -33,6 +33,7 @@ type User struct {
 	WOStartedCt       int                `bson:"wostartct"`    //New
 	WORatedCt         int                `bson:"completed"`    //New
 	DisplayLevel      int                `bson:"displevel"`    //New
+	ResetDate         primitive.DateTime `bson:"reset"`        //New
 }
 
 type Workout struct {
