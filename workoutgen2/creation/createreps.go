@@ -84,11 +84,11 @@ func SplitReps(currentReps []float32, matrix shared.TypeMatrix, exers map[string
 		retPairs[i][1] = true
 	}
 
-	initReps := math.Min(math.Min(float64(currentReps[0]), float64(currentReps[1])), float64(currentReps[0]/4+currentReps[1]/4))
+	initReps := (currentReps[0]/4 + currentReps[1]/4) * matrix.Matrix[parentMatIndex[exer1.Parent]][parentMatIndex[exer2.Parent]]
 
-	adjReps := float32(initReps) * matrix.Matrix[parentMatIndex[exer1.Parent]][parentMatIndex[exer2.Parent]]
+	adjReps := math.Min(math.Min(float64(currentReps[0]), float64(currentReps[1])), float64(initReps))
 
-	currentReps = []float32{adjReps}
+	currentReps = []float32{float32(adjReps)}
 
 	return currentReps, retPairs
 }

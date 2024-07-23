@@ -78,7 +78,7 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 	} else if minutes < 72 {
 		secsPerSet = 30
 		circles = 4
-	} else {
+	} else if minutes > 2 {
 		secsPerSet = 30
 		circles = 5
 	}
