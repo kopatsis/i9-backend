@@ -57,6 +57,7 @@ func WorkoutGen(minutes float32, difficulty int, loweronly bool, userID string, 
 		return shared.Workout{}, err
 	}
 	workout.ID = id
+	workout.LowerOnly = loweronly
 
 	err = dboutput.UpdateUserLast(minutes, difficulty, userID, database)
 	if err != nil {

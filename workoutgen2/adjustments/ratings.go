@@ -44,7 +44,7 @@ func ExerRatings(diff int, loweronly bool, exers map[string]shared.Exercise, pas
 		balance := [3]float32{1.0 / 2.0, 1.0 / 4.0, 1.0 / 4.0}
 		for i, workout := range pastWOs {
 
-			if workout.Status != "Rated" {
+			if workout.Status != "Rated" || workout.LowerOnly {
 				continue
 			}
 			adjustment := int(time.Since(workout.Created.Time()).Hours())

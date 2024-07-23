@@ -63,6 +63,7 @@ type Workout struct {
 	LastFaves       int                  `bson:"lastfaves"`  //New
 	RatedCount      int                  `bson:"ratedct"`    //New
 	StartedCount    int                  `bson:"startedct"`  //New
+	LowerOnly       bool                 `bson:"loweronly"`  //New not in all
 }
 
 type StretchTimes struct {
