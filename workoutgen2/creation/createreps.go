@@ -111,7 +111,7 @@ func GetReps(matrix shared.TypeMatrix, minutes, adjlevel float32, times [9]share
 		for _, id := range round {
 			unAdjReps := UnadjustedReps(i+1, id, adjlevel, minutes, times[i], user, exers)
 			if types[i] == "Combo" {
-				adjReps := unAdjReps / float32(times[i].ComboExers)
+				adjReps := unAdjReps / (float32(times[i].ComboExers) * 1.05)
 				currentReps = append(currentReps, adjReps)
 			} else {
 				currentReps = append(currentReps, unAdjReps)
