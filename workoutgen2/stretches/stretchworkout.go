@@ -55,7 +55,7 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 		return shared.StretchWorkout{}, err
 	}
 
-	stretches, err = FilterStretches(user.Level*1.3, stretches, nil, user.BannedStretches)
+	stretches, err = FilterStretches(user.Level*1.5, stretches, nil, user.BannedStretches)
 	if err != nil {
 		return shared.StretchWorkout{}, err
 	}
@@ -187,7 +187,7 @@ func SelectDynamic(dynamics []shared.Stretch, sum float32) shared.Stretch {
 
 func ContainsReqGroup(stlist []shared.Stretch, group int) bool {
 	for _, st := range stlist {
-		if st.ReqGroup == 1 {
+		if st.ReqGroup == group {
 			return true
 		}
 	}
