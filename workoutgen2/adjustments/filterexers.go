@@ -43,6 +43,8 @@ func FilterExers(diff int, allExercises map[string]shared.Exercise, user shared.
 			}
 		} else if exercise.CardioRating > 3.85 && diff == 1 {
 			continue
+		} else if user.PushupSetting == "Regular" && user.PlyoTolerance > 0 && (exercise.Name == "Step Burpees" || exercise.Name == "Knee Pushup Step Burpees" || exercise.Name == "Non-Pushup Step Burpees") {
+			continue
 		}
 
 		if exercise.UnderCombos && exercise.PushupType != "Wall" && diff != 2 {

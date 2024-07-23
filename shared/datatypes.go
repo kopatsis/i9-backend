@@ -122,7 +122,7 @@ type Exercise struct {
 	PlyoRating   int                `bson:"plyorating"`
 	StartQuality float32            `bson:"startquality"`
 	BodyParts    []int              `bson:"bodyparts"`
-	RepVars      [3]float32         `bson:"repvars"`
+	RepVars      [3]float32         `bson:"repvars,truncate"`
 	InSplits     bool               `bson:"insplits"`
 	InPairs      bool               `bson:"inpairs"`
 	UnderCombos  bool               `bson:"undercombos"`
