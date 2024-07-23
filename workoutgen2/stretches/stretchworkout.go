@@ -61,26 +61,28 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 	}
 
 	secsPerSet, circles := 15.0, 1
-	if minutes > 2 && minutes < 8 {
-		secsPerSet = 20
-	} else if minutes < 16 {
-		secsPerSet = 20
-		circles = 2
-	} else if minutes < 24 {
-		secsPerSet = 20
-		circles = 3
-	} else if minutes < 36 {
-		secsPerSet = 25
-		circles = 3
-	} else if minutes < 48 {
-		secsPerSet = 30
-		circles = 3
-	} else if minutes < 72 {
-		secsPerSet = 30
-		circles = 4
-	} else if minutes > 2 {
-		secsPerSet = 30
-		circles = 5
+	if minutes > 2 {
+		if minutes < 8 {
+			secsPerSet = 20
+		} else if minutes < 16 {
+			secsPerSet = 20
+			circles = 2
+		} else if minutes < 24 {
+			secsPerSet = 20
+			circles = 3
+		} else if minutes < 36 {
+			secsPerSet = 25
+			circles = 3
+		} else if minutes < 48 {
+			secsPerSet = 30
+			circles = 3
+		} else if minutes < 72 {
+			secsPerSet = 30
+			circles = 4
+		} else {
+			secsPerSet = 30
+			circles = 5
+		}
 	}
 
 	stretchSecs := (60 * minutes) / 2
