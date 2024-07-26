@@ -16,14 +16,16 @@ func intersects(slice1 []int, slice2 []int) bool {
 	return false
 }
 
-func FilterExers(diff int, allExercises map[string]shared.Exercise, user shared.User, adjlevel float32) ([]string, []string, []string) {
+func FilterExers(diff int, allExercises map[string]shared.Exercise, user shared.User, adjlevel float32, loweronly bool) ([]string, []string, []string) {
 
 	allowedNormal := []string{}
 	allowedCombo := []string{}
 	allowedSplit := []string{}
 
 	for _, exercise := range allExercises {
-		if user.PlyoTolerance == 0 && exercise.PlyoRating > 0 {
+		if loweronly && !(slices.Contains(exercise.GeneralType, "Legs") || (!slices.Contains(exercise.GeneralType, "Push") && slices.Contains(exercise.GeneralType, "Core"))) {
+			continue
+		} else if user.PlyoTolerance == 0 && exercise.PlyoRating > 0 {
 			continue
 		} else if (user.PlyoTolerance == 1 || diff == 1) && exercise.PlyoRating > 1 {
 			continue
@@ -40,6 +42,8 @@ func FilterExers(diff int, allExercises map[string]shared.Exercise, user shared.
 				continue
 			}
 		} else if exercise.CardioRating > 3.85 && diff == 1 {
+			continue
+		} else if user.PushupSetting == "Regular" && user.PlyoTolerance > 0 && (exercise.Name == "Step Burpees" || exercise.Name == "Knee Pushup Step Burpees" || exercise.Name == "Non-Pushup Step Burpees") {
 			continue
 		}
 

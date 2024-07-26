@@ -46,7 +46,7 @@ func GetReps(matrix shared.TypeMatrix, minutes float32, levelSteps []float32, ti
 		for _, id := range round {
 			unAdjReps := UnadjustedReps(id, levelSteps[i], minutes, times[i], exers)
 			if types[i] == "Combo" {
-				adjReps := unAdjReps / float32(times[i].ComboExers)
+				adjReps := unAdjReps / (float32(times[i].ComboExers) * 1.05)
 				currentReps = append(currentReps, adjReps)
 			} else {
 				currentReps = append(currentReps, unAdjReps)

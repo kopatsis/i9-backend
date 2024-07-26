@@ -5,6 +5,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 type WorkoutRoute struct {
 	Time       float32 `json:"time" binding:"required,min=8,max=240"`
 	Difficulty int     `json:"diff" binding:"required,min=1,max=6"`
+	LowerOnly  bool    `json:"lower"`
 }
 
 type StrWorkoutRoute struct {

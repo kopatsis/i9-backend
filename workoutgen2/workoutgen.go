@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.Database, boltDB *bbolt.DB) (shared.AnyWorkout, error) {
+func WorkoutGen(minutes float32, difficulty int, loweronly bool, userID string, database *mongo.Database, boltDB *bbolt.DB) (shared.AnyWorkout, error) {
 
 	if minutes < 8 || difficulty == 0 {
 		return stretchWOReturn(minutes, userID, database, boltDB)
@@ -27,11 +27,11 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 
 	adjlevel := adjustments.CalcInitLevel(user.Level, pastWOs)
 
-	allowedNormal, allowedCombo, allowedSplit := adjustments.FilterExers(difficulty, exercises, user, adjlevel)
+	allowedNormal, allowedCombo, allowedSplit := adjustments.FilterExers(difficulty, exercises, user, adjlevel, loweronly)
 
 	adjlevel = adjustments.CalcDiffLevel(difficulty, adjlevel)
 
-	ratings := adjustments.ExerRatings(difficulty, exercises, pastWOs, user)
+	ratings := adjustments.ExerRatings(difficulty, loweronly, exercises, pastWOs, user)
 	adjustments.AdjustBurpeeRatings(user, exercises, ratings)
 
 	types := selections.SelectTypes(adjlevel, minutes, difficulty)
@@ -57,6 +57,7 @@ func WorkoutGen(minutes float32, difficulty int, userID string, database *mongo.
 		return shared.Workout{}, err
 	}
 	workout.ID = id
+	workout.LowerOnly = loweronly
 
 	err = dboutput.UpdateUserLast(minutes, difficulty, userID, database)
 	if err != nil {

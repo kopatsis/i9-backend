@@ -43,7 +43,7 @@ func getSplitIDs(sum float32, exers []string, ratings map[string]float32, exerci
 
 }
 
-func getComboIDs(count int, sum float32, exers []string, ratings map[string]float32, exercises map[string]shared.Exercise) []string {
+func getComboIDs(sum float32, exers []string, ratings map[string]float32, exercises map[string]shared.Exercise) []string {
 	id1 := "6607a0bf147215fc5694bb4a"
 
 	for id, ex := range exercises {
@@ -69,7 +69,7 @@ func SelectExercises(types [9]string, times [9]shared.ExerciseTimes, ratings map
 
 		if round == "Combo" {
 			sum := sum(allowedCombo[i], ratings)
-			current := getComboIDs(times[i].ComboExers, sum, allowedCombo[i], ratings, exercises)
+			current := getComboIDs(sum, allowedCombo[i], ratings, exercises)
 			ret[i] = current
 		} else if round == "Split" {
 			sum := sum(allowedSplit[i], ratings)

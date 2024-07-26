@@ -55,32 +55,34 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 		return shared.StretchWorkout{}, err
 	}
 
-	stretches, err = FilterStretches(user.Level*1.3, stretches, nil, user.BannedStretches)
+	stretches, err = FilterStretches(user.Level*1.5, stretches, nil, user.BannedStretches)
 	if err != nil {
 		return shared.StretchWorkout{}, err
 	}
 
 	secsPerSet, circles := 15.0, 1
-	if minutes > 2 && minutes < 8 {
-		secsPerSet = 20
-	} else if minutes < 16 {
-		secsPerSet = 20
-		circles = 2
-	} else if minutes < 24 {
-		secsPerSet = 20
-		circles = 3
-	} else if minutes < 36 {
-		secsPerSet = 25
-		circles = 3
-	} else if minutes < 48 {
-		secsPerSet = 30
-		circles = 3
-	} else if minutes < 72 {
-		secsPerSet = 30
-		circles = 4
-	} else {
-		secsPerSet = 30
-		circles = 5
+	if minutes > 2 {
+		if minutes < 8 {
+			secsPerSet = 20
+		} else if minutes < 16 {
+			secsPerSet = 20
+			circles = 2
+		} else if minutes < 24 {
+			secsPerSet = 20
+			circles = 3
+		} else if minutes < 36 {
+			secsPerSet = 25
+			circles = 3
+		} else if minutes < 48 {
+			secsPerSet = 30
+			circles = 3
+		} else if minutes < 72 {
+			secsPerSet = 30
+			circles = 4
+		} else {
+			secsPerSet = 30
+			circles = 5
+		}
 	}
 
 	stretchSecs := (60 * minutes) / 2
@@ -187,7 +189,7 @@ func SelectDynamic(dynamics []shared.Stretch, sum float32) shared.Stretch {
 
 func ContainsReqGroup(stlist []shared.Stretch, group int) bool {
 	for _, st := range stlist {
-		if st.ReqGroup == 1 {
+		if st.ReqGroup == group {
 			return true
 		}
 	}
