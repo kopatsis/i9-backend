@@ -60,7 +60,7 @@ func SaveDBAllAsync(user shared.User, ratings, faves [9]int, fullRating, fullFav
 
 }
 
-func SaveStrDBAllAsync(user shared.User, faves []int, fullFave int, workout shared.StretchWorkout, databaseRating shared.StoredStrRating, database *mongo.Database) error {
+func SaveStrDBAllAsync(user shared.User, faves []int, fullFave int, onlyWO bool, workout shared.StretchWorkout, databaseRating shared.StoredStrRating, database *mongo.Database) error {
 
 	var wg sync.WaitGroup
 
@@ -79,7 +79,7 @@ func SaveStrDBAllAsync(user shared.User, faves []int, fullFave int, workout shar
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err := SaveStrWorkout(faves, fullFave, workout, database)
+		err := SaveStrWorkout(faves, fullFave, onlyWO, workout, database)
 		if err != nil {
 			errChan <- err
 		}
