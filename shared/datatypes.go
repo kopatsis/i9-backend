@@ -92,27 +92,31 @@ type WorkoutRound struct {
 	Pairs       []bool        `bson:"pairs"`
 	Status      string        `bson:"status"`
 	Times       ExerciseTimes `bson:"times"`
-	AvgRating   float32       `bson:"rating"` //PtlNew
-	AvgFaves    float32       `bson:"faves"`  //New
+	AvgRating   float32       `bson:"rating"`
+	AvgFaves    float32       `bson:"faves"`
 }
 
 type StretchWorkout struct {
-	ID           primitive.ObjectID   `bson:"_id,omitempty"`
-	Name         string               `bson:"name"`
-	UserID       string               `bson:"userid"`
-	Created      primitive.DateTime   `bson:"date"`     //PtlNew
-	LastStarted  primitive.DateTime   `bson:"lastdate"` //New
-	DateList     []primitive.DateTime `bson:"datelist"` //New
-	Status       string               `bson:"status"`
-	StretchTimes StretchTimes         `bson:"stretchtimes"`
-	LevelAtStart float32              `bson:"level"`
-	PausedTime   float32              `bson:"paused"`
-	Minutes      float32              `bson:"minutes"`
-	Dynamics     []string             `bson:"dynamics"`
-	Statics      []string             `bson:"statics"`
-	IsPinned     bool                 `bson:"pinned"`      //New
-	StartedCount int                  `bson:"startedct"`   //New
-	CycleLength  int                  `bson:"cyclelength"` //New
+	ID           primitive.ObjectID         `bson:"_id,omitempty"`
+	Name         string                     `bson:"name"`
+	UserID       string                     `bson:"userid"`
+	Created      primitive.DateTime         `bson:"date"`
+	LastStarted  primitive.DateTime         `bson:"lastdate"`
+	StartedDates []primitive.DateTime       `bson:"datelist"`
+	RatedDates   []primitive.DateTime       `bson:"ratedatelist"`
+	DateToFaves  map[primitive.DateTime]int `bson:"datefaves"`
+	Status       string                     `bson:"status"`
+	StretchTimes StretchTimes               `bson:"stretchtimes"`
+	LevelAtStart float32                    `bson:"level"`
+	PausedTime   float32                    `bson:"paused"`
+	Minutes      float32                    `bson:"minutes"`
+	Dynamics     []string                   `bson:"dynamics"`
+	Statics      []string                   `bson:"statics"`
+	IsPinned     bool                       `bson:"pinned"`
+	RatedCount   int                        `bson:"ratedct"`
+	StartedCount int                        `bson:"startedct"`
+	CycleLength  int                        `bson:"cyclelength"`
+	AvgFaves     float32                    `bson:"faves"`
 }
 
 type Exercise struct {
@@ -170,6 +174,17 @@ type StoredRating struct {
 	OverallRating int                `bson:"rating"`
 	OverallFave   int                `bson:"fave"`
 	RoundRatings  [9]RoundRating     `bson:"roundratings"`
+}
+
+type StoredStrRating struct {
+	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	UserID    string             `bson:"user"`
+	WorkoutID string             `bson:"workoutid"`
+	Date      primitive.DateTime `bson:"date"`
+	Minutes   float32            `bson:"minutes"`
+	Fave      int                `bson:"fave"`
+	Faves     []int              `bson:"faves"`
+	StrIDs    []string           `bson:"strids"`
 }
 
 type RoundRating struct {

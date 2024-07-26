@@ -67,6 +67,48 @@ func PostRating(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 	}
 }
 
+func PostStrRating(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var rateHandler shared.RateStrRoute
+		if err := c.ShouldBindJSON(&rateHandler); err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with body binding",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		id, exists := c.Params.Get("id")
+		if !exists {
+			c.JSON(400, gin.H{
+				"Error": "Issue with param",
+				"Exact": "Unable to get ID from URL parameter",
+			})
+			return
+		}
+
+		if err := RateStrWorkout(userID, rateHandler.Faves, rateHandler.Fave, rateHandler.OnlyWorkout, id, database, boltDB); err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with rating route",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		c.Status(204)
+	}
+}
+
 func PostIntroRating(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 

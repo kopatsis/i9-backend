@@ -38,6 +38,12 @@ type RateRoute struct {
 	OnlyWorkout bool  `json:"onlyworkout" binding:"required"`
 }
 
+type RateStrRoute struct {
+	Fave        int   `json:"fave" binding:"required"`
+	Faves       []int `json:"faves"`
+	OnlyWorkout bool  `json:"onlyworkout" binding:"required"`
+}
+
 type UserRoute struct {
 	Name  string `json:"name"`
 	Token string `json:"token"`

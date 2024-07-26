@@ -81,7 +81,7 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 			circles = 4
 		} else {
 			secsPerSet = 30
-			circles = 5
+			circles = int(math.Ceil(float64(minutes / 18)))
 		}
 	}
 
@@ -169,6 +169,7 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 		Dynamics:     StretchToString(realdynamics),
 		Statics:      StretchToString(realstatics),
 		CycleLength:  stretchSets,
+		AvgFaves:     -1,
 	}
 
 	return ret, nil
