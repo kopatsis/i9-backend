@@ -90,7 +90,7 @@ func PatchWorkout(database *mongo.Database) gin.HandlerFunc {
 		if (woHandler.Status == "Progressing" || woHandler.Status == "Paused") && workout.Status == "Unstarted" {
 			workout.StartedCount++
 			workout.LastStarted = primitive.NewDateTimeFromTime(time.Now())
-			workout.DateList = append(workout.DateList, workout.LastStarted)
+			workout.StartedDates = append(workout.StartedDates, workout.LastStarted)
 			if err := patchUserStarted(database, userID, true); err != nil {
 				c.JSON(400, gin.H{
 					"Error": "Issue with updating user ct",
