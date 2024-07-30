@@ -27,14 +27,15 @@ type User struct {
 	LastMinutes       float32            `bson:"lastmins"`
 	LastDifficulty    int                `bson:"lastdiff"`
 	Assessed          bool               `bson:"assessed"`
-	Badges            []string           `bson:"badges"`       //New
-	StrWOStartedCt    int                `bson:"strwostartct"` //New
-	StrWOGeneratedCt  int                `bson:"strwogenct"`   //New
-	WOGeneratedCt     int                `bson:"wogenct"`      //New
-	WOStartedCt       int                `bson:"wostartct"`    //New
-	WORatedCt         int                `bson:"completed"`    //New
-	DisplayLevel      int                `bson:"displevel"`    //New
-	ResetDate         primitive.DateTime `bson:"reset"`        //New
+	Badges            []string           `bson:"badges"`         //New
+	StrWOStartedCt    int                `bson:"strwostartct"`   //New
+	StrWOGeneratedCt  int                `bson:"strwogenct"`     //New
+	WOGeneratedCt     int                `bson:"wogenct"`        //New
+	WOStartedCt       int                `bson:"wostartct"`      //New
+	WORatedCt         int                `bson:"completed"`      //New
+	StrWORatedCt      int                `bson:"strwocompleted"` //New
+	DisplayLevel      int                `bson:"displevel"`      //New
+	ResetDate         primitive.DateTime `bson:"reset"`          //New
 }
 
 type Workout struct {

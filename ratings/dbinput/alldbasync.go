@@ -70,14 +70,13 @@ func AllInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string, i
 	return user, workout, countWO, exercises, errGroup
 }
 
-func AllStrInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string, id string) (shared.User, shared.StretchWorkout, map[string]shared.Stretch, error) {
+func AllStrInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string, id string) (shared.User, shared.StretchWorkout, error) {
 	var user shared.User
 	var workout shared.StretchWorkout
-	var strs map[string]shared.Stretch
 
 	var wg sync.WaitGroup
 
-	errChan := make(chan error, 3)
+	errChan := make(chan error, 2)
 	var errGroup *multierror.Error
 
 	wg.Add(1)
@@ -100,16 +99,6 @@ func AllStrInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string
 		}
 	}()
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		var err error
-		strs, err = GetStrsDB(database, boltDB)
-		if err != nil {
-			errChan <- err
-		}
-	}()
-
 	wg.Wait()
 	close(errChan)
 
@@ -122,8 +111,8 @@ func AllStrInputsAsync(database *mongo.Database, boltDB *bbolt.DB, userID string
 	}
 
 	if !hasErr {
-		return user, workout, strs, nil
+		return user, workout, nil
 	}
 
-	return user, workout, strs, errGroup
+	return user, workout, errGroup
 }

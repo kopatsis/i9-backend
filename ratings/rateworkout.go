@@ -32,8 +32,7 @@ func RateWorkout(userID string, ratings, favorites [9]int, fullRating, fullFave 
 
 	databaseRating := operations.CreateDatabaseRating(ratings, favorites, fullRating, fullFave, onlyWorkout, workout)
 
-	err = dboutput.SaveDBAllAsync(user, ratings, favorites, fullRating, fullFave, onlyWorkout, workout, databaseRating, database)
-	if err != nil {
+	if err := dboutput.SaveDBAllAsync(user, ratings, favorites, fullRating, fullFave, onlyWorkout, workout, databaseRating, database); err != nil {
 		return err
 	}
 
