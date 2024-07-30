@@ -45,7 +45,7 @@ func WorkoutGen(minutes float32, difficulty int, loweronly bool, userID string, 
 
 	reps, pairs := creation.GetReps(typeMatrix, minutes, adjlevel, exerTimes, user, exerIDs, exercises, types)
 
-	statics, dynamics, stretchTimes, err := selections.SelectStretches(stretchTimes, stretches, adjlevel, exerIDs, exercises, user.BannedStretches)
+	statics, dynamics, stretchTimes, err := selections.SelectStretches(stretchTimes, stretches, adjlevel, exerIDs, exercises, user)
 	if err != nil {
 		return shared.Workout{}, err
 	}

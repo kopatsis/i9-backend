@@ -55,7 +55,7 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 		return shared.StretchWorkout{}, err
 	}
 
-	stretches, err = FilterStretches(user.Level*1.5, stretches, nil, user.BannedStretches)
+	stretches, err = FilterStretches(user.Level*1.5, stretches, nil, user)
 	if err != nil {
 		return shared.StretchWorkout{}, err
 	}
