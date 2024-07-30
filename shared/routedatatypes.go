@@ -118,11 +118,12 @@ type RetLibraryExer struct {
 }
 
 type RetLibraryStr struct {
-	ID        string
-	Name      string
-	Type      string
-	Blocked   bool
-	BodyParts []int
+	ID         string
+	Name       string
+	Type       string
+	Blocked    bool
+	Favoritism float32
+	BodyParts  []int
 }
 
 type RenameRoute struct {

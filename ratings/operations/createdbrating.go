@@ -14,6 +14,7 @@ func CreateDatabaseRating(ratings, favorites [9]int, fullRating, fullFave int, o
 		LevelAtStart:  workout.LevelAtStart,
 		Minutes:       workout.Minutes,
 		Difficulty:    workout.Difficulty,
+		OnlyWorkout:   onlyWorkout,
 		Date:          primitive.NewDateTimeFromTime(time.Now()),
 		OverallRating: int(fullRating),
 		OverallFave:   int(fullFave),
@@ -36,6 +37,25 @@ func CreateDatabaseRating(ratings, favorites [9]int, fullRating, fullFave int, o
 			HasRating:   rating == -1,
 			HasFave:     favorites[i] == -1,
 		}
+	}
+
+	return ret
+}
+
+func CreateStrDatabaseRating(favorites []int, fullFave int, onlyWorkout bool, workout shared.StretchWorkout) shared.StoredStrRating {
+	ret := shared.StoredStrRating{
+		UserID:      workout.UserID,
+		WorkoutID:   workout.ID.Hex(),
+		Minutes:     workout.Minutes,
+		Date:        primitive.NewDateTimeFromTime(time.Now()),
+		OnlyWorkout: onlyWorkout,
+		Fave:        fullFave,
+		StaticIDs:   workout.Statics,
+		DynamicIDs:  workout.Dynamics,
+	}
+
+	if !onlyWorkout {
+		ret.Faves = favorites
 	}
 
 	return ret

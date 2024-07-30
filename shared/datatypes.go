@@ -18,6 +18,7 @@ type User struct {
 	BannedParts       []int              `bson:"bannedParts"`
 	PlyoTolerance     int                `bson:"plyoToler"`
 	ExerFavoriteRates map[string]float32 `bson:"exerfavs"`
+	StrFavoriteRates  map[string]float32 `bson:"exerfavs"`
 	ExerModifications map[string]float32 `bson:"exermods"`
 	TypeModifications map[string]float32 `bson:"typemods"`
 	RoundEndurance    map[int]float32    `bson:"roundendur"`
@@ -171,20 +172,23 @@ type StoredRating struct {
 	Minutes       float32            `bson:"minutes"`
 	LevelAtStart  float32            `bson:"level"`
 	Difficulty    int                `bson:"difficulty"`
+	OnlyWorkout   bool               `bson:"onlywo"`
 	OverallRating int                `bson:"rating"`
 	OverallFave   int                `bson:"fave"`
 	RoundRatings  [9]RoundRating     `bson:"roundratings"`
 }
 
 type StoredStrRating struct {
-	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	UserID    string             `bson:"user"`
-	WorkoutID string             `bson:"workoutid"`
-	Date      primitive.DateTime `bson:"date"`
-	Minutes   float32            `bson:"minutes"`
-	Fave      int                `bson:"fave"`
-	Faves     []int              `bson:"faves"`
-	StrIDs    []string           `bson:"strids"`
+	ID          primitive.ObjectID `bson:"_id,omitempty"`
+	UserID      string             `bson:"user"`
+	WorkoutID   string             `bson:"workoutid"`
+	Date        primitive.DateTime `bson:"date"`
+	Minutes     float32            `bson:"minutes"`
+	OnlyWorkout bool               `bson:"onlywo"`
+	Fave        int                `bson:"fave"`
+	Faves       []int              `bson:"faves"`
+	DynamicIDs  []string           `bson:"dynamics"`
+	StaticIDs   []string           `bson:"statics"`
 }
 
 type RoundRating struct {

@@ -104,13 +104,20 @@ func GetLibrary(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 
 		for _, str := range strs {
 			blocked := slices.Contains(user.BannedStretches, str.ID.Hex())
+			var fav float32
+			if val, ok := user.StrFavoriteRates[str.ID.Hex()]; ok {
+				fav = val
+			} else {
+				fav = 1
+			}
 
 			retStr = append(retStr, shared.RetLibraryStr{
-				ID:        str.ID.Hex(),
-				Name:      str.Name,
-				Type:      str.Status,
-				Blocked:   blocked,
-				BodyParts: str.BodyParts,
+				ID:         str.ID.Hex(),
+				Name:       str.Name,
+				Type:       str.Status,
+				Blocked:    blocked,
+				Favoritism: fav,
+				BodyParts:  str.BodyParts,
 			})
 		}
 
