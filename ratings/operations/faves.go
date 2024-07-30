@@ -11,15 +11,12 @@ func UserFaves(user shared.User, faves [9]int, fave int, workout shared.Workout,
 	for i, round := range workout.Exercises {
 		for _, id := range round.ExerciseIDs {
 
-			var currentFave int
 			var modifier float32
 
 			if !onlyWorkout && i < len(faves) {
-				currentFave = faves[i]
-				modifier = (float32(currentFave) - 5.0) / 15.0
+				modifier = (float32(faves[i]) - 5.0) / 15.0
 			} else {
-				currentFave = fave
-				modifier = (float32(currentFave) - 5.0) / 25.0
+				modifier = (float32(fave) - 5.0) / 25.0
 			}
 
 			if val, ok := ret[id]; ok {
@@ -37,15 +34,12 @@ func UserStrFaves(user shared.User, faves []int, fave int, workout shared.Stretc
 	ret := user.StrFavoriteRates
 
 	for i, id := range workout.Dynamics {
-		var currentFave int
 		var modifier float32
 
 		if !onlyWorkout && i < len(faves) {
-			currentFave = faves[i]
-			modifier = (float32(currentFave) - 5.0) / 15.0
+			modifier = (float32(faves[i]) - 5.0) / 15.0
 		} else {
-			currentFave = fave
-			modifier = (float32(currentFave) - 5.0) / 25.0
+			modifier = (float32(fave) - 5.0) / 25.0
 		}
 
 		if val, ok := ret[id]; ok {
@@ -56,15 +50,12 @@ func UserStrFaves(user shared.User, faves []int, fave int, workout shared.Stretc
 	}
 
 	for i, id := range workout.Statics {
-		var currentFave int
 		var modifier float32
 
 		if !onlyWorkout && i < len(faves) {
-			currentFave = faves[i]
-			modifier = (float32(currentFave) - 5.0) / 15.0
+			modifier = (float32(faves[i]) - 5.0) / 15.0
 		} else {
-			currentFave = fave
-			modifier = (float32(currentFave) - 5.0) / 25.0
+			modifier = (float32(fave) - 5.0) / 25.0
 		}
 
 		if val, ok := ret[id]; ok {
