@@ -92,6 +92,10 @@ type ExerMapRoute struct {
 	ExerMap map[string]float32 `json:"exermap" binding:"required"`
 }
 
+type StrMapRoute struct {
+	StrMap map[string]float32 `json:"strmap" binding:"required"`
+}
+
 type PosStretchWorkoutRoute struct {
 	Dynamics     []string
 	Statics      []string

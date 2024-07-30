@@ -18,7 +18,7 @@ type User struct {
 	BannedParts       []int              `bson:"bannedParts"`
 	PlyoTolerance     int                `bson:"plyoToler"`
 	ExerFavoriteRates map[string]float32 `bson:"exerfavs"`
-	StrFavoriteRates  map[string]float32 `bson:"exerfavs"`
+	StrFavoriteRates  map[string]float32 `bson:"strfavs"`
 	ExerModifications map[string]float32 `bson:"exermods"`
 	TypeModifications map[string]float32 `bson:"typemods"`
 	RoundEndurance    map[int]float32    `bson:"roundendur"`
