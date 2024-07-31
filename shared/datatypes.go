@@ -10,6 +10,7 @@ type User struct {
 	ID                primitive.ObjectID `bson:"_id,omitempty"`
 	Name              string             `bson:"name"`
 	Username          string             `bson:"username"`
+	Email             string             `bson:"email"` //Real New
 	Paying            bool               `bson:"paying"`
 	Provider          string             `bson:"provider"`
 	Level             float32            `bson:"level"`
@@ -36,6 +37,8 @@ type User struct {
 	StrWORatedCt      int                `bson:"strwocompleted"` //New
 	DisplayLevel      int                `bson:"displevel"`      //New
 	ResetDate         primitive.DateTime `bson:"reset"`          //New
+	BirthMonth        int                `bson:"bmonth"`         //Real New
+	BirthDay          int                `bson:"bday"`           //Real New
 }
 
 type Workout struct {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"fulli9/platform/middleware"
+	"fulli9/ratings"
 	"fulli9/shared"
 	"slices"
 	"strconv"
@@ -59,6 +60,9 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 		user := shared.User{
 			Username:          username,
 			Name:              userBody.Name,
+			Email:             userBody.Email,
+			BirthMonth:        userBody.BirthMonth,
+			BirthDay:          userBody.BirthDay,
 			PlyoTolerance:     3,
 			PushupSetting:     "Knee",
 			BannedExercises:   []string{},
@@ -81,6 +85,13 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		refreshTokenDB(result.InsertedID.(primitive.ObjectID).Hex(), userBody.Token, database)
+
+		if userBody.Quizzed {
+			ratings.PushQuiz(userBody.QuizRoute, database, result.InsertedID.(primitive.ObjectID).Hex())
+		}
+
+		// In both of the above cases, we do not want to error out for the actual creation if either of these processes themselves fail, so no err returned for them.
+
 		c.JSON(201, gin.H{
 			"ID": result.InsertedID,
 		})

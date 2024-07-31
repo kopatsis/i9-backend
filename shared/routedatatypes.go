@@ -45,8 +45,13 @@ type RateStrRoute struct {
 }
 
 type UserRoute struct {
-	Name  string `json:"name"`
-	Token string `json:"token"`
+	Name       string    `json:"name"`
+	BirthMonth int       `json:"bmonth"`
+	BirthDay   int       `json:"bday"`
+	Email      string    `json:"email"`
+	Token      string    `json:"token" binding:"required"`
+	QuizRoute  QuizRoute `json:"quiz"`
+	Quizzed    bool      `json:"quizzed"`
 }
 
 type PatchUserRoute struct {
