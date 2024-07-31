@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"fulli9/ratings/dbinput"
+	"fulli9/workoutgen2"
 
 	// "fulli9/workoutgen2/datatypes"
 	// "fulli9/workoutgen2/dbhandler"
@@ -40,18 +41,20 @@ func RateIntroWorkout(userID string, roundEnd float32, database *mongo.Database)
 
 	filter := bson.M{"_id": user.ID}
 
-	dispLevel := user.DisplayLevel
-	if dispLevel == 0 {
-		dispLevel = int(userlevel)
-	} else {
-		dispLevel += 5
-	}
-
-	update := bson.M{"$set": bson.M{"level": userlevel, "pushsetting": pushupSetting, "assessed": true, "displevel": dispLevel}}
+	update := bson.M{"$set": bson.M{"level": userlevel, "pushsetting": pushupSetting, "assessed": true}}
 
 	_, err = collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		fmt.Println(err)
+		return err
+	}
+
+	inc := 5
+	if user.DisplayLevel == 0 {
+		inc = int(userlevel)
+	}
+
+	if err := workoutgen2.IncrementDispLevelBy(user, database, inc); err != nil {
 		return err
 	}
 

@@ -353,19 +353,22 @@ func patchUserStarted(database *mongo.Database, userID string, isWO bool) error 
 	collection := database.Collection("user")
 	filter := bson.M{"_id": id}
 
+	var user shared.User
+	if err := collection.FindOne(context.Background(), filter).Decode(&user); err != nil {
+		return err
+	}
+
 	var update bson.M
 	if isWO {
 		update = bson.M{
 			"$inc": bson.M{
 				"wostartct": 1,
-				"displevel": 2,
 			},
 		}
 	} else {
 		update = bson.M{
 			"$inc": bson.M{
 				"strwostartct": 1,
-				"displevel":    2,
 			},
 		}
 	}
@@ -375,5 +378,39 @@ func patchUserStarted(database *mongo.Database, userID string, isWO bool) error 
 		return err
 	}
 
+	if err := IncrementDispLevelBy(user, database, 2); err != nil {
+		return err
+	}
+
 	return nil
+}
+
+func IncrementDispLevelBy(user shared.User, database *mongo.Database, increment int) error {
+
+	user.DisplayLevel += increment
+
+	loc, _ := time.LoadLocation("America/Los_Angeles")
+	now := time.Now().In(loc)
+	current := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, loc)
+
+	var lastTime time.Time
+	if len(user.LevelHistory) > 0 {
+		lastTime = user.LevelHistory[len(user.LevelHistory)-1].Date.Time()
+	}
+
+	if current.Equal(lastTime) {
+		user.LevelHistory[len(user.LevelHistory)-1].Level = user.DisplayLevel
+	} else {
+		user.LevelHistory = append(user.LevelHistory, shared.LevelHistory{
+			Date:  primitive.NewDateTimeFromTime(current),
+			Level: user.DisplayLevel,
+		})
+	}
+
+	collection := database.Collection("user")
+	filter := bson.M{"_id": user.ID}
+	update := bson.M{"$set": user}
+
+	_, err := collection.UpdateOne(context.Background(), filter, update)
+	return err
 }

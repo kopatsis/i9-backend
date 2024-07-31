@@ -39,6 +39,12 @@ type User struct {
 	ResetDate         primitive.DateTime `bson:"reset"`          //New
 	BirthMonth        int                `bson:"bmonth"`         //Real New
 	BirthDay          int                `bson:"bday"`           //Real New
+	LevelHistory      []LevelHistory     `bson:"bday"`           //LevelHistory
+}
+
+type LevelHistory struct {
+	Date  primitive.DateTime `bson:"date"`
+	Level int                `bson:"level"`
 }
 
 type Workout struct {

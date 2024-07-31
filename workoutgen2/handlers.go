@@ -350,25 +350,31 @@ func patchUserGenerated(database *mongo.Database, userID string, isWO bool) erro
 	collection := database.Collection("user")
 	filter := bson.M{"_id": id}
 
+	var user shared.User
+	if err := collection.FindOne(context.Background(), filter).Decode(&user); err != nil {
+		return err
+	}
+
 	var update bson.M
 	if isWO {
 		update = bson.M{
 			"$inc": bson.M{
-				"wogenct":   1,
-				"displevel": 2,
+				"wogenct": 1,
 			},
 		}
 	} else {
 		update = bson.M{
 			"$inc": bson.M{
 				"strwogenct": 1,
-				"displevel":  2,
 			},
 		}
 	}
 
-	_, err := collection.UpdateOne(context.Background(), filter, update)
-	if err != nil {
+	if _, err := collection.UpdateOne(context.Background(), filter, update); err != nil {
+		return err
+	}
+
+	if err := IncrementDispLevelBy(user, database, 2); err != nil {
 		return err
 	}
 
