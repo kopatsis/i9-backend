@@ -146,11 +146,11 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 		statics = append(statics, currentStatic)
 	}
 
-	realstatics, realdynamics := []shared.Stretch{}, []shared.Stretch{}
-	for i := 0; i < circles; i++ {
-		realstatics = append(realstatics, statics...)
-		realdynamics = append(realdynamics, dynamics...)
-	}
+	// realstatics, realdynamics := []shared.Stretch{}, []shared.Stretch{}
+	// for i := 0; i < circles; i++ {
+	// 	realstatics = append(realstatics, statics...)
+	// 	realdynamics = append(realdynamics, dynamics...)
+	// }
 
 	ret := shared.StretchWorkout{
 		Name:    "",
@@ -158,17 +158,18 @@ func GetStretchWO(user shared.User, minutes float32, database *mongo.Database, b
 		Created: primitive.NewDateTimeFromTime(time.Now()),
 		Status:  "Unstarted",
 		StretchTimes: shared.StretchTimes{
-			DynamicPerSet: StretchTimeSlice(realdynamics, stretchSecs),
-			StaticPerSet:  StretchTimeSlice(realstatics, stretchSecs),
+			DynamicPerSet: StretchTimeSlice(dynamics, stretchSecsCircled),
+			StaticPerSet:  StretchTimeSlice(statics, stretchSecsCircled),
 			DynamicSets:   stretchSets,
 			StaticSets:    stretchSets,
 			DynamicRest:   0.0,
 			FullRound:     stretchSecs,
 		},
 		LevelAtStart: user.Level,
-		Dynamics:     StretchToString(realdynamics),
-		Statics:      StretchToString(realstatics),
+		Dynamics:     StretchToString(dynamics),
+		Statics:      StretchToString(statics),
 		CycleLength:  stretchSets,
+		Cycles:       circles,
 	}
 
 	return ret, nil

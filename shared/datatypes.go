@@ -112,6 +112,7 @@ type StretchWorkout struct {
 	IsPinned     bool                 `bson:"pinned"`      //New
 	StartedCount int                  `bson:"startedct"`   //New
 	CycleLength  int                  `bson:"cyclelength"` //New
+	Cycles       int                  `bson:"cycles"`      //REALLY New
 }
 
 type Exercise struct {
