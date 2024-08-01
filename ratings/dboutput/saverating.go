@@ -12,3 +12,9 @@ func SaveRating(databaseRating shared.StoredRating, database *mongo.Database) er
 	_, err := collection.InsertOne(context.TODO(), databaseRating)
 	return err
 }
+
+func SaveStrRating(databaseRating shared.StoredStrRating, database *mongo.Database) error {
+	collection := database.Collection("strratings")
+	_, err := collection.InsertOne(context.TODO(), databaseRating)
+	return err
+}

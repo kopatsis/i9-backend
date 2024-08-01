@@ -475,8 +475,84 @@ func PatchExerFav(database *mongo.Database) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"ID":                             userID,
-			"Banned Exercise Favorite Rates": newExerFavorites,
+			"ID":             userID,
+			"Favorite Rates": newExerFavorites,
+		})
+	}
+}
+
+func PatchStrFav(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var user shared.User
+
+		var userBody shared.StrMapRoute
+		if err := c.ShouldBindJSON(&userBody); err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with body binding",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with userID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		var id primitive.ObjectID
+		if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
+			id = oid
+		} else {
+			c.JSON(400, gin.H{
+				"Error": "Issue with user ID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		collection := database.Collection("user")
+		filter := bson.D{{Key: "_id", Value: id}}
+
+		err = collection.FindOne(context.Background(), filter).Decode(&user)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with finding user",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		newStrFavorites := map[string]float32{}
+
+		if user.StrFavoriteRates != nil {
+			newStrFavorites = user.StrFavoriteRates
+		}
+
+		for key, val := range userBody.StrMap {
+			newStrFavorites[key] = val
+		}
+
+		update := bson.M{
+			"$set": bson.M{"strfavs": newStrFavorites},
+		}
+
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with updating user",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"ID":             userID,
+			"Favorite Rates": newStrFavorites,
 		})
 	}
 }

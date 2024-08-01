@@ -28,12 +28,11 @@ func RateWorkout(userID string, ratings, favorites [9]int, fullRating, fullFave 
 	user.DisplayLevel += int(4 + user.Level - oldLevel)
 
 	user.ExerModifications, user.TypeModifications, user.RoundEndurance, user.TimeEndurance = operations.NewUserMods(user, ratings, workout, exercises, countWO, fullRating, onlyWorkout)
-	user.ExerFavoriteRates = operations.UserFaves(user, favorites, workout, onlyWorkout)
+	user.ExerFavoriteRates = operations.UserFaves(user, favorites, fullFave, workout, onlyWorkout)
 
 	databaseRating := operations.CreateDatabaseRating(ratings, favorites, fullRating, fullFave, onlyWorkout, workout)
 
-	err = dboutput.SaveDBAllAsync(user, ratings, favorites, fullRating, fullFave, onlyWorkout, workout, databaseRating, database)
-	if err != nil {
+	if err := dboutput.SaveDBAllAsync(user, ratings, favorites, fullRating, fullFave, onlyWorkout, workout, databaseRating, database); err != nil {
 		return err
 	}
 

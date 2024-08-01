@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"fulli9/shared"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -25,8 +27,11 @@ func SaveWorkout(ratings, faves [9]int, fullRating, fullFave int, onlyWorkout bo
 
 	workout.RatedCount++
 	workout.Status = "Rated"
-	workout.LastFaves = fullFave
-	workout.LastRating = fullRating
+
+	now := primitive.NewDateTimeFromTime(time.Now())
+	workout.RatedDates = append(workout.RatedDates, now)
+	workout.DateToRatings[now] = fullRating
+	workout.DateToFaves[now] = fullFave
 
 	if !onlyWorkout {
 		for i, round := range workout.Exercises {

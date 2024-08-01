@@ -38,9 +38,20 @@ type RateRoute struct {
 	OnlyWorkout bool  `json:"onlyworkout" binding:"required"`
 }
 
+type RateStrRoute struct {
+	Fave        int   `json:"fave" binding:"required"`
+	Faves       []int `json:"faves"`
+	OnlyWorkout bool  `json:"onlyworkout" binding:"required"`
+}
+
 type UserRoute struct {
-	Name  string `json:"name"`
-	Token string `json:"token"`
+	Name       string    `json:"name"`
+	BirthMonth int       `json:"bmonth"`
+	BirthDay   int       `json:"bday"`
+	Email      string    `json:"email"`
+	Token      string    `json:"token" binding:"required"`
+	QuizRoute  QuizRoute `json:"quiz"`
+	Quizzed    bool      `json:"quizzed"`
 }
 
 type PatchUserRoute struct {
@@ -86,6 +97,10 @@ type ExerMapRoute struct {
 	ExerMap map[string]float32 `json:"exermap" binding:"required"`
 }
 
+type StrMapRoute struct {
+	StrMap map[string]float32 `json:"strmap" binding:"required"`
+}
+
 type PosStretchWorkoutRoute struct {
 	Dynamics     []string
 	Statics      []string
@@ -112,11 +127,12 @@ type RetLibraryExer struct {
 }
 
 type RetLibraryStr struct {
-	ID        string
-	Name      string
-	Type      string
-	Blocked   bool
-	BodyParts []int
+	ID         string
+	Name       string
+	Type       string
+	Blocked    bool
+	Favoritism float32
+	BodyParts  []int
 }
 
 type RenameRoute struct {

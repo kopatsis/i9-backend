@@ -59,3 +59,55 @@ func SaveDBAllAsync(user shared.User, ratings, faves [9]int, fullRating, fullFav
 	return nil
 
 }
+
+func SaveStrDBAllAsync(user shared.User, faves []int, fullFave int, onlyWO bool, workout shared.StretchWorkout, databaseRating shared.StoredStrRating, database *mongo.Database) error {
+
+	var wg sync.WaitGroup
+
+	errChan := make(chan error, 3)
+	var errGroup *multierror.Error
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		err := SaveUser(user, database)
+		if err != nil {
+			errChan <- err
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		err := SaveStrWorkout(faves, fullFave, onlyWO, workout, database)
+		if err != nil {
+			errChan <- err
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		err := SaveStrRating(databaseRating, database)
+		if err != nil {
+			errChan <- err
+		}
+	}()
+
+	wg.Wait()
+	close(errChan)
+
+	hasErr := false
+	for err := range errChan {
+		if err != nil {
+			hasErr = true
+			errGroup = multierror.Append(errGroup, err)
+		}
+	}
+
+	if hasErr {
+		return errGroup
+	}
+	return nil
+
+}

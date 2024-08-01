@@ -97,10 +97,11 @@ func New(database *mongo.Database, firebase *firebase.App, boltDB *bbolt.DB) *gi
 	router.PATCH("/users/paying", userfuncs.PatchPlyo(database))
 
 	// Adds user specifics
-	router.PATCH("/users/bannedexers", userfuncs.PatchBannedExer(database))
 	router.PATCH("/users/bannedbody", userfuncs.PatchBannedBody(database))
-	router.PATCH("/users/favorites", userfuncs.PatchExerFav(database))
-	router.PATCH("/users/bannedstrs", userfuncs.PatchBannedStr(database))
+	router.PATCH("/users/exercises/banned", userfuncs.PatchBannedExer(database))
+	router.PATCH("/users/stretches/banned", userfuncs.PatchBannedStr(database))
+	router.PATCH("/users/exercises/favorites", userfuncs.PatchExerFav(database))
+	router.PATCH("/users/stretches/favorites", userfuncs.PatchStrFav(database))
 
 	// Single deletes
 	router.DELETE("/users/bannedexers", userfuncs.DeleteBannedExer(database))

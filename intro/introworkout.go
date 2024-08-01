@@ -44,7 +44,7 @@ func GenerateIntroWorkout(minutes float32, userID string, database *mongo.Databa
 	// Uses new system
 	reps, pairs := alteredfuncs.GetReps(typeMatrix, minutes, levelSteps, exerTimes, user, exerIDs, exercises, types)
 
-	statics, dynamics, stretchTimes, err := selections.SelectStretches(stretchTimes, stretches, 100.1, exerIDs, exercises, user.BannedStretches)
+	statics, dynamics, stretchTimes, err := selections.SelectStretches(stretchTimes, stretches, 100.1, exerIDs, exercises, user)
 	if err != nil {
 		return shared.Workout{}, err
 	}

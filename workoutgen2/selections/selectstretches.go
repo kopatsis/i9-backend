@@ -6,7 +6,7 @@ import (
 	"math/rand"
 )
 
-func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]shared.Stretch, adjlevel float32, exerIDs [9][]string, exercises map[string]shared.Exercise, bannedStretches []string) ([]string, []string, shared.StretchTimes, error) {
+func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]shared.Stretch, adjlevel float32, exerIDs [9][]string, exercises map[string]shared.Exercise, user shared.User) ([]string, []string, shared.StretchTimes, error) {
 
 	bodyparts := map[int]bool{}
 
@@ -18,7 +18,7 @@ func SelectStretches(stretchtimes shared.StretchTimes, stretchMap map[string][]s
 		}
 	}
 
-	filteredStretches, err := stretches.FilterStretches(adjlevel, stretchMap, bodyparts, bannedStretches)
+	filteredStretches, err := stretches.FilterStretches(adjlevel, stretchMap, bodyparts, user)
 	if err != nil {
 		return nil, nil, shared.StretchTimes{}, err
 	}
