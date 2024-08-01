@@ -128,6 +128,7 @@ type StretchWorkout struct {
 	StartedCount int                        `bson:"startedct"`
 	CycleLength  int                        `bson:"cyclelength"`
 	AvgFaves     float32                    `bson:"faves"`
+  Cycles       int                  `bson:"cycles"`
 }
 
 type Exercise struct {
