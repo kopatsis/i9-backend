@@ -414,3 +414,44 @@ func IncrementDispLevelBy(user shared.User, database *mongo.Database, increment 
 	_, err := collection.UpdateOne(context.Background(), filter, update)
 	return err
 }
+
+func IncrementMonthly(user shared.User, database *mongo.Database, field string) error {
+
+	loc, _ := time.LoadLocation("America/Los_Angeles")
+	monthInt := int(time.Now().In(loc).Month()) - 1
+	year := time.Now().In(loc).Year()
+
+	if user.MonthlyHistory[monthInt].Year != year {
+		user.MonthlyHistory[monthInt] = shared.MonthlyHistory{
+			Year: year,
+		}
+	}
+
+	switch field {
+	case "strwostartct":
+		user.MonthlyHistory[monthInt].StrWOStartedCt++
+		user.StrWOStartedCt++
+	case "wogenct":
+		user.MonthlyHistory[monthInt].WOGeneratedCt++
+		user.StrWOStartedCt++
+	case "strwogenct":
+		user.MonthlyHistory[monthInt].StrWOGeneratedCt++
+		user.WOGeneratedCt++
+	case "wostartct":
+		user.MonthlyHistory[monthInt].WOStartedCt++
+		user.WOStartedCt++
+	case "completed":
+		user.MonthlyHistory[monthInt].WORatedCt++
+		user.WORatedCt++
+	case "strwocompleted":
+		user.MonthlyHistory[monthInt].StrWORatedCt++
+		user.StrWORatedCt++
+	}
+
+	collection := database.Collection("user")
+	filter := bson.M{"_id": user.ID}
+	update := bson.M{"$set": user}
+
+	_, err := collection.UpdateOne(context.Background(), filter, update)
+	return err
+}

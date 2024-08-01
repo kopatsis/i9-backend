@@ -39,12 +39,23 @@ type User struct {
 	ResetDate         primitive.DateTime `bson:"reset"`          //New
 	BirthMonth        int                `bson:"bmonth"`         //Real New
 	BirthDay          int                `bson:"bday"`           //Real New
-	LevelHistory      []LevelHistory     `bson:"bday"`           //LevelHistory
+	LevelHistory      []LevelHistory     `bson:"levelhist"`      //LevelHistory
+	MonthlyHistory    [12]MonthlyHistory `bson:"monthhist"`      //MonthlyHistory
 }
 
 type LevelHistory struct {
 	Date  primitive.DateTime `bson:"date"`
 	Level int                `bson:"level"`
+}
+
+type MonthlyHistory struct {
+	Year             int `bson:"year"`
+	StrWOStartedCt   int `bson:"strwostartct"`
+	StrWOGeneratedCt int `bson:"strwogenct"`
+	WOGeneratedCt    int `bson:"wogenct"`
+	WOStartedCt      int `bson:"wostartct"`
+	WORatedCt        int `bson:"completed"`
+	StrWORatedCt     int `bson:"strwocompleted"`
 }
 
 type Workout struct {
@@ -128,7 +139,7 @@ type StretchWorkout struct {
 	StartedCount int                        `bson:"startedct"`
 	CycleLength  int                        `bson:"cyclelength"`
 	AvgFaves     float32                    `bson:"faves"`
-  Cycles       int                  `bson:"cycles"`
+	Cycles       int                        `bson:"cycles"`
 }
 
 type Exercise struct {
