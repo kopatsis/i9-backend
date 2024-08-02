@@ -3,13 +3,13 @@ package userinput
 import (
 	"bufio"
 	"fmt"
-	"fulli9/workoutgen2/datatypes"
+	"fulli9/shared"
 	"os"
 	"strconv"
 	"strings"
 )
 
-func GetUserRatings(workout datatypes.Workout, allexer map[string]datatypes.Exercise) [9]float32 {
+func GetUserRatings(workout shared.Workout, allexer map[string]shared.Exercise) [9]float32 {
 
 	fmt.Printf("Rating process for workout: ID: %s, Name: %s\n\n", workout.ID, workout.Name)
 	reader := bufio.NewReader(os.Stdin)
