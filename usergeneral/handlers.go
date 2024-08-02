@@ -63,6 +63,7 @@ func PostUser(database *mongo.Database) gin.HandlerFunc {
 			Email:             userBody.Email,
 			BirthMonth:        userBody.BirthMonth,
 			BirthDay:          userBody.BirthDay,
+			PfpUrl:            "https://i9imgs.sfo3.cdn.digitaloceanspaces.com/cgts2.png",
 			PlyoTolerance:     3,
 			PushupSetting:     "Knee",
 			BannedExercises:   []string{},
@@ -331,6 +332,10 @@ func MergeLocalUser(database *mongo.Database) gin.HandlerFunc {
 			"$set": bson.M{
 				"username": newAuthID,
 				"name":     jwtBody.Name,
+				"email":    jwtBody.Email,
+				"bmonth":   jwtBody.BirthMonth,
+				"bday":     jwtBody.BirthDay,
+				"pfp":      "https://i9imgs.sfo3.cdn.digitaloceanspaces.com/cgts2.png",
 			},
 		}
 

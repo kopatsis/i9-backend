@@ -39,6 +39,7 @@ type User struct {
 	ResetDate         primitive.DateTime `bson:"reset"`          //New
 	BirthMonth        int                `bson:"bmonth"`         //Real New
 	BirthDay          int                `bson:"bday"`           //Real New
+	PfpUrl            string             `bson:"pfp"`            //Real New
 	LevelHistory      []LevelHistory     `bson:"levelhist"`      //LevelHistory
 	MonthlyHistory    [12]MonthlyHistory `bson:"monthhist"`      //MonthlyHistory
 }
