@@ -358,23 +358,14 @@ func patchUserStarted(database *mongo.Database, userID string, isWO bool) error 
 		return err
 	}
 
-	var update bson.M
+	var update string
 	if isWO {
-		update = bson.M{
-			"$inc": bson.M{
-				"wostartct": 1,
-			},
-		}
+		update = "wostartct"
 	} else {
-		update = bson.M{
-			"$inc": bson.M{
-				"strwostartct": 1,
-			},
-		}
+		update = "strwostartct"
 	}
 
-	_, err := collection.UpdateOne(context.Background(), filter, update)
-	if err != nil {
+	if err := IncrementMonthly(user, database, update); err != nil {
 		return err
 	}
 

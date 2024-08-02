@@ -340,6 +340,7 @@ func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Han
 }
 
 func patchUserGenerated(database *mongo.Database, userID string, isWO bool) error {
+
 	var id primitive.ObjectID
 	if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
 		id = oid
@@ -355,22 +356,14 @@ func patchUserGenerated(database *mongo.Database, userID string, isWO bool) erro
 		return err
 	}
 
-	var update bson.M
+	var update string
 	if isWO {
-		update = bson.M{
-			"$inc": bson.M{
-				"wogenct": 1,
-			},
-		}
+		update = "wogenct"
 	} else {
-		update = bson.M{
-			"$inc": bson.M{
-				"strwogenct": 1,
-			},
-		}
+		update = "strwogenct"
 	}
 
-	if _, err := collection.UpdateOne(context.Background(), filter, update); err != nil {
+	if err := IncrementMonthly(user, database, update); err != nil {
 		return err
 	}
 

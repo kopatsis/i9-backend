@@ -4,6 +4,7 @@ import (
 	"fulli9/ratings/dbinput"
 	"fulli9/ratings/dboutput"
 	"fulli9/ratings/operations"
+	"fulli9/workoutgen2"
 
 	"go.etcd.io/bbolt"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,16 +17,21 @@ func RateWorkout(userID string, ratings, favorites [9]int, fullRating, fullFave 
 		return err
 	}
 
-	// if countWO == 0 {
-	// 	fmt.Println("No workouts for user")
-	// 	return errors.New("no workouts")
-	// }
-
 	oldLevel := user.Level
 	user.Level = operations.NewLevel(user, fullRating, workout.Difficulty, completedRounds, countWO)
 
-	user.WORatedCt++
-	user.DisplayLevel += int(4 + user.Level - oldLevel)
+	adtl := 2
+	if !onlyWorkout {
+		adtl += 3
+	}
+
+	if err := workoutgen2.IncrementDispLevelBy(user, database, adtl+int(user.Level-oldLevel)); err != nil {
+		return err
+	}
+
+	if err := workoutgen2.IncrementMonthly(user, database, "completed"); err != nil {
+		return err
+	}
 
 	user.ExerModifications, user.TypeModifications, user.RoundEndurance, user.TimeEndurance = operations.NewUserMods(user, ratings, workout, exercises, countWO, fullRating, onlyWorkout)
 	user.ExerFavoriteRates = operations.UserFaves(user, favorites, fullFave, workout, onlyWorkout)
