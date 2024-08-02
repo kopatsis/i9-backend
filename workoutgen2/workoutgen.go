@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func WorkoutGen(minutes float32, difficulty int, loweronly bool, userID string, database *mongo.Database, boltDB *bbolt.DB) (shared.AnyWorkout, error) {
+func WorkoutGen(minutes float32, difficulty int, loweronly bool, userID string, database *mongo.Database, boltDB *bbolt.DB) (shared.User, shared.AnyWorkout, error) {
 
 	if minutes < 8 || difficulty == 0 {
 		return stretchWOReturn(minutes, userID, database, boltDB)
@@ -22,7 +22,7 @@ func WorkoutGen(minutes float32, difficulty int, loweronly bool, userID string, 
 
 	user, stretches, exercises, pastWOs, typeMatrix, err := dbinput.AllInputsAsync(database, boltDB, userID)
 	if err != nil {
-		return shared.Workout{}, err
+		return shared.User{}, shared.Workout{}, err
 	}
 
 	adjlevel := adjustments.CalcInitLevel(user.Level, pastWOs)
@@ -47,45 +47,46 @@ func WorkoutGen(minutes float32, difficulty int, loweronly bool, userID string, 
 
 	statics, dynamics, stretchTimes, err := selections.SelectStretches(stretchTimes, stretches, adjlevel, exerIDs, exercises, user)
 	if err != nil {
-		return shared.Workout{}, err
+		return shared.User{}, shared.Workout{}, err
 	}
 
 	workout := creation.FormatWorkout(statics, dynamics, reps, exerIDs, stretchTimes, exerTimes, types, user, difficulty, minutes, pairs, cardioRatings, cardioRating, genRatings)
 
 	id, err := dboutput.SaveNewWorkout(database, workout)
 	if err != nil {
-		return shared.Workout{}, err
+		return shared.User{}, shared.Workout{}, err
 	}
 	workout.ID = id
 	workout.LowerOnly = loweronly
 
-	err = dboutput.UpdateUserLast(minutes, difficulty, userID, database)
-	if err != nil {
-		return shared.Workout{}, err
-	}
+	// No longer doing this as last minutes is just default minutes now
+	// err = dboutput.UpdateUserLast(minutes, difficulty, userID, database)
+	// if err != nil {
+	// 	return shared.Workout{}, err
+	// }
 
-	return workout, nil
+	return user, workout, nil
 }
 
-func stretchWOReturn(minutes float32, userID string, database *mongo.Database, boltDB *bbolt.DB) (shared.StretchWorkout, error) {
+func stretchWOReturn(minutes float32, userID string, database *mongo.Database, boltDB *bbolt.DB) (shared.User, shared.StretchWorkout, error) {
 	user, err := dbinput.GetUserDB(database, userID)
 	if err != nil {
-		return shared.StretchWorkout{}, err
+		return shared.User{}, shared.StretchWorkout{}, err
 	}
 
 	stretchWorkout, err := stretches.GetStretchWO(user, minutes, database, boltDB)
 	if err != nil {
-		return shared.StretchWorkout{}, err
+		return shared.User{}, shared.StretchWorkout{}, err
 	}
 	stretchWorkout.Minutes = minutes
 
 	stretchWorkout.Name = shared.NameAnimals(true)
 	id, err := dboutput.SaveStretchWorkout(database, stretchWorkout)
 	if err != nil {
-		return shared.StretchWorkout{}, err
+		return shared.User{}, shared.StretchWorkout{}, err
 	}
 
 	stretchWorkout.ID = id
 
-	return stretchWorkout, nil
+	return user, stretchWorkout, nil
 }

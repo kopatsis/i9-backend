@@ -33,7 +33,7 @@ func PostWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 			return
 		}
 
-		workout, err := WorkoutGen(woHandler.Time, woHandler.Difficulty, woHandler.LowerOnly, userID, database, boltDB)
+		user, workout, err := WorkoutGen(woHandler.Time, woHandler.Difficulty, woHandler.LowerOnly, userID, database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with workout generator",
@@ -43,7 +43,7 @@ func PostWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFunc {
 		}
 		workoutRet := workout.(shared.Workout)
 
-		patchUserGenerated(database, userID, true) // Even if it does error out, we don't want it to interrupt the WO generation process
+		patchUserGenerated(database, user, true) // Even if it does error out, we don't want it to interrupt the WO generation process
 		// The constantly running daily update code will check and update these anyways
 
 		if _, exists := c.GetQuery("noscript"); exists {
@@ -89,7 +89,7 @@ func PostStretchWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerF
 			return
 		}
 
-		workout, err := WorkoutGen(woHandler.Time, 0, false, userID, database, boltDB)
+		user, workout, err := WorkoutGen(woHandler.Time, 0, false, userID, database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with stretch workout generator",
@@ -99,7 +99,7 @@ func PostStretchWorkout(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerF
 		}
 		workoutRet := workout.(shared.StretchWorkout)
 
-		patchUserGenerated(database, userID, false) // Even if it does error out, we don't want it to interrupt the WO generation process
+		patchUserGenerated(database, user, false) // Even if it does error out, we don't want it to interrupt the WO generation process
 		// The constantly running daily update code will check and update these anyways
 
 		if _, exists := c.GetQuery("noscript"); exists {
@@ -194,7 +194,7 @@ func PostWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.HandlerFun
 			return
 		}
 
-		newworkout, err := WorkoutGen(woHandler.Time, woHandler.Difficulty, woHandler.LowerOnly, userID, database, boltDB)
+		_, newworkout, err := WorkoutGen(woHandler.Time, woHandler.Difficulty, woHandler.LowerOnly, userID, database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with workout generator",
@@ -302,7 +302,7 @@ func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Han
 			return
 		}
 
-		newworkout, err := WorkoutGen(woHandler.Time, 0, false, userID, database, boltDB)
+		_, newworkout, err := WorkoutGen(woHandler.Time, 0, false, userID, database, boltDB)
 		if err != nil {
 			c.JSON(400, gin.H{
 				"Error": "Issue with workout generator",
@@ -339,22 +339,7 @@ func PostStretchWorkoutRetry(database *mongo.Database, boltDB *bbolt.DB) gin.Han
 	}
 }
 
-func patchUserGenerated(database *mongo.Database, userID string, isWO bool) error {
-
-	var id primitive.ObjectID
-	if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
-		id = oid
-	} else {
-		return err
-	}
-
-	collection := database.Collection("user")
-	filter := bson.M{"_id": id}
-
-	var user shared.User
-	if err := collection.FindOne(context.Background(), filter).Decode(&user); err != nil {
-		return err
-	}
+func patchUserGenerated(database *mongo.Database, user shared.User, isWO bool) error {
 
 	var update string
 	if isWO {
