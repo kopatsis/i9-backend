@@ -24,8 +24,11 @@ func RateWorkout(userID string, ratings, favorites [9]int, fullRating, fullFave 
 	if !onlyWorkout {
 		adtl += 3
 	}
+	if user.Level > oldLevel {
+		adtl += int(user.Level - oldLevel)
+	}
 
-	if err := workoutgen2.IncrementDispLevelBy(user, database, adtl+int(user.Level-oldLevel)); err != nil {
+	if err := workoutgen2.IncrementDispLevelBy(user, database, adtl); err != nil {
 		return err
 	}
 
