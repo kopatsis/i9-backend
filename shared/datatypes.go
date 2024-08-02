@@ -59,6 +59,8 @@ type MonthlyHistory struct {
 	WOStartedCt      int `bson:"wostartct"`
 	WORatedCt        int `bson:"completed"`
 	StrWORatedCt     int `bson:"strwocompleted"`
+	WOFinishedCt     int `bson:"wofinishct"`
+	StrWOFinishedCt  int `bson:"strwofinishct"`
 }
 
 type Workout struct {

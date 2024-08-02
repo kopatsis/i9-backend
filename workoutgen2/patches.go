@@ -103,6 +103,17 @@ func PatchWorkout(database *mongo.Database) gin.HandlerFunc {
 			}
 		}
 
+		if woHandler.Status == "Completed" && workout.Status != "Completed" {
+			workout.FinishedCount++
+			if err := patchUserFinished(database, userID, true); err != nil {
+				c.JSON(400, gin.H{
+					"Error": "Issue with updating user ct",
+					"Exact": err.Error(),
+				})
+				return
+			}
+		}
+
 		workout.PausedTime = woHandler.PausedMinutes
 		workout.Status = woHandler.Status
 
@@ -205,6 +216,17 @@ func PatchStretchWorkout(database *mongo.Database) gin.HandlerFunc {
 			workout.LastStarted = primitive.NewDateTimeFromTime(time.Now())
 			workout.StartedDates = append(workout.StartedDates, workout.LastStarted)
 			if err := patchUserStarted(database, userID, false); err != nil {
+				c.JSON(400, gin.H{
+					"Error": "Issue with updating user ct",
+					"Exact": err.Error(),
+				})
+				return
+			}
+		}
+
+		if woHandler.Status == "Completed" && workout.Status != "Completed" {
+			workout.FinishedCount++
+			if err := patchUserFinished(database, userID, false); err != nil {
 				c.JSON(400, gin.H{
 					"Error": "Issue with updating user ct",
 					"Exact": err.Error(),
@@ -381,6 +403,40 @@ func patchUserStarted(database *mongo.Database, userID string, isWO bool) error 
 	return nil
 }
 
+func patchUserFinished(database *mongo.Database, userID string, isWO bool) error {
+	var id primitive.ObjectID
+	if oid, err := primitive.ObjectIDFromHex(userID); err == nil {
+		id = oid
+	} else {
+		return err
+	}
+
+	collection := database.Collection("user")
+	filter := bson.M{"_id": id}
+
+	var user shared.User
+	if err := collection.FindOne(context.Background(), filter).Decode(&user); err != nil {
+		return err
+	}
+
+	var update string
+	if isWO {
+		update = "wofinishct"
+	} else {
+		update = "strwofinishct"
+	}
+
+	if err := IncrementMonthly(user, database, update); err != nil {
+		return err
+	}
+
+	if err := IncrementDispLevelBy(user, database, 2); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func IncrementDispLevelBy(user shared.User, database *mongo.Database, increment int) error {
 
 	user.DisplayLevel += increment
@@ -442,6 +498,12 @@ func IncrementMonthly(user shared.User, database *mongo.Database, field string) 
 	case "strwocompleted":
 		user.MonthlyHistory[monthInt].StrWORatedCt++
 		user.StrWORatedCt++
+	case "wofinishct":
+		user.MonthlyHistory[monthInt].WOFinishedCt++
+		user.WOFinishedCt++
+	case "strwofinishct":
+		user.MonthlyHistory[monthInt].StrWOFinishedCt++
+		user.StrWOFinishedCt++
 	}
 
 	collection := database.Collection("user")
