@@ -155,3 +155,7 @@ type QuizRoute struct {
 type PinRoute struct {
 	Pinned bool `json:"pinned"`
 }
+
+type ColorRoute struct {
+	Color string `json:"color"`
+}

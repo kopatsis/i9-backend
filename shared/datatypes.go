@@ -89,6 +89,7 @@ type Workout struct {
 	RatedCount      int                        `bson:"ratedct"`
 	StartedCount    int                        `bson:"startedct"`
 	LowerOnly       bool                       `bson:"loweronly"`
+	ColorHash       string                     `bson:"color"`
 }
 
 type StretchTimes struct {
@@ -141,6 +142,7 @@ type StretchWorkout struct {
 	CycleLength  int                        `bson:"cyclelength"`
 	AvgFaves     float32                    `bson:"faves"`
 	Cycles       int                        `bson:"cycles"`
+	ColorHash    string                     `bson:"color"`
 }
 
 type Exercise struct {

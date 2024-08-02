@@ -235,3 +235,165 @@ func countPinnedWorkouts(database *mongo.Database, userID, collectionName string
 
 	return count, nil
 }
+
+func ColorWorkout(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var woHandler shared.ColorRoute
+		if err := c.ShouldBindJSON(&woHandler); err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with body binding",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with workout generator",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		workoutID, exists := c.Params.Get("id")
+		if !exists {
+			c.JSON(400, gin.H{
+				"Error": "Issue with param",
+				"Exact": "Unable to get ID from URL paramete",
+			})
+			return
+		}
+
+		var workout shared.Workout
+
+		var id primitive.ObjectID
+		if oid, err := primitive.ObjectIDFromHex(workoutID); err == nil {
+			id = oid
+		} else {
+			c.JSON(400, gin.H{
+				"Error": "Issue with workout ID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		collection := database.Collection("workout")
+		filter := bson.D{{Key: "_id", Value: id}}
+
+		err = collection.FindOne(context.Background(), filter).Decode(&workout)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing wo",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if workout.UserID != userID {
+			c.JSON(400, gin.H{
+				"Error": "Issue with user in request",
+				"Exact": errors.New("workout does not belong to provided user").Error(),
+			})
+			return
+		}
+
+		update := bson.D{
+			{Key: "$set", Value: bson.D{
+				{Key: "color", Value: woHandler.Color},
+			}},
+		}
+
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with update on db in request",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		c.Status(204)
+	}
+}
+
+func ColorStretchWorkout(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var woHandler shared.ColorRoute
+		if err := c.ShouldBindJSON(&woHandler); err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with body binding",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		userID, err := shared.GetIDFromReq(database, c)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with workout generator",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		workoutID, exists := c.Params.Get("id")
+		if !exists {
+			c.JSON(400, gin.H{
+				"Error": "Issue with param",
+				"Exact": "Unable to get ID from URL paramete",
+			})
+			return
+		}
+
+		var workout shared.StretchWorkout
+
+		var id primitive.ObjectID
+		if oid, err := primitive.ObjectIDFromHex(workoutID); err == nil {
+			id = oid
+		} else {
+			c.JSON(400, gin.H{
+				"Error": "Issue with workout ID",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		collection := database.Collection("stretchworkout")
+		filter := bson.D{{Key: "_id", Value: id}}
+
+		err = collection.FindOne(context.Background(), filter).Decode(&workout)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with viewing wo",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		if workout.UserID != userID {
+			c.JSON(400, gin.H{
+				"Error": "Issue with user in request",
+				"Exact": errors.New("workout does not belong to provided user").Error(),
+			})
+			return
+		}
+
+		update := bson.D{
+			{Key: "$set", Value: bson.D{
+				{Key: "color", Value: woHandler.Color},
+			}},
+		}
+
+		_, err = collection.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"Error": "Issue with update on db in request",
+				"Exact": err.Error(),
+			})
+			return
+		}
+
+		c.Status(204)
+	}
+}
