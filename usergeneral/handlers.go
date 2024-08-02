@@ -247,8 +247,8 @@ func PatchUser(database *mongo.Database) gin.HandlerFunc {
 			update["$set"].(bson.M)["lastdiff"] = *userBody.Diff
 		}
 
-		if userBody.Minutes != nil {
-			update["$set"].(bson.M)["lastmins"] = *userBody.Minutes
+		if userBody.WoMinutes != nil {
+			update["$set"].(bson.M)["lastmins"] = *userBody.WoMinutes
 		}
 
 		userID, err := shared.GetIDFromReq(database, c)
