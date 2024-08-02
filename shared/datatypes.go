@@ -29,10 +29,12 @@ type User struct {
 	LastDifficulty    int                `bson:"lastdiff"`
 	Assessed          bool               `bson:"assessed"`
 	Badges            []string           `bson:"badges"`         //New
-	StrWOStartedCt    int                `bson:"strwostartct"`   //New
-	StrWOGeneratedCt  int                `bson:"strwogenct"`     //New
 	WOGeneratedCt     int                `bson:"wogenct"`        //New
+	StrWOGeneratedCt  int                `bson:"strwogenct"`     //New
 	WOStartedCt       int                `bson:"wostartct"`      //New
+	StrWOStartedCt    int                `bson:"strwostartct"`   //New
+	WOFinishedCt      int                `bson:"wofinishct"`     //New
+	StrWOFinishedCt   int                `bson:"strwofinishct"`  //New
 	WORatedCt         int                `bson:"completed"`      //New
 	StrWORatedCt      int                `bson:"strwocompleted"` //New
 	DisplayLevel      int                `bson:"displevel"`      //New
@@ -88,6 +90,7 @@ type Workout struct {
 	AvgFaves        float32                    `bson:"faves"`
 	RatedCount      int                        `bson:"ratedct"`
 	StartedCount    int                        `bson:"startedct"`
+	FinishedCount   int                        `bson:"finishct"` //New
 	LowerOnly       bool                       `bson:"loweronly"`
 	ColorHash       string                     `bson:"color"`
 }
@@ -121,28 +124,29 @@ type WorkoutRound struct {
 }
 
 type StretchWorkout struct {
-	ID           primitive.ObjectID         `bson:"_id,omitempty"`
-	Name         string                     `bson:"name"`
-	UserID       string                     `bson:"userid"`
-	Created      primitive.DateTime         `bson:"date"`
-	LastStarted  primitive.DateTime         `bson:"lastdate"`
-	StartedDates []primitive.DateTime       `bson:"datelist"`
-	RatedDates   []primitive.DateTime       `bson:"ratedatelist"`
-	DateToFaves  map[primitive.DateTime]int `bson:"datefaves"`
-	Status       string                     `bson:"status"`
-	StretchTimes StretchTimes               `bson:"stretchtimes"`
-	LevelAtStart float32                    `bson:"level"`
-	PausedTime   float32                    `bson:"paused"`
-	Minutes      float32                    `bson:"minutes"`
-	Dynamics     []string                   `bson:"dynamics"`
-	Statics      []string                   `bson:"statics"`
-	IsPinned     bool                       `bson:"pinned"`
-	RatedCount   int                        `bson:"ratedct"`
-	StartedCount int                        `bson:"startedct"`
-	CycleLength  int                        `bson:"cyclelength"`
-	AvgFaves     float32                    `bson:"faves"`
-	Cycles       int                        `bson:"cycles"`
-	ColorHash    string                     `bson:"color"`
+	ID            primitive.ObjectID         `bson:"_id,omitempty"`
+	Name          string                     `bson:"name"`
+	UserID        string                     `bson:"userid"`
+	Created       primitive.DateTime         `bson:"date"`
+	LastStarted   primitive.DateTime         `bson:"lastdate"`
+	StartedDates  []primitive.DateTime       `bson:"datelist"`
+	RatedDates    []primitive.DateTime       `bson:"ratedatelist"`
+	DateToFaves   map[primitive.DateTime]int `bson:"datefaves"`
+	Status        string                     `bson:"status"`
+	StretchTimes  StretchTimes               `bson:"stretchtimes"`
+	LevelAtStart  float32                    `bson:"level"`
+	PausedTime    float32                    `bson:"paused"`
+	Minutes       float32                    `bson:"minutes"`
+	Dynamics      []string                   `bson:"dynamics"`
+	Statics       []string                   `bson:"statics"`
+	IsPinned      bool                       `bson:"pinned"`
+	RatedCount    int                        `bson:"ratedct"`
+	StartedCount  int                        `bson:"startedct"`
+	FinishedCount int                        `bson:"finishct"` //New
+	CycleLength   int                        `bson:"cyclelength"`
+	AvgFaves      float32                    `bson:"faves"`
+	Cycles        int                        `bson:"cycles"`
+	ColorHash     string                     `bson:"color"`
 }
 
 type Exercise struct {
